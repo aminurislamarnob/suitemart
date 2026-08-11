@@ -12,9 +12,11 @@
 const { test, expect } = require( '@playwright/test' );
 const AxeBuilder = require( '@axe-core/playwright' ).default;
 
-// Addressed by slug: the id is whatever the install assigned, and the query
-// form works whatever the permalink structure is set to.
-const PAGE = '/?pagename=suitemart-block-test';
+// Resolved by global-setup.js from WordPress itself, because the URL form
+// depends on the permalink structure. The fallback only matters if a spec is
+// run without the setup.
+const PAGE =
+	process.env.SUITEMART_FIXTURE_URL || '/?pagename=suitemart-block-test';
 
 test.beforeEach( async ( { page } ) => {
 	await page.goto( PAGE );
