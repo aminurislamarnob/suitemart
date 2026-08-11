@@ -174,6 +174,43 @@ class Test_Theme_Integrity extends WP_UnitTestCase {
 	}
 
 	/**
+	 * A template part must not repeat the landmark its reference already supplies.
+	 *
+	 * `wp:template-part {"tagName":"header"}` wraps the part in a `<header>`. If
+	 * the part's own root group also sets `tagName`, the page ends up with two
+	 * nested banner landmarks, which screen readers announce twice. Nothing about
+	 * the rendered page looks wrong, so this is asserted rather than eyeballed.
+	 */
+	public function test_parts_do_not_duplicate_landmarks(): void {
+		$parts = glob( SUITEMART_DIR . '/parts/*.html' );
+
+		foreach ( is_array( $parts ) ? $parts : array() as $file ) {
+			$blocks = parse_blocks( (string) file_get_contents( $file ) );
+			$root   = null;
+
+			foreach ( $blocks as $block ) {
+				if ( null !== $block['blockName'] ) {
+					$root = $block;
+					break;
+				}
+			}
+
+			if ( null === $root ) {
+				continue;
+			}
+
+			$this->assertNotContains(
+				$root['attrs']['tagName'] ?? 'div',
+				array( 'header', 'footer', 'main', 'aside', 'nav' ),
+				sprintf(
+					'%s sets a landmark tagName on its root block; the template-part reference already provides one.',
+					basename( $file )
+				)
+			);
+		}
+	}
+
+	/**
 	 * The portfolio post type and its taxonomy must be registered.
 	 */
 	public function test_portfolio_post_type_is_registered(): void {
