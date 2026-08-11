@@ -260,6 +260,121 @@ function suitemart_share_url( string $network, string $url, string $title ): str
 }
 
 /**
+ * Hosts a Suitemart map is allowed to frame.
+ *
+ * An `iframe src` taken from a block attribute is a route to embedding
+ * anything at all on a page — a login form, a payment prompt — under the
+ * site's own domain. Anyone who can edit a post can set that attribute, which
+ * on a multi-author site is a wider group than the administrators. So the host
+ * is checked against this list and nothing else is ever framed.
+ *
+ * @return array<int, string>
+ */
+function suitemart_map_allowed_hosts(): array {
+	return array(
+		'www.google.com',
+		'maps.google.com',
+		'google.com',
+	);
+}
+
+/**
+ * Validates a pasted Google Maps embed URL.
+ *
+ * @param string $url Candidate URL.
+ * @return string The URL when it is a Google Maps embed, otherwise an empty string.
+ */
+function suitemart_map_validate_embed_url( string $url ): string {
+	$parts = wp_parse_url( $url );
+
+	if ( ! is_array( $parts ) || empty( $parts['host'] ) || empty( $parts['scheme'] ) ) {
+		return '';
+	}
+
+	// Framing over plain HTTP on an HTTPS page is blocked by the browser
+	// anyway, and would be a downgrade besides.
+	if ( 'https' !== strtolower( $parts['scheme'] ) ) {
+		return '';
+	}
+
+	if ( ! in_array( strtolower( $parts['host'] ), suitemart_map_allowed_hosts(), true ) ) {
+		return '';
+	}
+
+	// Both the "Share → Embed a map" iframe and the Embed API live under
+	// /maps/embed; the keyless query form is /maps with output=embed.
+	$path  = $parts['path'] ?? '';
+	$query = $parts['query'] ?? '';
+
+	$is_embed_path  = str_starts_with( $path, '/maps/embed' );
+	$is_embed_query = str_starts_with( $path, '/maps' ) && str_contains( $query, 'output=embed' );
+
+	return ( $is_embed_path || $is_embed_query ) ? $url : '';
+}
+
+/**
+ * Builds the map URL for the Map block.
+ *
+ * Two routes, because Google offers no single one that is both keyless and
+ * documented:
+ *
+ * - `embed` takes the URL from "Share → Embed a map". No API key, officially
+ *   provided, but the editor has to fetch it by hand.
+ * - `address` builds the URL. With a key it uses the documented Maps Embed
+ *   API. Without one it falls back to `output=embed`, which works and has for
+ *   years but is not documented, so Google may withdraw it.
+ *
+ * @param array<string, mixed> $args {
+ *     Map configuration.
+ *
+ *     @type string $source   Either 'embed' or 'address'.
+ *     @type string $embedUrl Pasted embed URL, for the 'embed' source.
+ *     @type string $address  Place or address, for the 'address' source.
+ *     @type string $apiKey   Optional Maps Embed API key.
+ *     @type int    $zoom     Zoom level.
+ * }
+ * @return string Frameable URL, or an empty string when there is nothing to show.
+ */
+function suitemart_map_url( array $args ): string {
+	$source = suitemart_enum( $args['source'] ?? 'embed', array( 'embed', 'address' ), 'embed' );
+
+	if ( 'embed' === $source ) {
+		$url = isset( $args['embedUrl'] ) && is_string( $args['embedUrl'] ) ? $args['embedUrl'] : '';
+
+		return suitemart_map_validate_embed_url( $url );
+	}
+
+	$address = isset( $args['address'] ) && is_string( $args['address'] ) ? trim( $args['address'] ) : '';
+
+	if ( '' === $address ) {
+		return '';
+	}
+
+	$zoom    = suitemart_clamp_int( $args['zoom'] ?? 14, 14, 1, 21 );
+	$api_key = isset( $args['apiKey'] ) && is_string( $args['apiKey'] ) ? trim( $args['apiKey'] ) : '';
+
+	if ( '' !== $api_key ) {
+		return add_query_arg(
+			array(
+				'key'  => rawurlencode( $api_key ),
+				'q'    => rawurlencode( $address ),
+				'zoom' => $zoom,
+			),
+			'https://www.google.com/maps/embed/v1/place'
+		);
+	}
+
+	return add_query_arg(
+		array(
+			'q'      => rawurlencode( $address ),
+			'z'      => $zoom,
+			'output' => 'embed',
+		),
+		'https://maps.google.com/maps'
+	);
+}
+
+/**
  * Normalises a block attribute to a bounded integer.
  *
  * Block attributes arrive from post content and can be anything after a manual

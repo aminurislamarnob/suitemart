@@ -1,0 +1,70 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "suitemart/map",
+	"title": "Map",
+	"category": "suitemart",
+	"icon": "location-alt",
+	"description": "An embedded Google map, from a pasted embed link or an address.",
+	"keywords": [ "map", "google", "location", "address", "directions" ],
+	"textdomain": "suitemart",
+	"attributes": {
+		"source": {
+			"type": "string",
+			"enum": [ "embed", "address" ],
+			"default": "embed"
+		},
+		"embedUrl": {
+			"type": "string",
+			"default": ""
+		},
+		"address": {
+			"type": "string",
+			"default": ""
+		},
+		"apiKey": {
+			"type": "string",
+			"default": ""
+		},
+		"zoom": {
+			"type": "number",
+			"default": 14
+		},
+		"height": {
+			"type": "number",
+			"default": 420
+		},
+		"heightMobile": {
+			"type": "number",
+			"default": 280
+		},
+		"title": {
+			"type": "string",
+			"default": ""
+		},
+		"requireConsent": {
+			"type": "boolean",
+			"default": false
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"align": [ "wide", "full" ],
+		"interactivity": true,
+		"html": false,
+		"spacing": {
+			"margin": true,
+			"padding": true
+		},
+		"__experimentalBorder": {
+			"color": true,
+			"radius": true,
+			"style": true,
+			"width": true
+		}
+	},
+	"render": "file:./render.php",
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css",
+	"viewScriptModule": "file:./view.js"
+}
