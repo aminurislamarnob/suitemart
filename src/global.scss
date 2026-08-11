@@ -31,6 +31,19 @@ body {
 	scroll-margin-block-start: 6rem;
 }
 
+// The browser's own `[hidden]` rule is `display: none` at the lowest possible
+// specificity, so any component rule that sets `display` silently beats it and
+// shows an element that is meant to be hidden. Suitemart toggles visibility
+// with `hidden` throughout — every `data-wp-bind--hidden` depends on it — and
+// this block is small enough that one guarantee here is better than
+// remembering an `&[hidden]` override in eighty stylesheets.
+//
+// The `!important` is the point rather than an escape hatch: nothing should be
+// able to override "this element is not here".
+[hidden] {
+	display: none !important;
+}
+
 /* -------------------------------------------------------------------------
    Focus
    ---------------------------------------------------------------------- */

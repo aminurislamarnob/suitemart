@@ -39,6 +39,58 @@ export const focusableWithin = ( container ) => {
 };
 
 /**
+ * Moves focus into a container as soon as it is actually focusable.
+ *
+ * A single `requestAnimationFrame` is not enough. Two things have to have
+ * happened before `.focus()` will do anything: the Interactivity API must have
+ * flushed its DOM update, which it schedules itself, and the browser must have
+ * applied the styles that make the element visible — `.focus()` is silently a
+ * no-op on anything still `display: none` or `visibility: hidden`. One frame
+ * usually covers both and intermittently does not, which strands a keyboard
+ * user behind an overlay they just opened.
+ *
+ * So retry across a few frames and stop as soon as focus has genuinely landed.
+ *
+ * @param {() => HTMLElement|null} getContainer Returns the container, re-read each
+ *                                              attempt because it may not exist yet.
+ * @param {number}                 frames       How many frames to keep trying for.
+ * @return {() => void} Teardown that cancels any pending attempt.
+ */
+export const focusFirstWhenReady = ( getContainer, frames = 10 ) => {
+	let remaining = frames;
+	let handle = 0;
+	let view = globalThis;
+
+	const attempt = () => {
+		const container = getContainer();
+
+		if ( container ) {
+			view = container.ownerDocument.defaultView ?? view;
+
+			const [ first ] = focusableWithin( container );
+			const target = first ?? container;
+
+			target.focus();
+
+			// Confirm rather than assume: focus() reports nothing when it fails.
+			if ( container.contains( container.ownerDocument.activeElement ) ) {
+				return;
+			}
+		}
+
+		remaining -= 1;
+
+		if ( remaining > 0 ) {
+			handle = view.requestAnimationFrame( attempt );
+		}
+	};
+
+	handle = view.requestAnimationFrame( attempt );
+
+	return () => view.cancelAnimationFrame( handle );
+};
+
+/**
  * Confines Tab to the given elements.
  *
  * @param {HTMLElement}         root     Element to listen on.

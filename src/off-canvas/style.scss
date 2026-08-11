@@ -8,14 +8,25 @@
 
 	// The whole overlay is inert until opened. `visibility` rather than
 	// `display` so the panel can transition.
+	//
+	// Timing here is load-bearing, not cosmetic. `visibility` must flip to
+	// `visible` the instant the panel opens, because view.js moves focus into
+	// the dialog on the next frame and `.focus()` silently does nothing on an
+	// element that is still `visibility: hidden`. Transitioning the property
+	// meant it was mid-flip on that frame and keyboard users were intermittently
+	// left behind the overlay.
+	//
+	// So: no transition on open, and on close a delay equal to the fade so the
+	// panel stays visible until the animation has finished.
 	visibility: hidden;
 
 	@include motion-safe {
-		transition: visibility var(--wp--custom--transition--base);
+		transition: visibility 0s linear var(--wp--custom--transition--base);
 	}
 
 	&.is-open {
 		visibility: visible;
+		transition-delay: 0s;
 	}
 }
 

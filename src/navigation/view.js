@@ -16,19 +16,11 @@
  */
 
 import { store, getContext, getElement } from '@wordpress/interactivity';
+import { focusableWithin, focusFirstWhenReady } from '../_shared/focus';
 
 // Delay before a hover opens or closes a panel. Long enough to survive a
 // diagonal mouse path across a neighbouring item, short enough to feel instant.
 const HOVER_INTENT_MS = 150;
-
-const FOCUSABLE = [
-	'a[href]',
-	'button:not([disabled])',
-	'input:not([disabled]):not([type="hidden"])',
-	'select:not([disabled])',
-	'textarea:not([disabled])',
-	'[tabindex]:not([tabindex="-1"])',
-].join( ',' );
 
 let hoverTimer = null;
 
@@ -40,39 +32,20 @@ const clearHoverTimer = () => {
 };
 
 /**
- * Returns the focusable elements inside a container, in document order.
+ * Moves focus into a trigger's panel once the panel is actually focusable.
  *
- * @param {HTMLElement} container Element to search.
- * @return {HTMLElement[]} Focusable descendants.
- */
-const focusableWithin = ( container ) => {
-	if ( ! container ) {
-		return [];
-	}
-
-	const active = container.ownerDocument?.activeElement;
-
-	return Array.from( container.querySelectorAll( FOCUSABLE ) ).filter(
-		( el ) => el.offsetParent !== null || el === active
-	);
-};
-
-/**
- * Moves focus to a trigger's panel content.
+ * The panel is unhidden by the Interactivity API, which schedules its own DOM
+ * update, so the element is not focusable the instant the state changes.
  *
  * @param {HTMLElement} trigger The disclosure button.
+ * @return {() => void} Teardown that cancels any pending attempt.
  */
-const focusPanelOf = ( trigger ) => {
-	const panelId = trigger?.getAttribute( 'aria-controls' );
-	const panel = panelId
-		? trigger.ownerDocument.getElementById( panelId )
-		: null;
-	const [ first ] = focusableWithin( panel );
+const focusPanelOf = ( trigger ) =>
+	focusFirstWhenReady( () => {
+		const panelId = trigger?.getAttribute( 'aria-controls' );
 
-	if ( first ) {
-		first.focus();
-	}
-};
+		return panelId ? trigger.ownerDocument.getElementById( panelId ) : null;
+	} );
 
 /**
  * Reads the navigation's overlay state from CSS.
@@ -204,8 +177,7 @@ const { state } = store(
 				if ( event.key === 'ArrowDown' ) {
 					event.preventDefault();
 					context.activeId = context.itemId;
-					// Let the panel unhide before focusing into it.
-					requestAnimationFrame( () => focusPanelOf( ref ) );
+					focusPanelOf( ref );
 				}
 			},
 

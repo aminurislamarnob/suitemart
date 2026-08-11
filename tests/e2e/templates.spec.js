@@ -86,7 +86,9 @@ test.describe( 'Templates render', () => {
 		expect( overflows ).toBe( false );
 	} );
 
-	test( 'the home page has no accessibility violations', async ( { page } ) => {
+	test( 'the home page has no accessibility violations', async ( {
+		page,
+	} ) => {
 		await page.goto( '/' );
 
 		const { violations } = await new AxeBuilder( { page } )

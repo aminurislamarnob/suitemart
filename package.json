@@ -11,8 +11,8 @@
 	"scripts": {
 		"build": "wp-scripts build --experimental-modules --webpack-src-dir=src --output-path=build",
 		"start": "wp-scripts start --experimental-modules --webpack-src-dir=src --output-path=build",
-		"lint:js": "wp-scripts lint-js src",
-		"lint:js:fix": "wp-scripts lint-js src --fix",
+		"lint:js": "wp-scripts lint-js src tests tools --ext .js,.mjs",
+		"lint:js:fix": "wp-scripts lint-js src tests tools --ext .js,.mjs --fix",
 		"lint:css": "wp-scripts lint-style \"src/**/*.scss\"",
 		"lint:css:fix": "wp-scripts lint-style \"src/**/*.scss\" --fix",
 		"lint:php": "composer exec -- phpcs",

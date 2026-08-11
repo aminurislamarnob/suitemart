@@ -7,7 +7,12 @@
  */
 
 import { store, getContext, getElement } from '@wordpress/interactivity';
-import { focusableWithin, trapFocus, lockScroll } from '../_shared/focus';
+import {
+	focusableWithin,
+	focusFirstWhenReady,
+	trapFocus,
+	lockScroll,
+} from '../_shared/focus';
 import { OFF_CANVAS_LOCK } from '../_shared/off-canvas-lock';
 
 // Remembers what had focus before each panel opened, so it can be restored.
@@ -89,13 +94,11 @@ const { state } = store(
 					focusableWithin( panel )
 				);
 
-				// Move focus into the dialog once it is visible.
-				requestAnimationFrame( () => {
-					const [ first ] = focusableWithin( panel );
-					( first ?? panel )?.focus();
-				} );
+				// Move focus into the dialog once it is genuinely focusable.
+				const cancelFocus = focusFirstWhenReady( () => panel );
 
 				return () => {
+					cancelFocus();
 					releaseFocus();
 					releaseScroll();
 				};

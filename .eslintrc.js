@@ -50,10 +50,15 @@ module.exports = {
 			},
 		},
 		{
-			files: [ '*.config.js', '.eslintrc.js', 'tests/e2e/**/*.js' ],
+			files: [ '*.config.js', '.eslintrc.js', 'tools/**/*.mjs', 'tests/e2e/**/*.js' ],
 			env: { node: true },
 			rules: {
 				'@wordpress/no-unused-vars-before-return': 'off',
+				// The rule's advice — reach the active element through a node's
+				// ownerDocument — is for component code that may run inside an
+				// iframe. Specs read it inside page.evaluate(), where there is
+				// exactly one document and it is the one under test.
+				'@wordpress/no-global-active-element': 'off',
 			},
 		},
 	],

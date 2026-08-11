@@ -14,13 +14,49 @@ const nav = '.sm-nav';
 const trigger = '.sm-nav-item__trigger';
 const panel = '.sm-nav-item__panel-wrap';
 
+/**
+ * Opens the mobile drawer when the nav is in its overlay layout.
+ *
+ * Below the navigation breakpoint every menu item lives inside a drawer that
+ * starts closed, so the submenu triggers these tests operate are not on screen
+ * until the hamburger is pressed. This spec runs on both viewports and the
+ * contract is the same on each; only the route to the trigger differs.
+ *
+ * CSS owns the breakpoint — `--sm-nav-is-overlay` is set per breakpoint in
+ * src/navigation/style.scss — so the layout is read back from it rather than
+ * duplicating the pixel value here, where it would silently drift.
+ *
+ * @param {import('@playwright/test').Page} page Page under test.
+ */
+const openDrawerIfOverlay = async ( page ) => {
+	const isOverlay = await page
+		.locator( nav )
+		.first()
+		.evaluate(
+			( el ) =>
+				getComputedStyle( el )
+					.getPropertyValue( '--sm-nav-is-overlay' )
+					.trim() === '1'
+		);
+
+	if ( ! isOverlay ) {
+		return;
+	}
+
+	await page.locator( '.sm-nav__toggle' ).first().click();
+	await expect( page.locator( trigger ).first() ).toBeVisible();
+};
+
 test.describe( 'Mega menu keyboard operation', () => {
 	test.beforeEach( async ( { page } ) => {
 		await page.goto( '/' );
 		await expect( page.locator( nav ).first() ).toBeVisible();
+		await openDrawerIfOverlay( page );
 	} );
 
-	test( 'the trigger is a button and reports its state', async ( { page } ) => {
+	test( 'the trigger is a button and reports its state', async ( {
+		page,
+	} ) => {
 		const button = page.locator( trigger ).first();
 
 		// A control that opens a panel must be a button, not a link — a link
@@ -82,17 +118,41 @@ test.describe( 'Mega menu keyboard operation', () => {
 	} );
 
 	test( 'clicking outside closes the panel', async ( { page } ) => {
+		// Desktop only, and deliberately so. In the overlay layout the drawer
+		// covers the page, so there is no page content to click outside onto —
+		// that is what a modal drawer is. Escape is the mobile equivalent and
+		// has its own test above.
+		const isOverlay = await page
+			.locator( nav )
+			.first()
+			.evaluate(
+				( el ) =>
+					getComputedStyle( el )
+						.getPropertyValue( '--sm-nav-is-overlay' )
+						.trim() === '1'
+			);
+
+		test.skip(
+			isOverlay,
+			'The drawer covers the page in the overlay layout; Escape closes it instead.'
+		);
+
 		const button = page.locator( trigger ).first();
 
 		await button.click();
 		await expect( button ).toHaveAttribute( 'aria-expanded', 'true' );
 
-		await page.locator( 'footer' ).first().click( { position: { x: 5, y: 5 } } );
+		await page
+			.locator( 'footer' )
+			.first()
+			.click( { position: { x: 5, y: 5 } } );
 
 		await expect( button ).toHaveAttribute( 'aria-expanded', 'false' );
 	} );
 
-	test( 'the whole menu is reachable by keyboard alone', async ( { page } ) => {
+	test( 'the whole menu is reachable by keyboard alone', async ( {
+		page,
+	} ) => {
 		await page.keyboard.press( 'Tab' );
 
 		// Walk forward until focus lands on a navigation control, proving the
@@ -114,19 +174,60 @@ test.describe( 'Mega menu keyboard operation', () => {
 		expect( reached ).toBe( true );
 	} );
 
-	test( 'the open panel is opaque', async ( { page } ) => {
-		// A transparent panel lets page content show through the menu. It is
-		// legible in a screenshot only by accident, so it is asserted here.
+	test( 'nothing on the page shows through the open panel', async ( {
+		page,
+	} ) => {
+		// What matters is that page content cannot be read through the menu —
+		// not which element paints the background. In the desktop layout the
+		// panel paints its own; inside the mobile drawer it deliberately does
+		// not, because the drawer behind it already has one. Asserting on the
+		// panel alone therefore fails on mobile for a design that is correct.
+		//
+		// So walk outwards from the panel and require an opaque backdrop
+		// somewhere at or above it, still within the nav.
 		await page.locator( trigger ).first().click();
 		await settle( page );
 
-		const background = await page
+		const opaqueAncestor = await page
 			.locator( '.sm-mega-panel' )
 			.first()
-			.evaluate( ( el ) => getComputedStyle( el ).backgroundColor );
+			.evaluate( ( el, navSelector ) => {
+				const isOpaque = ( colour ) => {
+					const match = colour.match( /rgba?\(([^)]+)\)/ );
 
-		expect( background ).not.toBe( 'rgba(0, 0, 0, 0)' );
-		expect( background ).not.toBe( 'transparent' );
+					if ( ! match ) {
+						return false;
+					}
+
+					const parts = match[ 1 ].split( ',' ).map( Number );
+
+					// A missing alpha channel means fully opaque.
+					return ( parts[ 3 ] ?? 1 ) === 1;
+				};
+
+				let node = el;
+
+				while ( node ) {
+					if (
+						isOpaque( getComputedStyle( node ).backgroundColor )
+					) {
+						return node.className || node.tagName;
+					}
+
+					if ( node.matches( navSelector ) ) {
+						break;
+					}
+
+					node = node.parentElement;
+				}
+
+				return null;
+			}, nav );
+
+		expect(
+			opaqueAncestor,
+			'the open panel has no opaque backdrop, so page content reads through it'
+		).not.toBeNull();
 	} );
 
 	test( 'has no detectable accessibility violations, open or closed', async ( {
@@ -164,7 +265,18 @@ async function settle( page ) {
 			Promise.all(
 				el
 					.getAnimations( { subtree: true } )
-					.map( ( animation ) => animation.finished )
+					// An infinite animation — the marquee's loop, for one —
+					// never resolves `finished`, so awaiting it hangs until the
+					// test times out. Only finite ones are worth waiting for;
+					// a looping animation has no settled state to wait for.
+					.filter(
+						( animation ) =>
+							animation.effect?.getComputedTiming()
+								?.iterations !== Infinity
+					)
+					.map( ( animation ) =>
+						animation.finished.catch( () => {} )
+					)
 			)
 		);
 }

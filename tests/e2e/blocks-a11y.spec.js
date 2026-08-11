@@ -23,21 +23,31 @@ test.describe( 'Tabs', () => {
 	const panel = '.sm-tabs__panel';
 
 	test( 'exposes the tablist pattern', async ( { page } ) => {
-		await expect( page.locator( '[role="tablist"]' ).first() ).toBeVisible();
+		await expect(
+			page.locator( '[role="tablist"]' ).first()
+		).toBeVisible();
 
 		const tabs = page.locator( tab );
 		await expect( tabs ).toHaveCount( 3 );
 
 		// Exactly one tab selected, exactly one panel visible.
-		await expect( page.locator( `${ tab }[aria-selected="true"]` ) ).toHaveCount( 1 );
-		await expect( page.locator( `${ panel }:not([hidden])` ) ).toHaveCount( 1 );
+		await expect(
+			page.locator( `${ tab }[aria-selected="true"]` )
+		).toHaveCount( 1 );
+		await expect( page.locator( `${ panel }:not([hidden])` ) ).toHaveCount(
+			1
+		);
 	} );
 
 	test( 'only the selected tab is in the tab order', async ( { page } ) => {
 		// Roving tabindex: without it, Tab walks through every tab before
 		// reaching the panel content.
-		await expect( page.locator( `${ tab }[tabindex="0"]` ) ).toHaveCount( 1 );
-		await expect( page.locator( `${ tab }[tabindex="-1"]` ) ).toHaveCount( 2 );
+		await expect( page.locator( `${ tab }[tabindex="0"]` ) ).toHaveCount(
+			1
+		);
+		await expect( page.locator( `${ tab }[tabindex="-1"]` ) ).toHaveCount(
+			2
+		);
 	} );
 
 	test( 'arrow keys move between tabs and wrap', async ( { page } ) => {
@@ -46,7 +56,10 @@ test.describe( 'Tabs', () => {
 
 		await page.keyboard.press( 'ArrowRight' );
 		await expect( tabs.nth( 1 ) ).toBeFocused();
-		await expect( tabs.nth( 1 ) ).toHaveAttribute( 'aria-selected', 'true' );
+		await expect( tabs.nth( 1 ) ).toHaveAttribute(
+			'aria-selected',
+			'true'
+		);
 
 		await page.keyboard.press( 'ArrowRight' );
 		await expect( tabs.nth( 2 ) ).toBeFocused();
@@ -135,7 +148,9 @@ test.describe( 'Off-canvas panel', () => {
 		await expect( dialog ).toHaveAttribute( 'aria-modal', 'true' );
 
 		const labelledBy = await dialog.getAttribute( 'aria-labelledby' );
-		await expect( page.locator( `#${ labelledBy }` ) ).toHaveText( 'Filters' );
+		await expect( page.locator( `#${ labelledBy }` ) ).toHaveText(
+			'Filters'
+		);
 	} );
 
 	test( 'is inert while closed', async ( { page } ) => {
@@ -210,6 +225,15 @@ test( 'the whole block page has no accessibility violations', async ( {
 		Promise.all(
 			document
 				.getAnimations()
+				// An infinite animation — the marquee's loop — never resolves
+				// `finished`, so awaiting it hangs the whole test rather than
+				// reporting anything useful. A looping animation has no settled
+				// state to wait for, so skip it.
+				.filter(
+					( animation ) =>
+						animation.effect?.getComputedTiming()?.iterations !==
+						Infinity
+				)
 				.map( ( animation ) => animation.finished.catch( () => {} ) )
 		)
 	);

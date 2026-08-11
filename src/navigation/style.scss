@@ -92,10 +92,15 @@
 	transform: translateX(-100%);
 	visibility: hidden;
 
+	// The drawer must become visible the instant it opens: view.js moves focus
+	// into it on the next frame, and `.focus()` does nothing on an element that
+	// is still `visibility: hidden`. Only the slide is animated; visibility
+	// flips immediately on open and is merely delayed on close so the drawer
+	// stays on screen until it has slid away.
 	@include motion-safe {
 		transition:
 			transform var(--wp--custom--transition--base),
-			visibility var(--wp--custom--transition--base);
+			visibility 0s linear var(--wp--custom--transition--base);
 	}
 }
 
@@ -107,6 +112,7 @@
 .sm-nav.is-drawer-open .sm-nav__drawer {
 	transform: translateX(0);
 	visibility: visible;
+	transition-delay: 0s;
 }
 
 .sm-nav__scrim {
