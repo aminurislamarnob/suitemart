@@ -1,0 +1,6 @@
+// The panel's own layout only. Visibility, focus handling and ARIA belong to
+// the parent Tabs block, which is why there is so little here.
+
+.sm-tabs__panel {
+	padding-block-start: var(--wp--preset--spacing--30);
+}

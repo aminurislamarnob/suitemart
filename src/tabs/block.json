@@ -1,0 +1,53 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "suitemart/tabs",
+	"title": "Tabs",
+	"category": "suitemart",
+	"icon": "index-card",
+	"description": "Tabbed panels that can hold any blocks.",
+	"keywords": [ "tab", "panel", "accordion", "toggle" ],
+	"textdomain": "suitemart",
+	"attributes": {
+		"orientation": {
+			"type": "string",
+			"enum": [ "horizontal", "vertical" ],
+			"default": "horizontal"
+		},
+		"activation": {
+			"type": "string",
+			"enum": [ "automatic", "manual" ],
+			"default": "automatic"
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"align": [ "wide", "full" ],
+		"interactivity": true,
+		"html": false,
+		"color": {
+			"text": true,
+			"background": true
+		},
+		"typography": {
+			"fontSize": true,
+			"__experimentalFontFamily": true
+		},
+		"spacing": {
+			"padding": true,
+			"margin": true,
+			"blockGap": true
+		},
+		"__experimentalBorder": {
+			"color": true,
+			"radius": true,
+			"style": true,
+			"width": true
+		}
+	},
+	"allowedBlocks": [ "suitemart/tab" ],
+	"render": "file:./render.php",
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css",
+	"viewScriptModule": "file:./view.js"
+}

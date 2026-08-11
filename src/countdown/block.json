@@ -1,0 +1,63 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "suitemart/countdown",
+	"title": "Countdown",
+	"category": "suitemart",
+	"icon": "clock",
+	"description": "Counts down to a date and time. Useful for sales, launches and offers.",
+	"keywords": [ "timer", "sale", "deadline", "offer" ],
+	"textdomain": "suitemart",
+	"attributes": {
+		"endDate": {
+			"type": "string",
+			"default": ""
+		},
+		"units": {
+			"type": "array",
+			"default": [ "days", "hours", "minutes", "seconds" ],
+			"items": {
+				"type": "string"
+			}
+		},
+		"expiredText": {
+			"type": "string",
+			"default": ""
+		},
+		"layout": {
+			"type": "string",
+			"enum": [ "inline", "boxed" ],
+			"default": "boxed"
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"align": [ "wide", "full" ],
+		"interactivity": true,
+		"html": false,
+		"color": {
+			"text": true,
+			"background": true
+		},
+		"typography": {
+			"fontSize": true,
+			"__experimentalFontFamily": true,
+			"__experimentalFontWeight": true
+		},
+		"spacing": {
+			"padding": true,
+			"margin": true,
+			"blockGap": true
+		},
+		"__experimentalBorder": {
+			"color": true,
+			"radius": true,
+			"style": true,
+			"width": true
+		}
+	},
+	"render": "file:./render.php",
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css",
+	"viewScriptModule": "file:./view.js"
+}

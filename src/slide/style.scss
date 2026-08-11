@@ -1,0 +1,8 @@
+// Slide layout only. Sizing, gaps and scroll behaviour belong to the parent
+// Slider block, which is the element that knows how many slides are in view.
+
+.sm-slider__slide {
+	display: flex;
+	flex-direction: column;
+	height: auto;
+}

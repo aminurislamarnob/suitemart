@@ -1,0 +1,92 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "suitemart/banner",
+	"title": "Banner",
+	"category": "suitemart",
+	"icon": "format-image",
+	"description": "An image with content laid over it, and an optional hover effect. For promotions and category tiles.",
+	"keywords": [ "promo", "promotion", "category", "tile", "hero" ],
+	"textdomain": "suitemart",
+	"attributes": {
+		"mediaId": {
+			"type": "number",
+			"default": 0
+		},
+		"mediaUrl": {
+			"type": "string",
+			"default": ""
+		},
+		"mediaAlt": {
+			"type": "string",
+			"default": ""
+		},
+		"url": {
+			"type": "string",
+			"default": ""
+		},
+		"opensInNewTab": {
+			"type": "boolean",
+			"default": false
+		},
+		"aspectRatio": {
+			"type": "string",
+			"default": "3/2"
+		},
+		"contentPosition": {
+			"type": "string",
+			"enum": [
+				"top-left",
+				"top-center",
+				"top-right",
+				"center-left",
+				"center-center",
+				"center-right",
+				"bottom-left",
+				"bottom-center",
+				"bottom-right"
+			],
+			"default": "bottom-left"
+		},
+		"hoverEffect": {
+			"type": "string",
+			"enum": [ "none", "zoom", "lift" ],
+			"default": "zoom"
+		},
+		"overlayOpacity": {
+			"type": "number",
+			"default": 25
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"align": [ "wide", "full" ],
+		"html": false,
+		"color": {
+			"text": true,
+			"link": true,
+			"background": false
+		},
+		"typography": {
+			"fontSize": true,
+			"__experimentalFontFamily": true
+		},
+		"spacing": {
+			"margin": true,
+			"blockGap": true
+		},
+		"__experimentalBorder": {
+			"color": true,
+			"radius": true,
+			"style": true,
+			"width": true
+		},
+		"dimensions": {
+			"minHeight": true
+		},
+		"shadow": true
+	},
+	"render": "file:./render.php",
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css"
+}

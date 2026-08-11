@@ -96,6 +96,22 @@ docker compose run --rm -u 33 \
   tests-cli vendor/bin/phpunit
 ```
 
+### The e2e fixture page
+
+`blocks-a11y.spec.js` exercises the interactive blocks against a real page.
+Create it once per environment:
+
+```bash
+cd "$ENV_DIR"
+docker compose run --rm -u 33 -w /var/www/html/wp-content/themes/suitemart cli \
+  wp post create tests/e2e/fixtures/blocks-page.html \
+    --post_type=page --post_title="Suitemart block test" \
+    --post_name=suitemart-block-test --post_status=publish --porcelain
+```
+
+The spec loads it by id (`/?page_id=10`). If your install assigns a different
+id, update the `PAGE` constant at the top of the spec.
+
 ## Notes for anyone extending the suites
 
 - **PHPUnit is pinned to 9.6 on purpose.** PHPUnit 10+ requires PHP 8.2, and the

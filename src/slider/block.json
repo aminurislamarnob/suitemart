@@ -1,0 +1,75 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "suitemart/slider",
+	"title": "Slider",
+	"category": "suitemart",
+	"icon": "images-alt2",
+	"description": "A carousel of slides that can each hold any blocks.",
+	"keywords": [ "carousel", "slideshow", "gallery", "swiper" ],
+	"textdomain": "suitemart",
+	"attributes": {
+		"slidesPerView": {
+			"type": "number",
+			"default": 1
+		},
+		"slidesPerViewTablet": {
+			"type": "number",
+			"default": 2
+		},
+		"slidesPerViewDesktop": {
+			"type": "number",
+			"default": 3
+		},
+		"spaceBetween": {
+			"type": "number",
+			"default": 16
+		},
+		"loop": {
+			"type": "boolean",
+			"default": false
+		},
+		"autoplay": {
+			"type": "boolean",
+			"default": false
+		},
+		"autoplayDelay": {
+			"type": "number",
+			"default": 5000
+		},
+		"showArrows": {
+			"type": "boolean",
+			"default": true
+		},
+		"showPagination": {
+			"type": "boolean",
+			"default": true
+		},
+		"label": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"align": [ "wide", "full" ],
+		"interactivity": true,
+		"html": false,
+		"color": {
+			"text": true,
+			"background": true
+		},
+		"typography": {
+			"fontSize": true
+		},
+		"spacing": {
+			"padding": true,
+			"margin": true
+		}
+	},
+	"allowedBlocks": [ "suitemart/slide" ],
+	"render": "file:./render.php",
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css",
+	"viewScriptModule": "file:./view.js"
+}

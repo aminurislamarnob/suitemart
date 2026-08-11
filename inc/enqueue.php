@@ -96,3 +96,21 @@ function suitemart_enqueue_editor_assets(): void {
 	);
 }
 add_action( 'enqueue_block_editor_assets', 'suitemart_enqueue_editor_assets' );
+
+/**
+ * Exposes the theme URI to editor scripts.
+ *
+ * Icon previews in the editor reference the sprite file by URL, because the
+ * inlined sprite the front end uses is not present in the editor canvas. Every
+ * block's editor script needs the same value, so it is printed once rather than
+ * localised per handle.
+ *
+ * @return void
+ */
+function suitemart_print_editor_globals(): void {
+	printf(
+		'<script id="suitemart-editor-globals">window.suitemartThemeUri = %s;</script>',
+		wp_json_encode( SUITEMART_URI )
+	);
+}
+add_action( 'admin_print_scripts', 'suitemart_print_editor_globals' );

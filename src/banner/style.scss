@@ -1,0 +1,122 @@
+@use "../_shared/breakpoints" as *;
+@use "../_shared/mixins" as *;
+
+.sm-banner {
+	position: relative;
+	display: grid;
+	overflow: hidden;
+	border-radius: var(--wp--custom--radius--md);
+	isolation: isolate;
+
+	@include motion-safe {
+		transition:
+			transform var(--wp--custom--transition--base),
+			box-shadow var(--wp--custom--transition--base);
+	}
+}
+
+// Media and content share one grid cell so the content sits over the image
+// without absolute positioning, which keeps the banner sized by its content
+// when there is more of it than the aspect ratio allows.
+.sm-banner__media,
+.sm-banner__content {
+	grid-area: 1 / 1;
+}
+
+.sm-banner__media {
+	position: relative;
+	aspect-ratio: var(--sm-banner-ratio, 3 / 2);
+}
+
+.sm-banner__image {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+
+	@include motion-safe {
+		transition: transform var(--wp--custom--transition--slow);
+	}
+}
+
+.sm-banner__overlay {
+	position: absolute;
+	inset: 0;
+	background-color: var(--wp--custom--color--scrim);
+	opacity: var(--sm-banner-overlay, 0.25);
+}
+
+.sm-banner__content {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	gap: var(--wp--style--block-gap, 0.75rem);
+	padding: var(--wp--preset--spacing--40);
+}
+
+// The stretched link covers the banner but must sit under the content, so
+// buttons and links inside stay clickable.
+.sm-banner__link {
+	position: absolute;
+	z-index: 2;
+	inset: 0;
+
+	@include focus-ring(-2px);
+}
+
+.sm-banner__content :is(a, button) {
+	position: relative;
+	z-index: 3;
+}
+
+/* Content position */
+
+@each $y in (top, center, bottom) {
+
+	@each $x in (left, center, right) {
+
+		.sm-banner--#{$y}-#{$x} .sm-banner__content {
+			$justify: flex-start;
+			$align: flex-start;
+			$text: start;
+
+			@if $y == center {
+				$justify: center;
+			} @else if $y == bottom {
+				$justify: flex-end;
+			}
+
+			@if $x == center {
+				$align: center;
+				$text: center;
+			} @else if $x == right {
+				$align: flex-end;
+				$text: end;
+			}
+
+			justify-content: $justify;
+			align-items: $align;
+			text-align: $text;
+		}
+	}
+}
+
+/* Hover effects */
+
+.sm-banner--hover-zoom:hover .sm-banner__image,
+.sm-banner--hover-zoom:focus-within .sm-banner__image {
+
+	@include motion-safe {
+		transform: scale(1.05);
+	}
+}
+
+.sm-banner--hover-lift:hover,
+.sm-banner--hover-lift:focus-within {
+
+	@include motion-safe {
+		transform: translateY(-4px);
+		box-shadow: var(--wp--preset--shadow--lg);
+	}
+}

@@ -1,0 +1,88 @@
+@use "../_shared/breakpoints" as *;
+@use "../_shared/mixins" as *;
+
+.sm-countdown {
+	display: flex;
+	flex-direction: column;
+	gap: var(--wp--preset--spacing--20);
+}
+
+.sm-countdown__units {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--wp--style--block-gap, 0.75rem);
+	align-items: stretch;
+
+	&[hidden] {
+		display: none;
+	}
+}
+
+.sm-countdown__unit {
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.125rem;
+	min-width: 3.5rem;
+}
+
+.sm-countdown__value {
+	font-size: 1.75em;
+	font-weight: 700;
+	line-height: 1.1;
+
+	// Digits must not change width as they tick, or the layout jitters once a
+	// second for as long as the block is on screen.
+	font-variant-numeric: tabular-nums;
+	font-feature-settings: "tnum";
+}
+
+.sm-countdown__label {
+	font-size: 0.75em;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	opacity: 0.7;
+}
+
+.sm-countdown__expired {
+	margin: 0;
+	font-weight: 600;
+
+	&[hidden] {
+		display: none;
+	}
+}
+
+/* Boxed */
+
+.sm-countdown--boxed {
+
+	.sm-countdown__unit {
+		padding: var(--wp--preset--spacing--20) var(--wp--preset--spacing--30);
+		border-radius: var(--wp--custom--radius--md);
+		background-color: var(--wp--custom--color--overlay);
+	}
+}
+
+/* Inline */
+
+.sm-countdown--inline {
+
+	.sm-countdown__unit {
+		flex-direction: row;
+		align-items: baseline;
+		gap: 0.25rem;
+		min-width: 0;
+	}
+
+	.sm-countdown__value {
+		font-size: 1.125em;
+	}
+}
+
+// The screen-reader summary uses core's utility class, which core styles.
+// Declared here only so the selector is not flagged as unknown.
+.sm-countdown__sr-summary {
+	@include visually-hidden;
+}

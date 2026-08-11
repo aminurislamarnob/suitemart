@@ -20,12 +20,13 @@
 	scroll-margin-block-start: 0;
 }
 
-// Interactivity API directives do nothing in the editor. Blocks that are hidden
-// on the front end until opened (mega panels, off-canvas, popups) must stay
-// visible and editable in the canvas.
+// Interactivity API directives do nothing in the editor. Anything the front end
+// hides until opened has to stay visible and editable in the canvas, or the
+// block cannot be authored at all.
 .editor-styles-wrapper {
 
 	.sm-mega-panel,
+	.sm-off-canvas,
 	.sm-off-canvas__panel,
 	.sm-popup__dialog {
 		position: static;
@@ -33,6 +34,32 @@
 		transform: none;
 		opacity: 1;
 		pointer-events: auto;
+	}
+
+	// The off-canvas overlay is fixed and full-screen on the front end; inline
+	// it so it occupies normal flow in the canvas.
+	.sm-off-canvas {
+		inset: auto;
+		width: auto;
+		height: auto;
+	}
+
+	.sm-off-canvas__panel {
+		width: 100%;
+		max-width: none;
+		border: 1px solid var(--wp--preset--color--neutral-300);
+		border-radius: var(--wp--custom--radius--md);
+		box-shadow: none;
+	}
+
+	.sm-off-canvas__scrim {
+		display: none;
+	}
+
+	// Every tab panel is shown while editing, each labelled by its tab, so the
+	// author can see and reach all of them without switching tabs.
+	.sm-tabs__panel[hidden] {
+		display: block;
 	}
 }
 

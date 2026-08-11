@@ -1,0 +1,150 @@
+@use "../_shared/breakpoints" as *;
+@use "../_shared/mixins" as *;
+
+.sm-off-canvas {
+	position: fixed;
+	z-index: var(--wp--custom--z--drawer);
+	inset: 0;
+
+	// The whole overlay is inert until opened. `visibility` rather than
+	// `display` so the panel can transition.
+	visibility: hidden;
+
+	@include motion-safe {
+		transition: visibility var(--wp--custom--transition--base);
+	}
+
+	&.is-open {
+		visibility: visible;
+	}
+}
+
+.sm-off-canvas__scrim {
+	position: absolute;
+	inset: 0;
+	background-color: var(--wp--custom--color--scrim);
+	opacity: 0;
+
+	@include motion-safe {
+		transition: opacity var(--wp--custom--transition--base);
+	}
+
+	.sm-off-canvas.is-open & {
+		opacity: 1;
+	}
+}
+
+.sm-off-canvas__panel {
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+	max-width: 100%;
+	max-height: 100%;
+	background-color: var(--wp--preset--color--base);
+	box-shadow: var(--wp--preset--shadow--lg);
+
+	@include focus-ring(-2px);
+
+	@include motion-safe {
+		transition: transform var(--wp--custom--transition--base);
+	}
+}
+
+.sm-off-canvas__header {
+	display: flex;
+	flex: none;
+	gap: var(--wp--preset--spacing--30);
+	align-items: center;
+	justify-content: space-between;
+	border-block-end: 1px solid var(--wp--preset--color--neutral-200);
+	padding: var(--wp--preset--spacing--30) var(--wp--preset--spacing--40);
+}
+
+.sm-off-canvas__title {
+	margin: 0;
+	font-size: 1.125rem;
+}
+
+.sm-off-canvas__close {
+	@include tap-target;
+	@include focus-ring;
+
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	border: 0;
+	border-radius: var(--wp--custom--radius--md);
+	background: none;
+	color: inherit;
+	font-size: 1.25rem;
+	cursor: pointer;
+
+	&:hover {
+		background-color: var(--wp--custom--color--overlay);
+	}
+}
+
+.sm-off-canvas__body {
+	flex: 1 1 auto;
+	overflow-y: auto;
+	padding: var(--wp--preset--spacing--40);
+	overscroll-behavior: contain;
+}
+
+/* Sides */
+
+.sm-off-canvas--start .sm-off-canvas__panel,
+.sm-off-canvas--end .sm-off-canvas__panel {
+	inset-block: 0;
+	width: var(--sm-off-canvas-size, 22rem);
+}
+
+.sm-off-canvas--start .sm-off-canvas__panel {
+	inset-inline-start: 0;
+	transform: translateX(-100%);
+}
+
+.sm-off-canvas--end .sm-off-canvas__panel {
+	inset-inline-end: 0;
+	transform: translateX(100%);
+}
+
+// Logical `inset-inline` still needs the translate direction flipped for RTL,
+// because translateX is physical.
+[dir="rtl"] {
+
+	.sm-off-canvas--start .sm-off-canvas__panel {
+		transform: translateX(100%);
+	}
+
+	.sm-off-canvas--end .sm-off-canvas__panel {
+		transform: translateX(-100%);
+	}
+}
+
+.sm-off-canvas--top .sm-off-canvas__panel,
+.sm-off-canvas--bottom .sm-off-canvas__panel {
+	inset-inline: 0;
+	height: var(--sm-off-canvas-size, 22rem);
+}
+
+.sm-off-canvas--top .sm-off-canvas__panel {
+	inset-block-start: 0;
+	transform: translateY(-100%);
+}
+
+.sm-off-canvas--bottom .sm-off-canvas__panel {
+	inset-block-end: 0;
+	transform: translateY(100%);
+}
+
+.sm-off-canvas.is-open .sm-off-canvas__panel {
+	transform: none;
+}
+
+/* Scroll lock, set on <html> by the shared focus helper. */
+
+.sm-has-overlay-open {
+	overflow: hidden;
+}

@@ -1,0 +1,138 @@
+@use "../_shared/breakpoints" as *;
+@use "../_shared/mixins" as *;
+
+.sm-search {
+	position: relative;
+}
+
+.sm-search__form {
+	display: flex;
+	align-items: stretch;
+	overflow: hidden;
+	border: 1px solid var(--wp--preset--color--neutral-300);
+	border-radius: var(--wp--custom--radius--md);
+	background-color: var(--wp--preset--color--base);
+
+	&:focus-within {
+		border-color: var(--wp--preset--color--primary);
+		outline: 2px solid var(--wp--preset--color--primary);
+		outline-offset: -1px;
+	}
+}
+
+.sm-search__input {
+	flex: 1 1 auto;
+	min-width: 0;
+	border: 0;
+	background: none;
+	padding: 0.625rem 0.875rem;
+	color: inherit;
+	font: inherit;
+
+	// The form carries the focus ring, so the input must not draw its own
+	// inside it.
+	&:focus {
+		outline: none;
+	}
+
+	// Safari's clear button overlaps our submit control.
+	&::-webkit-search-cancel-button {
+		display: none;
+	}
+}
+
+.sm-search__submit {
+	@include tap-target;
+
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	border: 0;
+	background-color: var(--wp--preset--color--primary);
+	color: var(--wp--preset--color--base);
+	font-size: 1.125rem;
+	cursor: pointer;
+
+	@include motion-safe {
+		transition: background-color var(--wp--custom--transition--fast);
+	}
+
+	&:hover {
+		background-color: var(--wp--preset--color--secondary);
+	}
+
+	@include focus-ring(-2px);
+}
+
+/* Suggestions */
+
+.sm-search__panel {
+	position: absolute;
+	z-index: var(--wp--custom--z--dropdown);
+	inset-block-start: calc(100% + 0.25rem);
+	inset-inline: 0;
+	overflow: hidden auto;
+	max-height: min(24rem, 60vh);
+	border-radius: var(--wp--custom--radius--md);
+	background-color: var(--wp--preset--color--base);
+	box-shadow: var(--wp--preset--shadow--lg);
+
+	&[hidden] {
+		display: none;
+	}
+}
+
+.sm-search__results {
+	margin: 0;
+	padding: 0.25rem;
+	list-style: none;
+}
+
+.sm-search__result {
+	border-radius: var(--wp--custom--radius--sm);
+
+	&.is-active {
+		background-color: var(--wp--custom--color--overlay);
+	}
+}
+
+.sm-search__result-link {
+	display: flex;
+	gap: 0.75rem;
+	align-items: center;
+	padding: 0.5rem;
+	color: inherit;
+	text-decoration: none;
+}
+
+.sm-search__result-image {
+	flex: none;
+	width: 2.5rem;
+	height: 2.5rem;
+	border-radius: var(--wp--custom--radius--sm);
+	object-fit: cover;
+
+	&[hidden] {
+		display: none;
+	}
+}
+
+.sm-search__result-title {
+	@include line-clamp(2);
+
+	font-size: 0.9375em;
+	line-height: 1.35;
+}
+
+.sm-search__empty {
+	margin: 0;
+	padding: 1rem;
+	color: var(--wp--preset--color--neutral-600);
+	font-size: 0.9375em;
+	text-align: center;
+
+	&[hidden] {
+		display: none;
+	}
+}
