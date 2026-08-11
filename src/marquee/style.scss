@@ -1,0 +1,120 @@
+@use "../_shared/mixins" as *;
+
+.sm-marquee {
+	position: relative;
+}
+
+.sm-marquee__viewport {
+	// Static and scrollable until the view module has cloned the track. Every
+	// item stays reachable by scroll or keyboard when nothing is moving.
+	@include scroll-x;
+}
+
+.sm-marquee__lane {
+	display: flex;
+	width: max-content;
+}
+
+.sm-marquee__track {
+	display: flex;
+	flex: none;
+	align-items: center;
+	gap: var(--wp--style--block-gap, 2rem);
+
+	// Keeps the same gap across the seam between the two copies.
+	padding-inline-end: var(--wp--style--block-gap, 2rem);
+}
+
+/* Animating state — only ever added by the view module. */
+
+.sm-marquee.is-animating .sm-marquee__viewport {
+	overflow: hidden;
+}
+
+.sm-marquee.is-animating .sm-marquee__lane {
+	// Two identical copies sit side by side, so travelling exactly half the
+	// lane lands on a frame identical to the first. Restarting there is
+	// invisible.
+	animation: sm-marquee-scroll var(--sm-marquee-duration, 20s) linear infinite;
+}
+
+.sm-marquee--start.is-animating .sm-marquee__lane {
+	animation-direction: reverse;
+}
+
+.sm-marquee.is-paused .sm-marquee__lane,
+.sm-marquee--pause-on-hover.is-animating:hover .sm-marquee__lane,
+.sm-marquee--pause-on-hover.is-animating:focus-within .sm-marquee__lane {
+	animation-play-state: paused;
+}
+
+@keyframes sm-marquee-scroll {
+
+	from {
+		transform: translate3d(0, 0, 0);
+	}
+
+	to {
+		transform: translate3d(-50%, 0, 0);
+	}
+}
+
+// The RTL flip has to be a transform, not a logical property: there is no
+// logical equivalent of translate, and the lane's copies are laid out in the
+// writing direction.
+[dir="rtl"] .sm-marquee.is-animating .sm-marquee__lane {
+	animation-name: sm-marquee-scroll-rtl;
+}
+
+@keyframes sm-marquee-scroll-rtl {
+
+	from {
+		transform: translate3d(0, 0, 0);
+	}
+
+	to {
+		transform: translate3d(50%, 0, 0);
+	}
+}
+
+/* Pause control */
+
+.sm-marquee__toggle {
+	position: absolute;
+	inset-block-start: 50%;
+	inset-inline-end: 0.5rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 2rem;
+	height: 2rem;
+	padding: 0;
+	transform: translateY(-50%);
+	border: 0;
+	border-radius: var(--wp--custom--radius--pill, 999px);
+	background: var(--wp--preset--color--base);
+	color: var(--wp--preset--color--contrast);
+	cursor: pointer;
+	opacity: 0.75;
+
+	@include focus-ring;
+
+	&:hover {
+		opacity: 1;
+	}
+}
+
+.sm-marquee__toggle-icon {
+	display: flex;
+
+	&[hidden] {
+		display: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+	.sm-marquee.is-animating .sm-marquee__lane {
+		animation: none;
+	}
+}

@@ -49,6 +49,11 @@ jobs:
       - name: Check theme.json is valid JSON
         run: node -e "JSON.parse(require('fs').readFileSync('theme.json','utf8'))"
 
+      # The sprite is committed so a checkout without node_modules still renders
+      # icons, which means it can drift from the icon list. This catches that.
+      - name: Check the icon sprite is up to date
+        run: npm run lint:icons
+
   test:
     name: Tests (WP ${{ matrix.wordpress }})
     runs-on: ubuntu-latest

@@ -1,0 +1,41 @@
+.sm-counter {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+}
+
+.sm-counter__icon {
+	display: flex;
+	color: var(--wp--preset--color--primary);
+}
+
+.sm-counter__value {
+	display: flex;
+	align-items: baseline;
+	gap: 0.125em;
+	margin: 0;
+	font-size: 2.5em;
+	font-weight: 700;
+	line-height: 1.1;
+
+	// The digits change every frame while counting; without a tabular figure
+	// the whole line reflows on each tick.
+	font-variant-numeric: tabular-nums;
+}
+
+.sm-counter__label {
+	margin: 0;
+	font-size: 0.9375em;
+	line-height: 1.4;
+	opacity: 0.75;
+}
+
+.sm-counter--align-center {
+	align-items: center;
+	text-align: center;
+}
+
+.sm-counter--align-end {
+	align-items: flex-end;
+	text-align: end;
+}

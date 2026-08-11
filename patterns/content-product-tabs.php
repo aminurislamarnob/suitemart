@@ -28,7 +28,7 @@ defined( 'ABSPATH' ) || exit;
 <!-- /wp:paragraph -->
 <!-- /wp:suitemart/tab -->
 
-<!-- wp:suitemart/tab {"label":"<?php echo esc_attr_x( 'Returns', 'Pattern tab label', 'suitemart' ); ?>","icon":"refresh"} -->
+<!-- wp:suitemart/tab {"label":"<?php echo esc_attr_x( 'Returns', 'Pattern tab label', 'suitemart' ); ?>","icon":"refresh-cw"} -->
 <!-- wp:paragraph -->
 <p><?php echo esc_html_x( 'Set out the returns window and how a customer starts a return.', 'Pattern text', 'suitemart' ); ?></p>
 <!-- /wp:paragraph -->

@@ -1,0 +1,99 @@
+@use "../_shared/breakpoints" as *;
+
+// Column counts are emitted as static classes rather than a custom property
+// because the divider rules need the count inside an `:nth-child()` selector,
+// and selectors cannot read custom properties. Ten small rules is a cheaper
+// answer than generating CSS at render time, which decision 6 rules out.
+$sm-brands-max-columns: 10;
+$sm-brands-max-columns-mobile: 6;
+
+.sm-brands {
+	display: grid;
+	align-items: center;
+	gap: var(--wp--style--block-gap, 1.5rem);
+}
+
+.sm-brands > * {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 0;
+	min-width: 0;
+}
+
+.sm-brands img {
+	width: auto;
+	max-width: 100%;
+	height: var(--sm-brands-height, 48px);
+
+	// Logos arrive at wildly different aspect ratios; constraining the height
+	// and letting the width follow is what makes a strip look deliberate.
+	object-fit: contain;
+}
+
+@for $i from 1 through $sm-brands-max-columns-mobile {
+
+	.sm-brands--mcols-#{$i} {
+		grid-template-columns: repeat(#{$i}, minmax(0, 1fr));
+	}
+}
+
+@include bp(md) {
+
+	@for $i from 1 through $sm-brands-max-columns {
+
+		.sm-brands--cols-#{$i} {
+			grid-template-columns: repeat(#{$i}, minmax(0, 1fr));
+		}
+	}
+}
+
+/* Muted until hover */
+
+.sm-brands--muted img {
+	filter: grayscale(1);
+	opacity: 0.6;
+
+	@media (prefers-reduced-motion: no-preference) {
+		transition:
+			filter var(--wp--custom--transition--base, 0.25s ease),
+			opacity var(--wp--custom--transition--base, 0.25s ease);
+	}
+}
+
+.sm-brands--muted > *:hover img,
+.sm-brands--muted > *:focus-within img {
+	filter: grayscale(0);
+	opacity: 1;
+}
+
+/* Dividers */
+
+.sm-brands--dividers > * {
+	padding-block: 0.5rem;
+	padding-inline: var(--wp--style--block-gap, 1.5rem);
+	border-inline-start: 1px solid color-mix(in srgb, currentcolor 15%, transparent);
+}
+
+// A divider on the first cell of a row reads as a stray edge rather than a
+// separator, so each row's leading cell drops it.
+@for $i from 1 through $sm-brands-max-columns-mobile {
+
+	.sm-brands--dividers.sm-brands--mcols-#{$i} > *:nth-child(#{$i}n + 1) {
+		border-inline-start: 0;
+	}
+}
+
+@include bp(md) {
+
+	.sm-brands--dividers > * {
+		border-inline-start: 1px solid color-mix(in srgb, currentcolor 15%, transparent);
+	}
+
+	@for $i from 1 through $sm-brands-max-columns {
+
+		.sm-brands--dividers.sm-brands--cols-#{$i} > *:nth-child(#{$i}n + 1) {
+			border-inline-start: 0;
+		}
+	}
+}

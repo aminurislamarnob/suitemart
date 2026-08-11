@@ -1,0 +1,11 @@
+.sm-marquee__item {
+	display: flex;
+	flex: none;
+	align-items: center;
+	gap: 0.5rem;
+	white-space: nowrap;
+
+	> * {
+		margin: 0;
+	}
+}

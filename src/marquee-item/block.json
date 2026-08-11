@@ -1,0 +1,25 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "suitemart/marquee-item",
+	"title": "Marquee Item",
+	"category": "suitemart",
+	"icon": "minus",
+	"description": "One item in a marquee strip.",
+	"parent": [ "suitemart/marquee" ],
+	"textdomain": "suitemart",
+	"supports": {
+		"html": false,
+		"reusable": false,
+		"spacing": {
+			"padding": true
+		},
+		"typography": {
+			"fontSize": true,
+			"__experimentalFontWeight": true
+		}
+	},
+	"render": "file:./render.php",
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css"
+}

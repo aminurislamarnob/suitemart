@@ -1,0 +1,56 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "suitemart/brands",
+	"title": "Logo Strip",
+	"category": "suitemart",
+	"icon": "grid-view",
+	"description": "A responsive row of brand or partner logos, with optional dividers and a muted-until-hover treatment.",
+	"keywords": [ "brands", "logos", "partners", "clients", "sponsors" ],
+	"textdomain": "suitemart",
+	"attributes": {
+		"columns": {
+			"type": "number",
+			"default": 6
+		},
+		"columnsMobile": {
+			"type": "number",
+			"default": 2
+		},
+		"muted": {
+			"type": "boolean",
+			"default": true
+		},
+		"dividers": {
+			"type": "boolean",
+			"default": false
+		},
+		"logoHeight": {
+			"type": "number",
+			"default": 48
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"align": [ "wide", "full" ],
+		"html": false,
+		"color": {
+			"background": true,
+			"text": false
+		},
+		"spacing": {
+			"padding": true,
+			"margin": true,
+			"blockGap": true
+		},
+		"__experimentalBorder": {
+			"color": true,
+			"radius": true,
+			"style": true,
+			"width": true
+		}
+	},
+	"render": "file:./render.php",
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css"
+}

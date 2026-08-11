@@ -1,0 +1,82 @@
+@use "../_shared/mixins" as *;
+
+.sm-menu-price {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+}
+
+.sm-menu-price__head {
+	display: flex;
+	align-items: baseline;
+	gap: 0.5rem;
+}
+
+.sm-menu-price__title {
+	margin: 0;
+	font-weight: 600;
+	line-height: 1.35;
+}
+
+.sm-menu-price__link {
+	color: inherit;
+	text-decoration: none;
+
+	@include focus-ring;
+
+	&:hover {
+		text-decoration: underline;
+	}
+}
+
+.sm-menu-price__badge {
+	display: inline-block;
+	margin-inline-start: 0.5em;
+	padding-block: 0.15em;
+	padding-inline: 0.5em;
+	border-radius: var(--wp--custom--radius--sm, 3px);
+	background: var(--wp--preset--color--accent);
+	color: var(--wp--preset--color--base);
+	font-size: 0.75em;
+	font-weight: 600;
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+	vertical-align: middle;
+}
+
+.sm-menu-price__leader {
+	// A repeating dot fill rather than a border, so the leader keeps its
+	// spacing whatever the font size is.
+	flex: 1 1 auto;
+	min-width: 1.5rem;
+	height: 1px;
+	transform: translateY(-0.2em);
+	background-image: radial-gradient(circle, currentcolor 1px, transparent 1px);
+	background-position: 0 50%;
+	background-size: 0.35em 1px;
+	background-repeat: repeat-x;
+	opacity: 0.35;
+}
+
+.sm-menu-price__price {
+	display: flex;
+	flex: none;
+	align-items: baseline;
+	gap: 0.4em;
+	margin: 0;
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+}
+
+.sm-menu-price__old {
+	font-weight: 400;
+	opacity: 0.6;
+}
+
+.sm-menu-price__description {
+	margin: 0;
+	max-width: 48ch;
+	font-size: 0.9375em;
+	line-height: 1.5;
+	opacity: 0.8;
+}

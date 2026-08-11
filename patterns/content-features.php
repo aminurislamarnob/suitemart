@@ -22,7 +22,7 @@ defined( 'ABSPATH' ) || exit;
 <!-- /wp:column -->
 
 <!-- wp:column -->
-<div class="wp-block-column"><!-- wp:suitemart/infobox {"icon":"refresh","iconSize":32,"title":"<?php echo esc_attr_x( 'Easy returns', 'Pattern heading', 'suitemart' ); ?>","description":"<?php echo esc_attr_x( 'Thirty days to change your mind, no questions asked.', 'Pattern text', 'suitemart' ); ?>","orientation":"horizontal"} /--></div>
+<div class="wp-block-column"><!-- wp:suitemart/infobox {"icon":"refresh-cw","iconSize":32,"title":"<?php echo esc_attr_x( 'Easy returns', 'Pattern heading', 'suitemart' ); ?>","description":"<?php echo esc_attr_x( 'Thirty days to change your mind, no questions asked.', 'Pattern text', 'suitemart' ); ?>","orientation":"horizontal"} /--></div>
 <!-- /wp:column -->
 
 <!-- wp:column -->
