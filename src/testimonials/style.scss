@@ -1,0 +1,30 @@
+@use "../_shared/breakpoints" as *;
+
+// Column counts become static classes rather than a custom property so the
+// grid needs no inline style and no generated CSS (decision 6).
+.sm-testimonials {
+	display: grid;
+	gap: var(--wp--style--block-gap, 1.5rem);
+	grid-template-columns: minmax(0, 1fr);
+	align-items: stretch;
+}
+
+@include bp(md) {
+
+	@for $i from 1 through 3 {
+
+		.sm-testimonials--tcols-#{$i} {
+			grid-template-columns: repeat(#{$i}, minmax(0, 1fr));
+		}
+	}
+}
+
+@include bp(lg) {
+
+	@for $i from 1 through 4 {
+
+		.sm-testimonials--cols-#{$i} {
+			grid-template-columns: repeat(#{$i}, minmax(0, 1fr));
+		}
+	}
+}

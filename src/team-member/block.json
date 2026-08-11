@@ -1,0 +1,84 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "suitemart/team-member",
+	"title": "Team Member",
+	"category": "suitemart",
+	"icon": "businessperson",
+	"description": "A portrait, name and role, with room for a short bio and social links.",
+	"keywords": [ "team", "staff", "person", "about", "profile" ],
+	"textdomain": "suitemart",
+	"attributes": {
+		"name": {
+			"type": "string",
+			"default": ""
+		},
+		"role": {
+			"type": "string",
+			"default": ""
+		},
+		"bio": {
+			"type": "string",
+			"default": ""
+		},
+		"imageId": {
+			"type": "number",
+			"default": 0
+		},
+		"imageUrl": {
+			"type": "string",
+			"default": ""
+		},
+		"imageAlt": {
+			"type": "string",
+			"default": ""
+		},
+		"imageShape": {
+			"type": "string",
+			"enum": [ "square", "rounded", "circle" ],
+			"default": "rounded"
+		},
+		"aspectRatio": {
+			"type": "string",
+			"enum": [ "1", "0.8", "0.75", "1.25" ],
+			"default": "0.8"
+		},
+		"nameLevel": {
+			"type": "number",
+			"default": 3
+		},
+		"alignment": {
+			"type": "string",
+			"enum": [ "start", "center" ],
+			"default": "start"
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"html": false,
+		"color": {
+			"text": true,
+			"background": true,
+			"link": true
+		},
+		"typography": {
+			"fontSize": true,
+			"__experimentalFontFamily": true
+		},
+		"spacing": {
+			"padding": true,
+			"margin": true,
+			"blockGap": true
+		},
+		"__experimentalBorder": {
+			"color": true,
+			"radius": true,
+			"style": true,
+			"width": true
+		},
+		"shadow": true
+	},
+	"render": "file:./render.php",
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css"
+}

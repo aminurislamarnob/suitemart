@@ -45,6 +45,12 @@
 			global. They are prefixed `$sm_` by convention regardless.
 		-->
 		<exclude-pattern>/src/*/render.php</exclude-pattern>
+		<!--
+			Pattern files are `include`d inside
+			WP_Block_Patterns_Registry::get_registered(), so the same applies:
+			their variables are method-scoped, not global. Also prefixed `$sm_`.
+		-->
+		<exclude-pattern>/patterns/*.php</exclude-pattern>
 	</rule>
 
 	<rule ref="WordPress.Security.EscapeOutput">

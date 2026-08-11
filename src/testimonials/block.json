@@ -1,0 +1,38 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "suitemart/testimonials",
+	"title": "Testimonials",
+	"category": "suitemart",
+	"icon": "format-quote",
+	"description": "A grid of testimonials. For a sliding version, place testimonials inside the Slider block instead.",
+	"keywords": [ "reviews", "quotes", "social proof", "customers" ],
+	"textdomain": "suitemart",
+	"attributes": {
+		"columns": {
+			"type": "number",
+			"default": 3
+		},
+		"columnsTablet": {
+			"type": "number",
+			"default": 2
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"align": [ "wide", "full" ],
+		"html": false,
+		"color": {
+			"background": true,
+			"text": true
+		},
+		"spacing": {
+			"padding": true,
+			"margin": true,
+			"blockGap": true
+		}
+	},
+	"render": "file:./render.php",
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css"
+}

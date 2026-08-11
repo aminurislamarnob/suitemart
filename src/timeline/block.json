@@ -1,0 +1,35 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "suitemart/timeline",
+	"title": "Timeline",
+	"category": "suitemart",
+	"icon": "backup",
+	"description": "A sequence of dated events along a line — company history, delivery stages, a process.",
+	"keywords": [ "history", "steps", "process", "milestones", "roadmap" ],
+	"textdomain": "suitemart",
+	"attributes": {
+		"layout": {
+			"type": "string",
+			"enum": [ "stacked", "alternating" ],
+			"default": "stacked"
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"align": [ "wide" ],
+		"html": false,
+		"color": {
+			"text": true,
+			"background": true
+		},
+		"spacing": {
+			"padding": true,
+			"margin": true,
+			"blockGap": true
+		}
+	},
+	"render": "file:./render.php",
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css"
+}

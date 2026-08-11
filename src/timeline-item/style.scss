@@ -1,0 +1,7 @@
+// The entry's own appearance lives in the timeline's stylesheet, because every
+// rule depends on the parent's layout modifier. This file exists so the block
+// has a stylesheet of its own to grow into, and to keep the editor markup and
+// the front end using the same class names.
+.sm-timeline__item {
+	list-style: none;
+}

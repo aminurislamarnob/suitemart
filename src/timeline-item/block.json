@@ -1,0 +1,42 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "suitemart/timeline-item",
+	"title": "Timeline Entry",
+	"category": "suitemart",
+	"icon": "marker",
+	"description": "One dated entry in a timeline.",
+	"parent": [ "suitemart/timeline" ],
+	"textdomain": "suitemart",
+	"attributes": {
+		"date": {
+			"type": "string",
+			"default": ""
+		},
+		"title": {
+			"type": "string",
+			"default": ""
+		},
+		"titleLevel": {
+			"type": "number",
+			"default": 3
+		},
+		"isComplete": {
+			"type": "boolean",
+			"default": false
+		}
+	},
+	"supports": {
+		"html": false,
+		"reusable": false,
+		"spacing": {
+			"padding": true
+		},
+		"typography": {
+			"fontSize": true
+		}
+	},
+	"render": "file:./render.php",
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css"
+}

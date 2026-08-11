@@ -1,0 +1,80 @@
+.sm-pricing {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+
+	// Plans sit in Columns; matching heights is what makes the buttons line up.
+	height: 100%;
+}
+
+.sm-pricing__badge {
+	align-self: flex-start;
+	margin: 0 0 0.25rem;
+	padding-block: 0.2em;
+	padding-inline: 0.6em;
+	border-radius: var(--wp--custom--radius--pill, 999px);
+	background: var(--wp--preset--color--accent);
+	color: var(--wp--preset--color--base);
+	font-size: 0.75em;
+	font-weight: 600;
+	letter-spacing: 0.03em;
+	text-transform: uppercase;
+}
+
+.sm-pricing__name {
+	margin: 0;
+	font-size: 1.125em;
+	line-height: 1.3;
+}
+
+.sm-pricing__price {
+	display: flex;
+	align-items: baseline;
+	gap: 0.15em;
+	margin: 0.25rem 0 0;
+	font-variant-numeric: tabular-nums;
+}
+
+.sm-pricing__currency {
+	font-size: 1.25em;
+	font-weight: 600;
+	opacity: 0.7;
+}
+
+.sm-pricing__amount {
+	font-size: 2.5em;
+	font-weight: 700;
+	line-height: 1;
+}
+
+.sm-pricing__period {
+	font-size: 0.875em;
+	opacity: 0.7;
+}
+
+.sm-pricing__summary {
+	margin: 0;
+	font-size: 0.9375em;
+	line-height: 1.5;
+	opacity: 0.8;
+}
+
+.sm-pricing__body {
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	gap: var(--wp--style--block-gap, 1rem);
+	margin-block-start: 0.75rem;
+
+	// Pushes the call to action to the bottom whatever the feature count, so a
+	// row of plans has its buttons on one line.
+	> :last-child {
+		margin-block-start: auto;
+	}
+}
+
+.sm-pricing--featured {
+	position: relative;
+	outline: 2px solid var(--wp--preset--color--primary);
+	outline-offset: -2px;
+}

@@ -259,4 +259,134 @@ class Test_Theme_Integrity extends WP_UnitTestCase {
 			);
 		}
 	}
+
+	/**
+	 * Every pattern must parse into the blocks it names and render without error.
+	 *
+	 * Pattern files are hand-written block comment markup, and a mistyped
+	 * attribute or an unclosed `<!-- /wp: -->` produces a pattern that looks
+	 * registered but inserts as a broken block. The header test above cannot
+	 * see any of that, so this renders each one for real.
+	 */
+	public function test_patterns_parse_and_render(): void {
+		$patterns = glob( SUITEMART_DIR . '/patterns/*.php' );
+
+		foreach ( is_array( $patterns ) ? $patterns : array() as $file ) {
+			$name = basename( $file );
+
+			ob_start();
+			include $file;
+			$markup = (string) ob_get_clean();
+
+			// Some patterns return early when a dependency is missing — the
+			// commerce ones do this when WooCommerce is inactive, because a
+			// pattern referencing unregistered blocks shows as an error in the
+			// inserter. Opting out is the correct behaviour, not a failure.
+			if ( '' === trim( $markup ) ) {
+				continue;
+			}
+
+			$blocks = parse_blocks( $markup );
+
+			// Every block in the pattern, not just the top level. Patterns wrap
+			// their content in groups and columns, so the blocks actually worth
+			// checking are always nested several levels down.
+			$named = array_filter(
+				$this->flatten_blocks( $blocks ),
+				static fn ( array $block ): bool => ! empty( $block['blockName'] )
+			);
+
+			// parse_blocks() never fails outright: unrecognised markup comes
+			// back as a "null" block holding raw HTML. A pattern that is
+			// nothing but those has not parsed at all.
+			$this->assertNotEmpty(
+				$named,
+				sprintf( '%s parsed to no blocks at all; its block comments are malformed.', $name )
+			);
+
+			foreach ( $named as $block ) {
+				if ( ! str_starts_with( (string) $block['blockName'], 'suitemart/' ) ) {
+					continue;
+				}
+
+				$this->assertTrue(
+					WP_Block_Type_Registry::get_instance()->is_registered( $block['blockName'] ),
+					sprintf( '%s references %s, which is not registered.', $name, $block['blockName'] )
+				);
+
+				$unknown = $this->unknown_attributes( $block );
+
+				// A mistyped attribute is silently ignored at render time, so
+				// the pattern looks fine and simply loses that setting.
+				$this->assertSame(
+					array(),
+					$unknown,
+					sprintf(
+						'%s sets %s on %s, which is not a declared attribute.',
+						$name,
+						implode( ', ', $unknown ),
+						$block['blockName']
+					)
+				);
+			}
+
+			$rendered = '';
+
+			foreach ( $blocks as $block ) {
+				$rendered .= render_block( $block );
+			}
+
+			// Every Suitemart render callback bails out when its required
+			// attributes are missing, so a pattern that renders to nothing has
+			// a typo in an attribute name — the exact mistake this test exists
+			// to catch, and one that is invisible in the pattern source.
+			$this->assertNotSame(
+				'',
+				trim( $rendered ),
+				sprintf( '%s rendered empty output; check its block attribute names.', $name )
+			);
+		}
+	}
+
+	/**
+	 * Flattens a parsed block tree into a single list.
+	 *
+	 * @param array<int, array<string, mixed>> $blocks Parsed blocks.
+	 * @return array<int, array<string, mixed>> Every block at every depth.
+	 */
+	private function flatten_blocks( array $blocks ): array {
+		$flat = array();
+
+		foreach ( $blocks as $block ) {
+			$flat[] = $block;
+
+			if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
+				$flat = array_merge( $flat, $this->flatten_blocks( $block['innerBlocks'] ) );
+			}
+		}
+
+		return $flat;
+	}
+
+	/**
+	 * Returns the attribute names a block sets that its block.json does not declare.
+	 *
+	 * Attributes core supplies through `supports` — style, alignment, colour and
+	 * so on — are merged into the block type's attribute list at registration,
+	 * so checking against the registered type covers both.
+	 *
+	 * @param array<string, mixed> $block Parsed block.
+	 * @return array<int, string> Undeclared attribute names.
+	 */
+	private function unknown_attributes( array $block ): array {
+		$type = WP_Block_Type_Registry::get_instance()->get_registered( $block['blockName'] );
+
+		if ( null === $type || ! is_array( $type->attributes ) ) {
+			return array();
+		}
+
+		$set = is_array( $block['attrs'] ?? null ) ? array_keys( $block['attrs'] ) : array();
+
+		return array_values( array_diff( $set, array_keys( $type->attributes ) ) );
+	}
 }

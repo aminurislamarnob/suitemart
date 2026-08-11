@@ -1,0 +1,128 @@
+@use "../_shared/breakpoints" as *;
+
+.sm-timeline {
+	// The list marker would duplicate the numbered dot the design already
+	// draws, but the `<ol>` stays for the semantics.
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	gap: var(--wp--style--block-gap, 2rem);
+
+	--sm-timeline-dot: 0.875rem;
+	--sm-timeline-gutter: 2rem;
+}
+
+.sm-timeline__item {
+	position: relative;
+	padding-inline-start: var(--sm-timeline-gutter);
+}
+
+// The connecting line is drawn per item rather than once on the list, so it
+// stops exactly at the last item instead of trailing past it.
+.sm-timeline__item::before {
+	position: absolute;
+	inset-block: 0;
+	inset-inline-start: calc(var(--sm-timeline-dot) / 2);
+	width: 1px;
+	background: currentcolor;
+	content: "";
+	opacity: 0.2;
+}
+
+.sm-timeline__item:last-child::before {
+	// Stop at the dot rather than running to the bottom of the final entry.
+	inset-block-end: auto;
+	height: var(--sm-timeline-dot);
+}
+
+.sm-timeline__dot {
+	position: absolute;
+	inset-block-start: 0.35em;
+	inset-inline-start: 0;
+	width: var(--sm-timeline-dot);
+	height: var(--sm-timeline-dot);
+	border: 2px solid var(--wp--preset--color--primary);
+	border-radius: 50%;
+	background: var(--wp--preset--color--base);
+}
+
+.sm-timeline__item.is-complete .sm-timeline__dot {
+	background: var(--wp--preset--color--primary);
+}
+
+.sm-timeline__date {
+	display: block;
+	margin: 0;
+	color: var(--wp--preset--color--primary);
+	font-size: 0.8125em;
+	font-weight: 600;
+	letter-spacing: 0.03em;
+	text-transform: uppercase;
+}
+
+.sm-timeline__title {
+	margin: 0.15rem 0 0;
+	font-size: 1.0625em;
+	line-height: 1.35;
+}
+
+.sm-timeline__body {
+	margin-block-start: 0.4rem;
+
+	> :first-child {
+		margin-block-start: 0;
+	}
+
+	> :last-child {
+		margin-block-end: 0;
+	}
+}
+
+/* Alternating layout */
+
+// Every item stays on its own row in the single-column grid and takes half the
+// width, alternating which side it sits on. A two- or three-column grid would
+// let auto-placement put the first two items in the same row, which is the
+// classic way this layout goes wrong.
+@include bp(lg) {
+
+	.sm-timeline--alternating {
+		--sm-timeline-gutter: 0;
+
+		// Rows overlap slightly so the connecting line stays continuous across
+		// the gap between alternating sides.
+		gap: 0;
+	}
+
+	.sm-timeline--alternating .sm-timeline__item {
+		width: 50%;
+		padding-block-end: var(--wp--style--block-gap, 2rem);
+		padding-inline-end: calc(var(--sm-timeline-dot) * 2);
+		text-align: end;
+	}
+
+	.sm-timeline--alternating .sm-timeline__item::before {
+		inset-inline: auto calc(var(--sm-timeline-dot) * -0.5 - 0.5px);
+	}
+
+	.sm-timeline--alternating .sm-timeline__dot {
+		inset-inline: auto calc(var(--sm-timeline-dot) * -0.5);
+	}
+
+	.sm-timeline--alternating .sm-timeline__item:nth-child(2n) {
+		margin-inline-start: 50%;
+		padding-inline: calc(var(--sm-timeline-dot) * 2) 0;
+		text-align: start;
+	}
+
+	.sm-timeline--alternating .sm-timeline__item:nth-child(2n)::before {
+		inset-inline: calc(var(--sm-timeline-dot) * -0.5 - 0.5px) auto;
+	}
+
+	.sm-timeline--alternating
+		.sm-timeline__item:nth-child(2n)
+		.sm-timeline__dot {
+		inset-inline: calc(var(--sm-timeline-dot) * -0.5) auto;
+	}
+}
