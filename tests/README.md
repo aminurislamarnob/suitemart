@@ -23,7 +23,10 @@ npm run env:start
 
 ### If `wp-env start` finishes silently without creating containers
 
-This has been observed with OrbStack: `wp-env` prints nothing, exits `0`, and only
+This is a **local** problem, not a general one — `wp-env start` works on GitHub
+Actions, where CI installs WordPress and runs the PHPUnit suite unaided.
+
+It has been observed with OrbStack: `wp-env` prints nothing, exits `0`, and only
 the MySQL container appears. The WordPress images are never built and the PHPUnit
 library is never downloaded. Complete the setup manually:
 
@@ -98,19 +101,15 @@ docker compose run --rm -u 33 \
 
 ### The e2e fixture page
 
-`blocks-a11y.spec.js` exercises the interactive blocks against a real page.
-Create it once per environment:
+Nothing to do — `tests/e2e/global-setup.js` creates or updates it before the
+suite runs, addressing it by the slug `suitemart-block-test` rather than by id.
 
-```bash
-cd "$ENV_DIR"
-docker compose run --rm -u 33 -w /var/www/html/wp-content/themes/suitemart cli \
-  wp post create tests/e2e/fixtures/blocks-page.html \
-    --post_type=page --post_title="Suitemart block test" \
-    --post_name=suitemart-block-test --post_status=publish --porcelain
-```
+It used to be a manual step documented here, which meant a fresh environment had
+no such page and every spec that needed one tested a 404 until it timed out.
+That is exactly what the first CI run did.
 
-The spec loads it by id (`/?page_id=10`). If your install assigns a different
-id, update the `PAGE` constant at the top of the spec.
+To change what the specs exercise, edit `tests/e2e/fixtures/blocks-page.html`;
+the setup pushes it to the page on the next run.
 
 ## Notes for anyone extending the suites
 

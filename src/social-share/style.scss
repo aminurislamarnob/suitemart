@@ -1,0 +1,104 @@
+@use "../_shared/mixins" as *;
+
+.sm-share {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.sm-share__heading {
+	margin: 0;
+	font-size: 0.875em;
+	font-weight: 600;
+}
+
+.sm-share__list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--wp--style--block-gap, 0.5rem);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.sm-share__item {
+	margin: 0;
+}
+
+.sm-share__link {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5em;
+	border: 1px solid color-mix(in srgb, currentcolor 20%, transparent);
+	background: none;
+	color: inherit;
+	font: inherit;
+	text-decoration: none;
+	cursor: pointer;
+
+	@include focus-ring;
+
+	@media (prefers-reduced-motion: no-preference) {
+		transition:
+			background-color var(--wp--custom--transition--fast, 0.15s ease),
+			color var(--wp--custom--transition--fast, 0.15s ease);
+	}
+
+	&:hover {
+		background-color: var(--wp--preset--color--primary);
+		color: var(--wp--preset--color--base);
+	}
+}
+
+// The label is always in the markup so the control has an accessible name;
+// the icon-only style hides it visually rather than removing it.
+.sm-share__label--hidden {
+	@include visually-hidden;
+}
+
+.sm-share__status {
+	margin: 0;
+	font-size: 0.8125em;
+	opacity: 0.8;
+}
+
+/* Shapes */
+
+.sm-share--square .sm-share__link,
+.sm-share--rounded .sm-share__link,
+.sm-share--circle .sm-share__link {
+	justify-content: center;
+
+	// A square target whose size follows the icon, with a floor that keeps it
+	// comfortably tappable.
+	@include tap-target(2.5rem);
+
+	padding: 0.5em;
+}
+
+.sm-share--rounded .sm-share__link {
+	border-radius: var(--wp--custom--radius--md, 8px);
+}
+
+.sm-share--circle .sm-share__link {
+	border-radius: 50%;
+}
+
+.sm-share--bare .sm-share__link {
+	padding: 0.25em;
+	border: 0;
+
+	&:hover {
+		background: none;
+		color: var(--wp--preset--color--primary);
+	}
+}
+
+// With labels the control is a pill rather than a square, so the fixed width
+// would squash the text.
+.sm-share--icon-label .sm-share__link {
+	min-width: 0;
+	padding-block: 0.5em;
+	padding-inline: 0.9em;
+	border-radius: var(--wp--custom--radius--pill, 999px);
+}

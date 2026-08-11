@@ -12,7 +12,9 @@
 const { test, expect } = require( '@playwright/test' );
 const AxeBuilder = require( '@axe-core/playwright' ).default;
 
-const PAGE = '/?page_id=10';
+// Addressed by slug: the id is whatever the install assigned, and the query
+// form works whatever the permalink structure is set to.
+const PAGE = '/?pagename=suitemart-block-test';
 
 test.beforeEach( async ( { page } ) => {
 	await page.goto( PAGE );

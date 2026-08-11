@@ -35,11 +35,28 @@ class Test_Icons extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Icon names listed for the editor.
+	 * Icon names the theme declares, from both of the sprite's sources.
+	 *
+	 * The sprite is generated from two places: the Lucide names in
+	 * `src/_shared/icons.js`, and the hand-authored share marks in
+	 * `assets/icons/social.svg` that Lucide does not carry. Only the Lucide half
+	 * is offered in the editor's icon picker, so the two are read separately.
 	 *
 	 * @return array<int, string>
 	 */
 	private function listed_names(): array {
+		$names = array_merge( $this->lucide_names(), $this->social_names() );
+		sort( $names );
+
+		return $names;
+	}
+
+	/**
+	 * Lucide icon names offered in the editor's picker.
+	 *
+	 * @return array<int, string>
+	 */
+	private function lucide_names(): array {
 		$js = (string) file_get_contents( SUITEMART_DIR . '/src/_shared/icons.js' );
 
 		// Only the ICON_NAMES array, so the JSDoc examples below it cannot match.
@@ -53,6 +70,62 @@ class Test_Icons extends WP_UnitTestCase {
 		sort( $names );
 
 		return $names;
+	}
+
+	/**
+	 * Share mark ids defined in the hand-authored social sprite.
+	 *
+	 * @return array<int, string>
+	 */
+	private function social_names(): array {
+		$svg = (string) file_get_contents( SUITEMART_DIR . '/assets/icons/social.svg' );
+
+		preg_match_all( '/id="sm-icon-([a-z0-9-]+)"/', $svg, $matches );
+
+		$names = $matches[1];
+		sort( $names );
+
+		return $names;
+	}
+
+	/**
+	 * The generated sprite must carry every hand-authored share mark.
+	 *
+	 * The generator rewrites the sprite from scratch, so a change that stopped
+	 * copying these across would silently delete them.
+	 */
+	public function test_social_marks_survive_generation(): void {
+		$social = $this->social_names();
+
+		$this->assertNotEmpty( $social, 'assets/icons/social.svg defines no symbols.' );
+
+		foreach ( $social as $name ) {
+			$this->assertContains(
+				$name,
+				$this->sprite_names(),
+				sprintf( 'The "%s" share mark is missing from the generated sprite.', $name )
+			);
+		}
+	}
+
+	/**
+	 * Share marks must be filled rather than stroked.
+	 *
+	 * They share a sprite with the Lucide set, whose class sets `fill: none`.
+	 * Without the variant class a share mark renders as an empty outline.
+	 */
+	public function test_social_marks_get_the_filled_variant(): void {
+		$this->assertStringContainsString(
+			'sm-icon--social',
+			suitemart_get_icon( 'share-facebook' ),
+			'Share marks need the filled variant class or they render as nothing.'
+		);
+
+		$this->assertStringNotContainsString(
+			'sm-icon--social',
+			suitemart_get_icon( 'star' ),
+			'Only share marks take the filled treatment.'
+		);
 	}
 
 	/**

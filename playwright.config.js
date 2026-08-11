@@ -14,6 +14,11 @@ const baseURL = process.env.WP_BASE_URL || 'http://localhost:8888';
 module.exports = defineConfig( {
 	testDir: './tests/e2e',
 	outputDir: './test-results',
+
+	// Creates the fixture page the block specs need. Without it a fresh
+	// environment has no such page and those specs test a 404 until they time
+	// out — which is exactly what happened on the first CI run.
+	globalSetup: require.resolve( './tests/e2e/global-setup.js' ),
 	timeout: 60_000,
 	expect: { timeout: 10_000 },
 

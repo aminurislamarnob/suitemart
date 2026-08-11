@@ -11,7 +11,9 @@
 
 const { test, expect } = require( '@playwright/test' );
 
-const PAGE = '/?page_id=10';
+// Addressed by slug: the id is whatever the install assigned, and the query
+// form works whatever the permalink structure is set to.
+const PAGE = '/?pagename=suitemart-block-test';
 
 test.describe( 'Counter', () => {
 	const number = '.sm-counter__number';

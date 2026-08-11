@@ -1,0 +1,58 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "suitemart/social-share",
+	"title": "Share Links",
+	"category": "suitemart",
+	"icon": "share",
+	"description": "Share the current page to social networks, by email, or by copying the link.",
+	"keywords": [ "share", "social", "facebook", "twitter", "whatsapp" ],
+	"textdomain": "suitemart",
+	"attributes": {
+		"networks": {
+			"type": "array",
+			"default": [ "facebook", "x", "linkedin", "whatsapp", "email", "copy" ],
+			"items": {
+				"type": "string"
+			}
+		},
+		"appearance": {
+			"type": "string",
+			"enum": [ "icon", "icon-label" ],
+			"default": "icon"
+		},
+		"shape": {
+			"type": "string",
+			"enum": [ "square", "rounded", "circle", "bare" ],
+			"default": "circle"
+		},
+		"iconSize": {
+			"type": "number",
+			"default": 18
+		},
+		"heading": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"html": false,
+		"color": {
+			"text": true,
+			"background": true
+		},
+		"typography": {
+			"fontSize": true
+		},
+		"spacing": {
+			"padding": true,
+			"margin": true,
+			"blockGap": true
+		}
+	},
+	"render": "file:./render.php",
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css",
+	"viewScriptModule": "file:./view.js"
+}

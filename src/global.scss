@@ -116,6 +116,14 @@ body {
 	stroke-linejoin: round;
 }
 
+// The share marks in assets/icons/social.svg are solid shapes rather than
+// strokes — a recognisable service mark has to be filled — so they need the
+// opposite treatment to the Lucide set they share a sprite with.
+.sm-icon--social {
+	fill: currentcolor;
+	stroke: none;
+}
+
 /* -------------------------------------------------------------------------
    Core block corrections
    ---------------------------------------------------------------------- */

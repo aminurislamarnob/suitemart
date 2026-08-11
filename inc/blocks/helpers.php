@@ -151,7 +151,11 @@ function suitemart_get_icon( string $name, array $args = array() ): string {
 	$label = isset( $args['label'] ) ? (string) $args['label'] : '';
 	$class = isset( $args['class'] ) ? (string) $args['class'] : '';
 
-	$classes = trim( 'sm-icon sm-icon--' . sanitize_html_class( $name ) . ' ' . $class );
+	// Share marks are filled shapes rather than strokes, and take the opposite
+	// presentation from the Lucide set they share the sprite with.
+	$variant = str_starts_with( $name, 'share-' ) ? ' sm-icon--social' : '';
+
+	$classes = trim( 'sm-icon sm-icon--' . sanitize_html_class( $name ) . $variant . ' ' . $class );
 
 	$a11y = '' !== $label
 		? sprintf( 'role="img" aria-label="%s"', esc_attr( $label ) )
@@ -164,6 +168,95 @@ function suitemart_get_icon( string $name, array $args = array() ): string {
 		$a11y, // Composed above from escaped parts.
 		esc_attr( sanitize_key( $name ) )
 	);
+}
+
+/**
+ * The share targets the Share Links block supports.
+ *
+ * Kept in PHP because render.php builds the URLs — only the server knows the
+ * permalink and title of the post being rendered. `src/social-share/networks.js`
+ * mirrors the list for the editor's picker, and
+ * `Test_Share::test_network_lists_match` asserts the two agree.
+ *
+ * @return array<string, array{label: string, icon: string}>
+ */
+function suitemart_share_networks(): array {
+	return array(
+		'facebook'  => array(
+			'label' => __( 'Facebook', 'suitemart' ),
+			'icon'  => 'share-facebook',
+		),
+		'x'         => array(
+			'label' => __( 'X', 'suitemart' ),
+			'icon'  => 'share-x',
+		),
+		'linkedin'  => array(
+			'label' => __( 'LinkedIn', 'suitemart' ),
+			'icon'  => 'share-linkedin',
+		),
+		'pinterest' => array(
+			'label' => __( 'Pinterest', 'suitemart' ),
+			'icon'  => 'share-pinterest',
+		),
+		'whatsapp'  => array(
+			'label' => __( 'WhatsApp', 'suitemart' ),
+			'icon'  => 'share-whatsapp',
+		),
+		'telegram'  => array(
+			'label' => __( 'Telegram', 'suitemart' ),
+			'icon'  => 'share-telegram',
+		),
+		'reddit'    => array(
+			'label' => __( 'Reddit', 'suitemart' ),
+			'icon'  => 'share-reddit',
+		),
+		'email'     => array(
+			'label' => __( 'Email', 'suitemart' ),
+			'icon'  => 'share-email',
+		),
+		'copy'      => array(
+			'label' => __( 'Copy link', 'suitemart' ),
+			'icon'  => 'link',
+		),
+	);
+}
+
+/**
+ * Builds the public share URL for a network.
+ *
+ * Every value is passed through `rawurlencode()` before it reaches a query
+ * string. `esc_url()` alone would not be enough: a title containing `&` or `#`
+ * would otherwise terminate the parameter and corrupt the rest of the URL.
+ *
+ * @param string $network Network key from suitemart_share_networks().
+ * @param string $url     Canonical URL of the page being shared.
+ * @param string $title   Title of the page being shared.
+ * @return string Share endpoint, or an empty string for an unknown network.
+ */
+function suitemart_share_url( string $network, string $url, string $title ): string {
+	$encoded_url   = rawurlencode( $url );
+	$encoded_title = rawurlencode( $title );
+
+	switch ( $network ) {
+		case 'facebook':
+			return 'https://www.facebook.com/sharer/sharer.php?u=' . $encoded_url;
+		case 'x':
+			return 'https://x.com/intent/post?url=' . $encoded_url . '&text=' . $encoded_title;
+		case 'linkedin':
+			return 'https://www.linkedin.com/sharing/share-offsite/?url=' . $encoded_url;
+		case 'pinterest':
+			return 'https://pinterest.com/pin/create/button/?url=' . $encoded_url . '&description=' . $encoded_title;
+		case 'whatsapp':
+			return 'https://api.whatsapp.com/send?text=' . $encoded_title . '%20' . $encoded_url;
+		case 'telegram':
+			return 'https://t.me/share/url?url=' . $encoded_url . '&text=' . $encoded_title;
+		case 'reddit':
+			return 'https://www.reddit.com/submit?url=' . $encoded_url . '&title=' . $encoded_title;
+		case 'email':
+			return 'mailto:?subject=' . $encoded_title . '&body=' . $encoded_url;
+		default:
+			return '';
+	}
 }
 
 /**

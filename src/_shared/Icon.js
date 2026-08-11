@@ -25,9 +25,14 @@ export default function Icon( { name, size = 24, className = '' } ) {
 		window.suitemartThemeUri || ''
 	}/assets/icons/sprite.svg`;
 
+	// Share marks are solid shapes while the Lucide set is stroked, and the
+	// base class sets `fill: none`. Without this they preview as blank squares.
+	// Mirrors the same branch in suitemart_get_icon().
+	const variant = name.startsWith( 'share-' ) ? ' sm-icon--social' : '';
+
 	return (
 		<svg
-			className={ `sm-icon sm-icon--${ name } ${ className }`.trim() }
+			className={ `sm-icon sm-icon--${ name }${ variant } ${ className }`.trim() }
 			width={ size }
 			height={ size }
 			aria-hidden="true"

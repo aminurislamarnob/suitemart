@@ -22,6 +22,12 @@ const LIST = join( ROOT, 'src/_shared/icons.js' );
 const OUT = join( ROOT, 'assets/icons/sprite.svg' );
 const ICONS = join( ROOT, 'node_modules/lucide-static/icons' );
 
+// Hand-authored marks that Lucide does not carry, copied verbatim into the
+// generated sprite. Lucide removed brand marks upstream, so the share icons
+// cannot come from it — keeping them in their own file is what stops a rebuild
+// from deleting them.
+const SOCIAL = join( ROOT, 'assets/icons/social.svg' );
+
 /**
  * Reads the icon names out of src/_shared/icons.js.
  *
@@ -87,7 +93,25 @@ const HEADER = `<svg xmlns="http://www.w3.org/2000/svg">
 -->
 `;
 
+/**
+ * Reads the hand-authored social symbols verbatim.
+ *
+ * @return {Promise<{markup: string, names: string[]}>} Symbol markup and ids.
+ */
+async function readSocialSymbols() {
+	const source = await readFile( SOCIAL, 'utf8' );
+	const symbols = source.match( /<symbol[\s\S]*?<\/symbol>/g ) ?? [];
+
+	return {
+		markup: symbols.join( '\n' ),
+		names: [ ...source.matchAll( /id="sm-icon-([^"]+)"/g ) ].map(
+			( m ) => m[ 1 ]
+		),
+	};
+}
+
 const names = await readIconNames();
+const social = await readSocialSymbols();
 const symbols = await Promise.all(
 	names.map(
 		async ( name ) =>
@@ -97,7 +121,11 @@ const symbols = await Promise.all(
 	)
 );
 
-const sprite = `${ HEADER }\n${ symbols.join( '\n' ) }\n\n</svg>\n`;
+const sprite = `${ HEADER }\n${ symbols.join(
+	'\n'
+) }\n\n<!-- Hand-authored share marks, copied from assets/icons/social.svg. -->\n${
+	social.markup
+}\n\n</svg>\n`;
 
 if ( process.argv.includes( '--check' ) ) {
 	const current = await readFile( OUT, 'utf8' );
@@ -109,8 +137,12 @@ if ( process.argv.includes( '--check' ) ) {
 		process.exit( 1 );
 	}
 
-	process.stdout.write( `Sprite is up to date (${ names.length } icons).\n` );
+	process.stdout.write(
+		`Sprite is up to date (${ names.length } Lucide + ${ social.names.length } social).\n`
+	);
 } else {
 	await writeFile( OUT, sprite );
-	process.stdout.write( `Wrote ${ names.length } icons to ${ OUT }\n` );
+	process.stdout.write(
+		`Wrote ${ names.length } Lucide + ${ social.names.length } social icons to ${ OUT }\n`
+	);
 }
