@@ -58,6 +58,9 @@ jobs:
     name: Tests (WP ${{ matrix.wordpress }})
     runs-on: ubuntu-latest
     needs: static
+    # The default is six hours. This suite takes minutes; anything approaching
+    # this is hung, not slow.
+    timeout-minutes: 25
     strategy:
       fail-fast: false
       matrix:

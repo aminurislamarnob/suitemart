@@ -28,6 +28,12 @@ module.exports = defineConfig( {
 	workers: process.env.CI ? 2 : undefined,
 	forbidOnly: !! process.env.CI,
 
+	// Stop after a handful of failures in CI. A systemic problem — the site not
+	// serving, a fixture missing — fails every test, and with retries that is
+	// twenty minutes of timeouts producing one piece of information. Failing
+	// fast makes the log readable and the run cheap.
+	maxFailures: process.env.CI ? 5 : undefined,
+
 	reporter: process.env.CI
 		? [ [ 'github' ], [ 'html', { open: 'never' } ] ]
 		: [ [ 'list' ] ],
