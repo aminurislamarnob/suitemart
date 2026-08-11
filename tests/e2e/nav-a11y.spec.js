@@ -114,6 +114,21 @@ test.describe( 'Mega menu keyboard operation', () => {
 		expect( reached ).toBe( true );
 	} );
 
+	test( 'the open panel is opaque', async ( { page } ) => {
+		// A transparent panel lets page content show through the menu. It is
+		// legible in a screenshot only by accident, so it is asserted here.
+		await page.locator( trigger ).first().click();
+		await settle( page );
+
+		const background = await page
+			.locator( '.sm-mega-panel' )
+			.first()
+			.evaluate( ( el ) => getComputedStyle( el ).backgroundColor );
+
+		expect( background ).not.toBe( 'rgba(0, 0, 0, 0)' );
+		expect( background ).not.toBe( 'transparent' );
+	} );
+
 	test( 'has no detectable accessibility violations, open or closed', async ( {
 		page,
 	} ) => {
@@ -126,7 +141,30 @@ test.describe( 'Mega menu keyboard operation', () => {
 		expect( ( await scan() ).violations ).toEqual( [] );
 
 		await page.locator( trigger ).first().click();
+		await settle( page );
 
 		expect( ( await scan() ).violations ).toEqual( [] );
 	} );
 } );
+
+/**
+ * Waits for every animation inside the navigation to finish.
+ *
+ * Colour-contrast results are meaningless mid-transition: a panel fading in is
+ * measured as its colour blended with whatever is behind it, which fails a
+ * check that the settled state passes comfortably.
+ *
+ * @param {import('@playwright/test').Page} page Page under test.
+ */
+async function settle( page ) {
+	await page
+		.locator( nav )
+		.first()
+		.evaluate( ( el ) =>
+			Promise.all(
+				el
+					.getAnimations( { subtree: true } )
+					.map( ( animation ) => animation.finished )
+			)
+		);
+}

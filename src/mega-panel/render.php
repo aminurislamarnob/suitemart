@@ -34,6 +34,9 @@ $sm_wrapper = get_block_wrapper_attributes(
 		'class' => sprintf( 'sm-mega-panel sm-mega-panel--%s sm-mega-panel--align-%s', $sm_width, $sm_align ),
 	)
 );
+
+// This block has no directives of its own — visibility and ARIA belong to the
+// parent nav item — so it deliberately declares no interactivity namespace.
 ?>
 <div <?php echo $sm_wrapper; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() escapes its output. ?>>
 	<div class="sm-mega-panel__inner">

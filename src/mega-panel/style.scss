@@ -1,20 +1,23 @@
 @use "../_shared/breakpoints" as *;
 @use "../_shared/mixins" as *;
 
+// Mobile-first: inside the drawer the panel is part of the flow, so it carries
+// no chrome at all. Chrome is added at the breakpoint, where the panel becomes
+// a floating dropdown.
+//
+// This must not be written as a `.sm-nav__drawer .sm-mega-panel` reset: the
+// drawer element is the panel's ancestor at every width — it only *looks* like
+// a drawer below the breakpoint — so such a reset would strip the background
+// on desktop too and leave the panel transparent over the page content.
 .sm-mega-panel {
-	background-color: var(--wp--preset--color--base);
-}
-
-.sm-mega-panel__inner {
-	height: 100%;
-}
-
-// Mobile: the panel is part of the drawer's flow, so it carries no chrome.
-.sm-nav__drawer .sm-mega-panel {
 	padding: 0;
 	border: 0;
 	background: none;
 	box-shadow: none;
+}
+
+.sm-mega-panel__inner {
+	height: 100%;
 }
 
 @mixin mega-panel-desktop {
@@ -22,6 +25,7 @@
 	.sm-mega-panel {
 		padding: var(--wp--preset--spacing--50);
 		border-radius: var(--wp--custom--radius--lg);
+		background-color: var(--wp--preset--color--base);
 		box-shadow: var(--wp--preset--shadow--lg);
 	}
 

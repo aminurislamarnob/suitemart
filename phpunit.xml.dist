@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+	PHPUnit 9.6 is pinned deliberately: PHPUnit 10+ requires PHP 8.2, and
+	Suitemart supports PHP 8.1 (decision 19). Tests must run on the floor.
+-->
 <phpunit
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
 	bootstrap="tests/phpunit/bootstrap.php"
 	colors="true"
 	beStrictAboutOutputDuringTests="true"
-	failOnWarning="true"
-	failOnNotice="true"
-	cacheDirectory=".phpunit.cache"
+	convertDeprecationsToExceptions="false"
+	convertErrorsToExceptions="true"
+	convertNoticesToExceptions="true"
+	convertWarningsToExceptions="true"
+	cacheResultFile=".phpunit.cache/result.cache"
 >
 	<testsuites>
 		<testsuite name="suitemart">
@@ -16,10 +22,10 @@
 		</testsuite>
 	</testsuites>
 
-	<source>
+	<coverage>
 		<include>
 			<directory suffix=".php">inc</directory>
 			<directory suffix=".php">src</directory>
 		</include>
-	</source>
+	</coverage>
 </phpunit>

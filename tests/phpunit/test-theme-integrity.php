@@ -98,8 +98,17 @@ class Test_Theme_Integrity extends WP_UnitTestCase {
 	 * it silently disappears the first time a user saves the template.
 	 */
 	public function test_templates_contain_only_blocks(): void {
-		$files = glob( SUITEMART_DIR . '/{templates,parts}/*.html', GLOB_BRACE );
-		$files = is_array( $files ) ? $files : array();
+		// GLOB_BRACE is not defined on musl libc, which is what the Alpine-based
+		// test container uses. Two globs are portable; brace expansion is not.
+		$templates = glob( SUITEMART_DIR . '/templates/*.html' );
+		$parts     = glob( SUITEMART_DIR . '/parts/*.html' );
+
+		$files = array_merge(
+			is_array( $templates ) ? $templates : array(),
+			is_array( $parts ) ? $parts : array()
+		);
+
+		$this->assertNotEmpty( $files, 'The theme has no templates or parts.' );
 
 		foreach ( $files as $file ) {
 			$this->assertSame(

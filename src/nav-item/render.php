@@ -48,6 +48,16 @@ $sm_badge_markup = '' !== $sm_badge
 ?>
 <li
 	<?php echo $sm_wrapper; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() escapes its output. ?>
+	<?php
+	/*
+	 * The namespace is declared here rather than inherited from the parent
+	 * navigation. Directives resolve their namespace from the nearest ancestor
+	 * that declares one, so relying on the parent makes this block silently
+	 * wrong wherever it is rendered on its own — in a pattern preview, or in
+	 * the REST response the editor uses.
+	 */
+	?>
+	data-wp-interactive="suitemart/navigation"
 	<?php echo wp_interactivity_data_wp_context( array( 'itemId' => $sm_item_id ) ); ?>
 	data-wp-class--is-open="state.isOpen"
 	<?php if ( $sm_has_panel ) : ?>

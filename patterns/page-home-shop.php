@@ -61,8 +61,8 @@ defined( 'ABSPATH' ) || exit;
 <!-- /wp:columns --></div>
 <!-- /wp:group -->
 
-<!-- wp:group {"align":"full","backgroundColor":"neutral-900","textColor":"neutral-200","style":{"spacing":{"padding":{"top":"var:preset|spacing|70","bottom":"var:preset|spacing|70"},"blockGap":"var:preset|spacing|40"}},"layout":{"type":"constrained","contentSize":"560px"}} -->
-<div class="wp-block-group alignfull has-neutral-200-color has-neutral-900-background-color has-text-color has-background" style="padding-top:var(--wp--preset--spacing--70);padding-bottom:var(--wp--preset--spacing--70)"><!-- wp:heading {"textAlign":"center","level":2,"textColor":"base","fontSize":"xl"} -->
+<!-- wp:group {"align":"full","backgroundColor":"neutral-900","textColor":"neutral-200","style":{"spacing":{"padding":{"top":"var:preset|spacing|70","bottom":"var:preset|spacing|70"},"blockGap":"var:preset|spacing|40"},"elements":{"link":{"color":{"text":"var:preset|color|neutral-200"},":hover":{"color":{"text":"var:preset|color|base"}}}}},"layout":{"type":"constrained","contentSize":"560px"}} -->
+<div class="wp-block-group alignfull has-neutral-200-color has-neutral-900-background-color has-text-color has-background has-link-color" style="padding-top:var(--wp--preset--spacing--70);padding-bottom:var(--wp--preset--spacing--70)"><!-- wp:heading {"textAlign":"center","level":2,"textColor":"base","fontSize":"xl"} -->
 <h2 class="wp-block-heading has-text-align-center has-base-color has-text-color has-xl-font-size"><?php echo esc_html_x( 'Get the good stuff first', 'Pattern heading', 'suitemart' ); ?></h2>
 <!-- /wp:heading -->
 

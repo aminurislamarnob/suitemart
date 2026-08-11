@@ -13,7 +13,10 @@ const routes = [
 	{ name: 'home', path: '/' },
 	{ name: 'blog', path: '/?page_id=0' },
 	{ name: 'search', path: '/?s=test' },
-	{ name: '404', path: '/this-route-does-not-exist' },
+	// Query a post id that cannot exist, so WordPress serves the 404 template.
+	// A pretty-permalink path would be handled by the web server instead on
+	// installs that have not enabled rewrites.
+	{ name: '404', path: '/?p=99999999' },
 	{ name: 'shop', path: '/?post_type=product' },
 ];
 
@@ -22,9 +25,21 @@ test.describe( 'Templates render', () => {
 		test( `${ route.name } renders cleanly`, async ( { page } ) => {
 			const consoleErrors = [];
 			page.on( 'console', ( message ) => {
-				if ( message.type() === 'error' ) {
-					consoleErrors.push( message.text() );
+				if ( message.type() !== 'error' ) {
+					return;
 				}
+
+				// The 404 route is *meant* to return 404, and the browser reports
+				// the document's own status as a console error. Everything else
+				// on that page still has to be clean.
+				if (
+					route.name === '404' &&
+					message.text().includes( 'status of 404' )
+				) {
+					return;
+				}
+
+				consoleErrors.push( message.text() );
 			} );
 
 			const response = await page.goto( route.path );
@@ -43,8 +58,15 @@ test.describe( 'Templates render', () => {
 			expect( body ).not.toContain( 'Notice:' );
 			expect( body ).not.toContain( 'Deprecated:' );
 
-			await expect( page.locator( 'header' ).first() ).toBeVisible();
-			await expect( page.locator( 'footer' ).first() ).toBeVisible();
+			// Scope to the theme's own landmarks. A bare `footer` locator also
+			// matches WooCommerce's filter-overlay footer, which is legitimately
+			// hidden until the overlay opens.
+			await expect(
+				page.locator( 'header.wp-block-template-part' )
+			).toBeVisible();
+			await expect(
+				page.locator( 'footer.wp-block-template-part' )
+			).toBeVisible();
 
 			expect( consoleErrors ).toEqual( [] );
 		} );
