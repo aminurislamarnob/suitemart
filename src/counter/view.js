@@ -32,12 +32,6 @@ const easeOut = ( t ) => 1 - Math.pow( 1 - t, 3 );
 store(
 	'suitemart/counter',
 	{
-		state: {
-			get display() {
-				return localise( getContext().value );
-			},
-		},
-
 		callbacks: {
 			/**
 			 * Starts the count the first time the block is visible.
@@ -70,8 +64,9 @@ store(
 							elapsed / context.duration
 						);
 
-						context.value =
-							context.start + distance * easeOut( progress );
+						context.display = localise(
+							context.start + distance * easeOut( progress )
+						);
 
 						if ( progress < 1 ) {
 							frame = view.requestAnimationFrame( step );
@@ -80,7 +75,7 @@ store(
 
 						// Land exactly on the authored value rather than
 						// whatever the easing rounds to.
-						context.value = context.end;
+						context.display = localise( context.end );
 					};
 
 					frame = view.requestAnimationFrame( step );
@@ -95,7 +90,7 @@ store(
 						// Counting once is the point; a number that re-runs on
 						// every scroll past is a distraction.
 						observer.disconnect();
-						context.value = context.start;
+						context.display = localise( context.start );
 						run();
 					},
 					{ threshold: 0.4 }

@@ -81,10 +81,30 @@ $sm_wrapper = get_block_wrapper_attributes(
 	)
 );
 
+/*
+ * The digits are bound from context rather than from a derived state getter.
+ * Directives are evaluated on the server as well as in the browser, and an
+ * expression the server cannot resolve blanks the element — a JS-only getter
+ * here meant the timer rendered with no digits at all before the module
+ * loaded. Context is resolvable on both sides, and unlike state it is per
+ * block, so two countdowns on one page keep their own values.
+ *
+ * Days are unpadded — "07 Days" reads as a mistake — while the time units are,
+ * so the digits do not change width as they tick. view.js formats them the
+ * same way.
+ */
+$sm_display = array(
+	'days'    => (string) $sm_values['days'],
+	'hours'   => str_pad( (string) $sm_values['hours'], 2, '0', STR_PAD_LEFT ),
+	'minutes' => str_pad( (string) $sm_values['minutes'], 2, '0', STR_PAD_LEFT ),
+	'seconds' => str_pad( (string) $sm_values['seconds'], 2, '0', STR_PAD_LEFT ),
+);
+
 $sm_context = array(
 	'endTimestamp' => $sm_end->getTimestamp() * 1000,
 	'isExpired'    => $sm_expired,
 	'values'       => $sm_values,
+	'display'      => $sm_display,
 );
 ?>
 <div
@@ -104,8 +124,8 @@ $sm_context = array(
 	<div class="sm-countdown__units" aria-hidden="true" data-wp-bind--hidden="context.isExpired">
 		<?php foreach ( $sm_units as $sm_unit ) : ?>
 			<div class="sm-countdown__unit">
-				<span class="sm-countdown__value" data-wp-text="state.<?php echo esc_attr( $sm_unit ); ?>">
-					<?php echo esc_html( str_pad( (string) $sm_values[ $sm_unit ], 2, '0', STR_PAD_LEFT ) ); ?>
+				<span class="sm-countdown__value" data-wp-text="context.display.<?php echo esc_attr( $sm_unit ); ?>">
+					<?php echo esc_html( $sm_display[ $sm_unit ] ); ?>
 				</span>
 				<span class="sm-countdown__label">
 					<?php echo esc_html( translate_nooped_plural( $sm_labels[ $sm_unit ], $sm_values[ $sm_unit ], 'suitemart' ) ); ?>

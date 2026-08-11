@@ -38,6 +38,27 @@ $sm_wrapper = get_block_wrapper_attributes(
 		'class' => 'sm-marquee sm-marquee--' . $sm_direction . ( $sm_hover ? ' sm-marquee--pause-on-hover' : '' ),
 	)
 );
+
+/*
+ * The toggle's label depends on whether the strip is playing, so it is bound
+ * rather than printed. Directives are evaluated on the server as well, and a
+ * `data-wp-bind--aria-label` whose expression resolves to nothing *removes* the
+ * attribute — which is how this button first shipped with no accessible name.
+ *
+ * The server cannot run the derived getter that view.js defines, so
+ * `toggleLabel` is seeded with its correct initial value here. The strip always
+ * starts playing, so that value is the same for every marquee on the page.
+ * Once the module loads, view.js's getter supersedes it and becomes reactive
+ * per block.
+ */
+wp_interactivity_state(
+	'suitemart/marquee',
+	array(
+		'pauseLabel'  => __( 'Pause the scrolling strip', 'suitemart' ),
+		'playLabel'   => __( 'Resume the scrolling strip', 'suitemart' ),
+		'toggleLabel' => __( 'Pause the scrolling strip', 'suitemart' ),
+	)
+);
 ?>
 <div
 	<?php echo $sm_wrapper; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() escapes its output. ?>
@@ -72,10 +93,6 @@ $sm_wrapper = get_block_wrapper_attributes(
 		data-wp-bind--hidden="!context.isAnimating"
 		data-wp-on--click="actions.toggle"
 		data-wp-bind--aria-label="state.toggleLabel"
-		<?php // Both labels are shipped up front: the server cannot know which state the button will be in when it is read. ?>
-		data-label-pause="<?php echo esc_attr__( 'Pause the scrolling strip', 'suitemart' ); ?>"
-		data-label-play="<?php echo esc_attr__( 'Resume the scrolling strip', 'suitemart' ); ?>"
-		aria-label="<?php echo esc_attr__( 'Pause the scrolling strip', 'suitemart' ); ?>"
 	>
 		<span class="sm-marquee__toggle-icon" data-wp-bind--hidden="!context.isPlaying">
 			<?php

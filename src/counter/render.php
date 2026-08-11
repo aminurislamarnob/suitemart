@@ -7,6 +7,14 @@
  * animates from the start value up to it, so the number is never wrong or
  * missing while scripts load.
  *
+ * The displayed string is bound from *context* rather than state, and that is
+ * load-bearing twice over. Directives are evaluated on the server too, so a
+ * `data-wp-text` the server cannot resolve blanks the element — which is what
+ * a `state.display` getter did here, shipping empty counters to anyone without
+ * JavaScript. State is also global to the namespace, so several counters on
+ * one page would have shared a single value. Context is per block and
+ * resolvable on both sides.
+ *
  * @package Suitemart
  *
  * @var array<string, mixed> $attributes Block attributes.
@@ -42,7 +50,7 @@ $sm_wrapper = get_block_wrapper_attributes(
 			'start'    => $sm_start,
 			'end'      => $sm_end,
 			'duration' => $sm_duration,
-			'value'    => $sm_end,
+			'display'  => number_format_i18n( $sm_end ),
 		)
 	);
 	?>
@@ -60,7 +68,7 @@ $sm_wrapper = get_block_wrapper_attributes(
 		<?php if ( '' !== $sm_prefix ) : ?>
 			<span class="sm-counter__affix"><?php echo esc_html( $sm_prefix ); ?></span>
 		<?php endif; ?>
-		<span class="sm-counter__number" data-wp-text="state.display"><?php echo esc_html( number_format_i18n( $sm_end ) ); ?></span>
+		<span class="sm-counter__number" data-wp-text="context.display"><?php echo esc_html( number_format_i18n( $sm_end ) ); ?></span>
 		<?php if ( '' !== $sm_suffix ) : ?>
 			<span class="sm-counter__affix"><?php echo esc_html( $sm_suffix ); ?></span>
 		<?php endif; ?>

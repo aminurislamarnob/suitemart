@@ -34,18 +34,15 @@ const stripIds = ( root ) => {
 	);
 };
 
-store( 'suitemart/marquee', {
+// `state` is destructured from the store so the label getter can read the two
+// strings render.php seeded. They have to live in state rather than on the
+// element: the `aria-label` binding is evaluated on the server as well as in
+// the browser, and an expression the server cannot resolve *removes* the
+// attribute, which left this button with no accessible name at all.
+const { state } = store( 'suitemart/marquee', {
 	state: {
 		get toggleLabel() {
-			// Not translated through the store: the server cannot know which
-			// state the button will be in, so the two labels are shipped as
-			// data attributes on the root instead.
-			const { ref } = getElement();
-			const context = getContext();
-
-			return context.isPlaying
-				? ref.dataset.labelPause
-				: ref.dataset.labelPlay;
+			return getContext().isPlaying ? state.pauseLabel : state.playLabel;
 		},
 	},
 

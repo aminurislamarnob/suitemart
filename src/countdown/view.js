@@ -39,24 +39,25 @@ const toUnits = ( ms ) => {
 const format = ( value, pad ) =>
 	pad ? String( value ).padStart( 2, '0' ) : String( value );
 
+/**
+ * Formats a whole set of units the way render.php does.
+ *
+ * The two must agree: the server prints the first frame and this takes over
+ * from it, so any difference in padding shows as a flicker on load.
+ *
+ * @param {{days:number,hours:number,minutes:number,seconds:number}} values Unit values.
+ * @return {{days:string,hours:string,minutes:string,seconds:string}} Display strings.
+ */
+const toDisplay = ( values ) => ( {
+	days: format( values.days, false ),
+	hours: format( values.hours, true ),
+	minutes: format( values.minutes, true ),
+	seconds: format( values.seconds, true ),
+} );
+
 store(
 	'suitemart/countdown',
 	{
-		state: {
-			get days() {
-				return format( getContext().values.days, false );
-			},
-			get hours() {
-				return format( getContext().values.hours, true );
-			},
-			get minutes() {
-				return format( getContext().values.minutes, true );
-			},
-			get seconds() {
-				return format( getContext().values.seconds, true );
-			},
-		},
-
 		callbacks: {
 			/**
 			 * Starts ticking, and stops when the deadline passes.
@@ -71,6 +72,7 @@ store(
 
 					if ( remaining <= 0 ) {
 						context.values = toUnits( 0 );
+						context.display = toDisplay( context.values );
 						context.isExpired = true;
 						// Nothing left to count; stop rather than keep firing.
 						clearInterval( timer );
@@ -78,6 +80,7 @@ store(
 					}
 
 					context.values = toUnits( remaining );
+					context.display = toDisplay( context.values );
 				};
 
 				tick();

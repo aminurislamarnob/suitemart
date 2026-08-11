@@ -131,6 +131,80 @@ class Test_Block_Render extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Blocks that bind text or labels must still render them without JavaScript.
+	 *
+	 * Interactivity directives are processed on the server as well as in the
+	 * browser, and an expression the server cannot resolve does not leave the
+	 * markup alone — it blanks the element or strips the attribute. A getter
+	 * defined only in view.js is exactly such an expression, which shipped
+	 * empty counters and an unlabelled pause button before this test existed.
+	 *
+	 * Binding from per-block context instead fixes both, and this asserts it
+	 * stays fixed.
+	 *
+	 * @dataProvider data_bound_output
+	 *
+	 * @param string               $block_name Registered block name.
+	 * @param array<string, mixed> $attributes Attributes producing visible output.
+	 * @param string               $pattern    Regex the rendered markup must match.
+	 * @param string               $why        What breaks when it does not.
+	 * @param string               $inner      Inner block markup, for container blocks
+	 *                                         that render nothing when empty.
+	 */
+	public function test_bound_output_survives_without_javascript(
+		string $block_name,
+		array $attributes,
+		string $pattern,
+		string $why,
+		string $inner = ''
+	): void {
+		if ( ! WP_Block_Type_Registry::get_instance()->is_registered( $block_name ) ) {
+			$this->markTestSkipped( sprintf( '%s is not registered here.', $block_name ) );
+		}
+
+		$html = render_block(
+			array(
+				'blockName'    => $block_name,
+				'attrs'        => $attributes,
+				'innerBlocks'  => array(),
+				'innerHTML'    => $inner,
+				'innerContent' => '' === $inner ? array() : array( $inner ),
+			)
+		);
+
+		$this->assertMatchesRegularExpression( $pattern, $html, $why );
+	}
+
+	/**
+	 * Blocks whose visible output comes from a directive binding.
+	 *
+	 * @return array<string, array{0: string, 1: array<string, mixed>, 2: string, 3: string, 4?: string}>
+	 */
+	public function data_bound_output(): array {
+		return array(
+			'counter value'      => array(
+				'suitemart/counter',
+				array( 'end' => 4200 ),
+				'/sm-counter__number[^>]*>\s*4,?200\s*</',
+				'The counter rendered no number, so it is blank until JavaScript runs.',
+			),
+			'countdown digits'   => array(
+				'suitemart/countdown',
+				array( 'endDate' => '2099-01-01T00:00:00' ),
+				'/sm-countdown__value[^>]*>\s*\d+\s*</',
+				'The countdown rendered no digits, so it is blank until JavaScript runs.',
+			),
+			'marquee pause name' => array(
+				'suitemart/marquee',
+				array(),
+				'/<button[^>]*sm-marquee__toggle[^>]*aria-label="[^"]+"|aria-label="[^"]+"[^>]*sm-marquee__toggle/',
+				'The pause button has no accessible name, so a screen reader announces it only as "button".',
+				'<p>Free delivery</p>',
+			),
+		);
+	}
+
+	/**
 	 * Commerce blocks must not register when WooCommerce is unavailable.
 	 */
 	public function test_commerce_blocks_require_woocommerce(): void {
