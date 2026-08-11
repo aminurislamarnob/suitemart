@@ -1,0 +1,53 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "suitemart/nav-item",
+	"title": "Navigation Item",
+	"category": "suitemart",
+	"icon": "admin-links",
+	"description": "A navigation link, or a trigger that opens a mega menu panel.",
+	"parent": [ "suitemart/navigation" ],
+	"textdomain": "suitemart",
+	"attributes": {
+		"label": {
+			"type": "string",
+			"default": ""
+		},
+		"url": {
+			"type": "string",
+			"default": ""
+		},
+		"opensInNewTab": {
+			"type": "boolean",
+			"default": false
+		},
+		"rel": {
+			"type": "string",
+			"default": ""
+		},
+		"hasPanel": {
+			"type": "boolean",
+			"default": false
+		},
+		"badge": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"supports": {
+		"interactivity": true,
+		"html": false,
+		"reusable": false,
+		"spacing": {
+			"padding": true
+		},
+		"typography": {
+			"fontSize": true,
+			"__experimentalFontWeight": true
+		}
+	},
+	"allowedBlocks": [ "suitemart/mega-panel" ],
+	"render": "file:./render.php",
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css"
+}

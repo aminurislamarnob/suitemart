@@ -1,0 +1,57 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "suitemart/mega-panel",
+	"title": "Mega Panel",
+	"category": "suitemart",
+	"icon": "layout",
+	"description": "A dropdown panel that accepts any blocks — product grids, banners, columns, anything.",
+	"parent": [ "suitemart/nav-item" ],
+	"textdomain": "suitemart",
+	"attributes": {
+		"panelWidth": {
+			"type": "string",
+			"enum": [ "auto", "content", "wide", "full" ],
+			"default": "auto"
+		},
+		"align": {
+			"type": "string",
+			"enum": [ "start", "center", "end" ],
+			"default": "start"
+		}
+	},
+	"supports": {
+		"interactivity": true,
+		"html": false,
+		"reusable": false,
+		"color": {
+			"text": true,
+			"background": true,
+			"link": true
+		},
+		"typography": {
+			"fontSize": true
+		},
+		"spacing": {
+			"padding": true,
+			"blockGap": true
+		},
+		"__experimentalBorder": {
+			"color": true,
+			"radius": true,
+			"style": true,
+			"width": true
+		},
+		"shadow": true,
+		"layout": {
+			"allowSwitching": true,
+			"allowInheriting": false,
+			"default": {
+				"type": "constrained"
+			}
+		}
+	},
+	"render": "file:./render.php",
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css"
+}

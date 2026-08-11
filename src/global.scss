@@ -1,0 +1,140 @@
+// Global stylesheet.
+//
+// Deliberately small (decision 16). Only three things belong here: cross-cutting
+// resets theme.json cannot express, styles for core blocks that need logical
+// properties, and the icon primitive. Everything else lives in a block's own
+// stylesheet and loads only when that block is on the page.
+
+@use "_shared/breakpoints" as *;
+@use "_shared/mixins" as *;
+
+/* -------------------------------------------------------------------------
+   Document
+   ---------------------------------------------------------------------- */
+
+html {
+	scroll-behavior: auto;
+
+	@include motion-safe {
+		scroll-behavior: smooth;
+	}
+}
+
+body {
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizespeed;
+}
+
+// Anchored headings must not hide under a sticky header.
+:target {
+	scroll-margin-block-start: 6rem;
+}
+
+/* -------------------------------------------------------------------------
+   Focus
+   ---------------------------------------------------------------------- */
+
+// A single, consistent focus treatment across the whole theme. theme.json sets
+// focus outlines per element; this catches everything else.
+:where(a, button, input, select, textarea, summary, [tabindex]) {
+	@include focus-ring;
+}
+
+.sm-skip-link {
+	@include visually-hidden;
+
+	&:focus {
+		position: fixed;
+		z-index: var(--wp--custom--z--modal);
+		clip: auto;
+		clip-path: none;
+		inset-block-start: 1rem;
+		inset-inline-start: 1rem;
+		width: auto;
+		height: auto;
+		padding: 0.75rem 1.25rem;
+		border-radius: var(--wp--custom--radius--md);
+		background-color: var(--wp--preset--color--base);
+		box-shadow: var(--wp--preset--shadow--lg);
+		color: var(--wp--preset--color--contrast);
+		text-decoration: none;
+		white-space: nowrap;
+	}
+}
+
+/* -------------------------------------------------------------------------
+   Motion
+   ---------------------------------------------------------------------- */
+
+// Belt and braces: individual blocks wrap their transitions in `motion-safe`,
+// but a user who asks for reduced motion should never see animation from a
+// third-party block either.
+@media (prefers-reduced-motion: reduce) {
+
+	*,
+	*::before,
+	*::after {
+		transition-duration: 0.01ms !important;
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		scroll-behavior: auto !important;
+	}
+}
+
+/* -------------------------------------------------------------------------
+   Icons
+   ---------------------------------------------------------------------- */
+
+.sm-icon-sprite {
+	display: none;
+}
+
+.sm-icon {
+	display: inline-block;
+	flex: none;
+	width: 1em;
+	height: 1em;
+	vertical-align: middle;
+	fill: none;
+	stroke: currentcolor;
+	stroke-width: 1.75;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+/* -------------------------------------------------------------------------
+   Core block corrections
+   ---------------------------------------------------------------------- */
+
+// theme.json cannot express logical properties, so asymmetric core-block styles
+// live here instead — otherwise they would sit on the wrong side in RTL.
+.wp-block-quote {
+	// Reset core's physical border before applying a logical one, so the accent
+	// bar follows the writing direction instead of always sitting on the left.
+	border: 0;
+	border-inline-start: 3px solid var(--wp--preset--color--primary);
+	padding-inline-start: var(--wp--preset--spacing--40);
+}
+
+.wp-block-image {
+
+	img {
+		height: auto;
+	}
+}
+
+// Core renders an empty <figcaption> wrapper even with no caption.
+.wp-block-image figcaption:empty {
+	display: none;
+}
+
+/* -------------------------------------------------------------------------
+   WooCommerce corrections
+   ---------------------------------------------------------------------- */
+
+// Woo's block templates assume a container; ours is supplied by the template's
+// group blocks, so reset Woo's own width constraint.
+.woocommerce-notices-wrapper:empty {
+	display: none;
+}

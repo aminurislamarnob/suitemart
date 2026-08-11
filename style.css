@@ -1,0 +1,19 @@
+/*
+Theme Name: Suitemart
+Theme URI: https://github.com/aminurislamarnob/suitemart
+Author: Md. Aminur Islam
+Author URI: https://github.com/aminurislamarnob
+Description: A multipurpose full site editing block theme for WooCommerce. Built entirely on the Site Editor, theme.json and the Interactivity API — no page builder, no jQuery, no generated-CSS engine.
+Requires at least: 6.7
+Tested up to: 7.0
+Requires PHP: 8.1
+Version: 0.1.0
+License: GNU General Public License v3.0 or later
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
+Text Domain: suitemart
+Tags: full-site-editing, block-patterns, e-commerce, block-styles, style-variations, wide-blocks, accessibility-ready, rtl-language-support, translation-ready
+
+Suitemart is distributed under the terms of the GNU GPL v3 or later.
+All styles live in theme.json and per-block stylesheets; this file carries the
+theme header only.
+*/

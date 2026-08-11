@@ -1,0 +1,72 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "suitemart/navigation",
+	"title": "Navigation",
+	"category": "suitemart",
+	"icon": "menu",
+	"description": "A navigation bar whose items can open full mega menu panels containing any blocks.",
+	"keywords": [ "menu", "mega menu", "navigation", "header" ],
+	"textdomain": "suitemart",
+	"attributes": {
+		"mobileBreakpoint": {
+			"type": "string",
+			"enum": [ "sm", "md", "lg", "xl", "never" ],
+			"default": "lg"
+		},
+		"submenuTrigger": {
+			"type": "string",
+			"enum": [ "hover", "click" ],
+			"default": "hover"
+		},
+		"ariaLabel": {
+			"type": "string",
+			"default": ""
+		},
+		"openIcon": {
+			"type": "string",
+			"default": "menu"
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"align": [ "wide", "full" ],
+		"interactivity": true,
+		"html": false,
+		"color": {
+			"text": true,
+			"background": true,
+			"link": true,
+			"__experimentalDefaultControls": {
+				"text": true
+			}
+		},
+		"typography": {
+			"fontSize": true,
+			"lineHeight": true,
+			"__experimentalFontFamily": true,
+			"__experimentalFontWeight": true,
+			"__experimentalTextTransform": true,
+			"__experimentalLetterSpacing": true
+		},
+		"spacing": {
+			"blockGap": true,
+			"padding": true,
+			"margin": [ "top", "bottom" ]
+		},
+		"layout": {
+			"allowSwitching": false,
+			"allowInheriting": false,
+			"allowVerticalAlignment": true,
+			"default": {
+				"type": "flex",
+				"flexWrap": "wrap"
+			}
+		}
+	},
+	"allowedBlocks": [ "suitemart/nav-item" ],
+	"render": "file:./render.php",
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css",
+	"viewScriptModule": "file:./view.js"
+}

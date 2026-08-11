@@ -1,0 +1,40 @@
+// Breakpoints.
+//
+// Mobile-first only: every `bp()` call is a min-width query. There is no
+// general max-width mixin on purpose — mixing the two directions is how
+// responsive stylesheets become impossible to reason about. `bp-below()` is the
+// deliberate exception for components whose mobile behaviour genuinely must
+// stop at a breakpoint rather than start (the nav drawer, off-canvas).
+//
+// Usage:
+//   @use "../_shared/breakpoints" as *;
+//   .sm-thing { display: block; @include bp(md) { display: flex; } }
+
+@use "sass:map";
+
+$sm-breakpoints: (
+	sm: 576px,
+	md: 768px,
+	lg: 1024px,
+	xl: 1280px,
+);
+
+@mixin bp($name) {
+	@if not map.has-key($sm-breakpoints, $name) {
+		@error "Unknown breakpoint `#{$name}`. Use one of: #{map.keys($sm-breakpoints)}.";
+	}
+
+	@media (min-width: map.get($sm-breakpoints, $name)) {
+		@content;
+	}
+}
+
+@mixin bp-below($name) {
+	@if not map.has-key($sm-breakpoints, $name) {
+		@error "Unknown breakpoint `#{$name}`. Use one of: #{map.keys($sm-breakpoints)}.";
+	}
+
+	@media (max-width: (map.get($sm-breakpoints, $name) - 0.02px)) {
+		@content;
+	}
+}

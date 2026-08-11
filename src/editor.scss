@@ -1,0 +1,53 @@
+// Editor stylesheet.
+//
+// Loaded into the editor canvas via add_editor_style(). Only corrections that
+// make the editor match the front end belong here — never new design.
+//
+// Block stylesheets declared as `style` in block.json already load in the
+// editor, so this file must not duplicate them.
+
+@use "_shared/breakpoints" as *;
+@use "_shared/mixins" as *;
+
+// Server-rendered blocks show a loading state before their preview arrives;
+// without a minimum height the canvas jumps as each one resolves.
+.wp-block[data-type^="suitemart/"] .components-placeholder {
+	min-height: 8rem;
+}
+
+// The editor canvas has no sticky header, so anchor offsets are unwanted there.
+.editor-styles-wrapper :target {
+	scroll-margin-block-start: 0;
+}
+
+// Interactivity API directives do nothing in the editor. Blocks that are hidden
+// on the front end until opened (mega panels, off-canvas, popups) must stay
+// visible and editable in the canvas.
+.editor-styles-wrapper {
+
+	.sm-mega-panel,
+	.sm-off-canvas__panel,
+	.sm-popup__dialog {
+		position: static;
+		visibility: visible;
+		transform: none;
+		opacity: 1;
+		pointer-events: auto;
+	}
+}
+
+// Give container blocks a faint outline while editing so empty ones are findable.
+.editor-styles-wrapper .block-editor-block-list__block {
+
+	&[data-type="suitemart/mega-panel"],
+	&[data-type="suitemart/off-canvas"] {
+
+		&:empty::after {
+			display: block;
+			padding: var(--wp--preset--spacing--40);
+			border: 1px dashed var(--wp--preset--color--neutral-300);
+			border-radius: var(--wp--custom--radius--md);
+			content: "";
+		}
+	}
+}

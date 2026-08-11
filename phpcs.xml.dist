@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<ruleset name="Suitemart">
+	<description>Coding standards for the Suitemart theme.</description>
+
+	<file>.</file>
+
+	<exclude-pattern>/build/*</exclude-pattern>
+	<exclude-pattern>/node_modules/*</exclude-pattern>
+	<exclude-pattern>/vendor/*</exclude-pattern>
+
+	<arg name="extensions" value="php"/>
+	<arg name="colors"/>
+	<arg name="basepath" value="."/>
+	<arg value="ps"/>
+	<arg name="parallel" value="8"/>
+
+	<rule ref="WordPress">
+		<!-- PSR-4 autoloading via Composer; WP's file naming rules do not apply. -->
+		<exclude name="WordPress.Files.FileName"/>
+	</rule>
+
+	<config name="minimum_wp_version" value="6.7"/>
+	<config name="testVersion" value="8.1-"/>
+
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="suitemart"/>
+			</property>
+		</properties>
+	</rule>
+
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="suitemart"/>
+				<element value="SUITEMART"/>
+				<element value="Suitemart"/>
+			</property>
+		</properties>
+		<!--
+			Block render templates are executed inside WP_Block::render(), so the
+			variables they declare are function-scoped, not global. PHPCS cannot
+			see the enclosing scope and reports every local as an unprefixed
+			global. They are prefixed `$sm_` by convention regardless.
+		-->
+		<exclude-pattern>/src/*/render.php</exclude-pattern>
+	</rule>
+
+	<rule ref="WordPress.Security.EscapeOutput">
+		<properties>
+			<property name="customEscapingFunctions" type="array">
+				<!-- Core builds and escapes the full attribute string itself. -->
+				<element value="get_block_wrapper_attributes"/>
+				<element value="wp_interactivity_data_wp_context"/>
+				<!-- Returns markup already passed through wp_kses(). -->
+				<element value="suitemart_get_icon"/>
+			</property>
+		</properties>
+	</rule>
+
+	<!--
+		Tests read theme files straight off disk to assert their structure. The
+		WP_Filesystem abstraction exists for runtime code that may run on remote
+		or restricted filesystems; a test harness is neither.
+	-->
+	<rule ref="WordPress.WP.AlternativeFunctions">
+		<exclude-pattern>/tests/*</exclude-pattern>
+	</rule>
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<exclude-pattern>/tests/*</exclude-pattern>
+	</rule>
+	<rule ref="WordPress.NamingConventions.ValidVariableName">
+		<exclude-pattern>/tests/*</exclude-pattern>
+	</rule>
+</ruleset>

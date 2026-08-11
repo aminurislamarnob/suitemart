@@ -1,0 +1,190 @@
+@use "../_shared/breakpoints" as *;
+@use "../_shared/mixins" as *;
+
+// The breakpoint lives here, in CSS, and the view module reads it back through
+// `--sm-nav-is-overlay`. That keeps one source of truth: change the breakpoint
+// in this file and the JavaScript follows automatically.
+//
+// 1 = the drawer is an overlay (mobile), 0 = the drawer is the nav bar (desktop).
+
+.sm-nav {
+	--sm-nav-is-overlay: 1;
+
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: var(--wp--style--block-gap, 1rem);
+
+	@each $name in (sm, md, lg, xl) {
+		&--break-#{$name} {
+			@include bp($name) {
+				--sm-nav-is-overlay: 0;
+			}
+		}
+	}
+
+	&--break-never {
+		--sm-nav-is-overlay: 1;
+	}
+}
+
+/* -------------------------------------------------------------------------
+   Toggle
+   ---------------------------------------------------------------------- */
+
+.sm-nav__toggle {
+	@include tap-target;
+	@include focus-ring;
+
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	padding: 0.5rem;
+	border: 0;
+	border-radius: var(--wp--custom--radius--md);
+	background: none;
+	color: inherit;
+	font: inherit;
+	cursor: pointer;
+}
+
+.sm-nav__toggle-icon {
+	display: inline-flex;
+	font-size: 1.5rem;
+
+	&[hidden] {
+		display: none;
+	}
+}
+
+.sm-nav__toggle-label {
+	@include visually-hidden;
+}
+
+/* -------------------------------------------------------------------------
+   List
+   ---------------------------------------------------------------------- */
+
+.sm-nav__list {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+/* -------------------------------------------------------------------------
+   Drawer — mobile overlay
+   ---------------------------------------------------------------------- */
+
+.sm-nav__drawer {
+	position: fixed;
+	z-index: var(--wp--custom--z--drawer);
+	inset-block: 0;
+	inset-inline-start: 0;
+	overflow-y: auto;
+	width: min(22rem, 85vw);
+	padding: var(--wp--preset--spacing--60) var(--wp--preset--spacing--40);
+	background-color: var(--wp--preset--color--base);
+	box-shadow: var(--wp--preset--shadow--lg);
+	transform: translateX(-100%);
+	visibility: hidden;
+
+	@include motion-safe {
+		transition:
+			transform var(--wp--custom--transition--base),
+			visibility var(--wp--custom--transition--base);
+	}
+}
+
+// In right-to-left writing modes the drawer slides in from the other edge.
+[dir="rtl"] .sm-nav__drawer {
+	transform: translateX(100%);
+}
+
+.sm-nav.is-drawer-open .sm-nav__drawer {
+	transform: translateX(0);
+	visibility: visible;
+}
+
+.sm-nav__scrim {
+	position: fixed;
+	z-index: calc(var(--wp--custom--z--drawer) - 1);
+	inset: 0;
+	background-color: var(--wp--custom--color--scrim);
+	opacity: 0;
+	pointer-events: none;
+
+	@include motion-safe {
+		transition: opacity var(--wp--custom--transition--base);
+	}
+}
+
+.sm-nav.is-drawer-open .sm-nav__scrim {
+	opacity: 1;
+	pointer-events: auto;
+}
+
+/* -------------------------------------------------------------------------
+   Desktop — the drawer becomes the bar
+   ---------------------------------------------------------------------- */
+
+@mixin nav-desktop {
+
+	.sm-nav__toggle,
+	.sm-nav__scrim {
+		display: none;
+	}
+
+	.sm-nav__drawer {
+		position: static;
+		overflow: visible;
+		width: auto;
+		padding: 0;
+		background: none;
+		box-shadow: none;
+		transform: none;
+		visibility: visible;
+	}
+
+	.sm-nav__list {
+		flex-direction: row;
+		align-items: center;
+		gap: var(--wp--style--block-gap, 1.5rem);
+	}
+}
+
+.sm-nav--break-sm {
+	@include bp(sm) {
+		@include nav-desktop;
+	}
+}
+
+.sm-nav--break-md {
+	@include bp(md) {
+		@include nav-desktop;
+	}
+}
+
+.sm-nav--break-lg {
+	@include bp(lg) {
+		@include nav-desktop;
+	}
+}
+
+.sm-nav--break-xl {
+	@include bp(xl) {
+		@include nav-desktop;
+	}
+}
+
+/* -------------------------------------------------------------------------
+   Body scroll lock
+   ---------------------------------------------------------------------- */
+
+// Set on <html> by the view module while the drawer is open.
+.sm-has-drawer-open {
+	overflow: hidden;
+}
