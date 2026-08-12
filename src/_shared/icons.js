@@ -58,6 +58,7 @@ export const ICON_NAMES = [
 	'shuffle',
 	'star',
 	'trash',
+	'trending-up',
 	'truck',
 	'user',
 	'users',

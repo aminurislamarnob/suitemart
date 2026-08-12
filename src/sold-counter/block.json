@@ -1,0 +1,30 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "suitemart/sold-counter",
+	"title": "Sold Counter",
+	"category": "suitemart-commerce",
+	"icon": "chart-bar",
+	"description": "Displays the total number of units sold for a product.",
+	"keywords": [ "product", "sold", "sales", "counter" ],
+	"textdomain": "suitemart",
+	"usesContext": [ "postId" ],
+	"supports": {
+		"anchor": true,
+		"html": false,
+		"color": {
+			"text": true,
+			"background": true
+		},
+		"typography": {
+			"fontSize": true
+		},
+		"spacing": {
+			"padding": true,
+			"margin": true
+		}
+	},
+	"render": "file:./render.php",
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css"
+}
