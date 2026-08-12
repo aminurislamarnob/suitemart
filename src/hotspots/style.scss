@@ -1,0 +1,225 @@
+@use "../_shared/breakpoints" as *;
+
+.sm-hotspots {
+	--sm-hotspot-size: 2rem;
+	--sm-hotspot-panel-width: 16rem;
+}
+
+.sm-hotspots__frame {
+	position: relative;
+	display: block;
+
+	/*
+	 * Forced left-to-right, on purpose, and the one place in this theme where
+	 * that is right. Everything else uses logical properties so it mirrors in
+	 * Arabic or Hebrew — but a pin marks a place in a photograph, and the
+	 * photograph does not mirror. Flipping the markers would move the pin off
+	 * the lamp it is pointing at. Each panel carries its own `dir` so its text
+	 * still reads the right way round; see render.php.
+	 */
+	direction: ltr;
+}
+
+.sm-hotspots__image {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+/* Markers */
+
+/*
+ * Mobile first, and the two layouts differ in which element is positioned.
+ * Below `sm` the marker is placed on the image and the panel is a sheet across
+ * the bottom of the frame, so the point itself must not establish a containing
+ * block. From `sm` up the point carries the position and the panel is anchored
+ * to it.
+ */
+
+.sm-hotspots__marker {
+	position: absolute;
+	display: grid;
+	inset-block-start: var(--sm-hotspot-y, 50%);
+	inset-inline-start: var(--sm-hotspot-x, 50%);
+	translate: -50% -50%;
+	width: var(--sm-hotspot-size);
+	height: var(--sm-hotspot-size);
+	border: 0;
+	border-radius: var(--wp--custom--radius--pill);
+	background: var(--wp--preset--color--base);
+	box-shadow: 0 2px 8px var(--wp--custom--color--scrim);
+	color: var(--wp--preset--color--contrast);
+	cursor: pointer;
+	font-size: var(--wp--preset--font-size--sm);
+	line-height: 1;
+	place-items: center;
+	transition: background var(--wp--custom--transition--fast),
+		color var(--wp--custom--transition--fast);
+}
+
+.sm-hotspots__marker:hover,
+.sm-hotspots__point.is-open .sm-hotspots__marker {
+	background: var(--wp--preset--color--primary);
+	color: var(--wp--preset--color--base);
+}
+
+.sm-hotspots__marker:focus-visible {
+	outline: 2px solid var(--wp--preset--color--primary);
+	outline-offset: 3px;
+}
+
+/*
+ * The mark itself is drawn here rather than shipped as an icon: three variants
+ * of a circle, a cross and a number are cheaper as two pseudo-elements than as
+ * three SVG symbols, and they inherit `currentcolor` for free.
+ */
+
+.sm-hotspots--dot .sm-hotspots__marker::before {
+	width: 0.5rem;
+	height: 0.5rem;
+	border-radius: var(--wp--custom--radius--pill);
+	background: currentcolor;
+	content: "";
+}
+
+.sm-hotspots--plus .sm-hotspots__marker::before {
+	content: "+";
+	font-size: 1.25rem;
+	font-weight: 400;
+}
+
+// A counter, so numbering follows document order and stays right when a marker
+// is dragged, reordered or deleted. Nothing needs to renumber anything.
+.sm-hotspots--number .sm-hotspots__frame {
+	counter-reset: sm-hotspot;
+}
+
+.sm-hotspots--number .sm-hotspots__point {
+	counter-increment: sm-hotspot;
+}
+
+.sm-hotspots--number .sm-hotspots__marker::before {
+	content: counter(sm-hotspot);
+	font-weight: 600;
+}
+
+/* Pulse */
+
+.sm-hotspots.has-pulse .sm-hotspots__marker::after {
+	position: absolute;
+	border: 1px solid var(--wp--preset--color--primary);
+	border-radius: var(--wp--custom--radius--pill);
+	animation: sm-hotspot-pulse 2s ease-out infinite;
+	content: "";
+	inset: 0;
+}
+
+.sm-hotspots.has-pulse .sm-hotspots__point.is-open .sm-hotspots__marker::after {
+	// Once the panel is open the marker has done its job of attracting the eye,
+	// and a pulsing ring beside open text is just noise.
+	animation: none;
+	opacity: 0;
+}
+
+@keyframes sm-hotspot-pulse {
+
+	0% {
+		opacity: 0.9;
+		scale: 1;
+	}
+
+	70%,
+	100% {
+		opacity: 0;
+		scale: 1.9;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+	.sm-hotspots.has-pulse .sm-hotspots__marker::after {
+		animation: none;
+	}
+
+	.sm-hotspots__marker {
+		transition: none;
+	}
+}
+
+/* Panels */
+
+// Narrow screens have no room for a panel beside a marker, so every placement
+// collapses to one sheet across the bottom of the frame.
+.sm-hotspots__panel {
+	position: absolute;
+	z-index: var(--wp--custom--z--dropdown);
+	inset-block: auto 0;
+	inset-inline: 0;
+	padding: var(--wp--preset--spacing--30);
+	border-radius: var(--wp--custom--radius--md);
+	background: var(--wp--preset--color--base);
+	box-shadow: 0 6px 24px var(--wp--custom--color--scrim);
+	color: var(--wp--preset--color--contrast);
+	font-size: var(--wp--preset--font-size--sm);
+	text-align: start;
+
+	> :first-child {
+		margin-block-start: 0;
+	}
+
+	> :last-child {
+		margin-block-end: 0;
+	}
+}
+
+// From `sm` up there is room to anchor the panel to its own marker, so the
+// point takes over the positioning and the marker sits inside it.
+@include bp(sm) {
+
+	.sm-hotspots__point {
+		position: absolute;
+		inset-block-start: var(--sm-hotspot-y, 50%);
+		inset-inline-start: var(--sm-hotspot-x, 50%);
+		translate: -50% -50%;
+	}
+
+	.sm-hotspots__marker {
+		position: relative;
+		inset: auto;
+		translate: none;
+	}
+
+	.sm-hotspots__panel {
+		inset: auto;
+		width: max-content;
+		max-width: min(var(--sm-hotspot-panel-width), 60vw);
+	}
+
+	.sm-hotspots__point--top .sm-hotspots__panel,
+	.sm-hotspots__point--bottom .sm-hotspots__panel {
+		inset-inline-start: 50%;
+		translate: -50% 0;
+	}
+
+	.sm-hotspots__point--top .sm-hotspots__panel {
+		inset-block-end: calc(var(--sm-hotspot-size) / 2 + 0.75rem);
+	}
+
+	.sm-hotspots__point--bottom .sm-hotspots__panel {
+		inset-block-start: calc(var(--sm-hotspot-size) / 2 + 0.75rem);
+	}
+
+	.sm-hotspots__point--start .sm-hotspots__panel,
+	.sm-hotspots__point--end .sm-hotspots__panel {
+		inset-block-start: 50%;
+		translate: 0 -50%;
+	}
+
+	.sm-hotspots__point--start .sm-hotspots__panel {
+		inset-inline-end: calc(var(--sm-hotspot-size) / 2 + 0.75rem);
+	}
+
+	.sm-hotspots__point--end .sm-hotspots__panel {
+		inset-inline-start: calc(var(--sm-hotspot-size) / 2 + 0.75rem);
+	}
+}

@@ -1,0 +1,46 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "suitemart/hotspot",
+	"title": "Hotspot",
+	"category": "suitemart",
+	"icon": "marker",
+	"description": "One marker pinned to a hotspot image, with a panel that opens when it is activated.",
+	"parent": [ "suitemart/hotspots" ],
+	"textdomain": "suitemart",
+	"attributes": {
+		"x": {
+			"type": "number",
+			"default": 50
+		},
+		"y": {
+			"type": "number",
+			"default": 50
+		},
+		"label": {
+			"type": "string",
+			"default": ""
+		},
+		"placement": {
+			"type": "string",
+			"enum": [ "top", "bottom", "start", "end" ],
+			"default": "top"
+		}
+	},
+	"supports": {
+		"html": false,
+		"reusable": false,
+		"interactivity": true,
+		"color": {
+			"text": true,
+			"background": true
+		},
+		"typography": {
+			"fontSize": true
+		}
+	},
+	"render": "file:./render.php",
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css",
+	"viewScriptModule": "file:./view.js"
+}

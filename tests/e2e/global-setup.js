@@ -22,6 +22,7 @@ const COMPARE_SLUG = 'suitemart-compare';
 const WISHLIST_SLUG = 'suitemart-wishlist';
 const PRODUCT_BLOCKS_SLUG = 'suitemart-product-blocks';
 const VARIABLE_SLUG = 'suitemart-variable-blocks';
+const HOTSPOTS_SLUG = 'suitemart-hotspots';
 const FIXTURE = 'tests/e2e/fixtures/blocks-page.html';
 
 // Present on the fixture page and nowhere else, so finding it proves the page
@@ -156,6 +157,34 @@ module.exports = async ( config ) => {
 	);
 
 	/*
+	 * Two hotspot images on one page, deliberately. A single one would pass
+	 * every assertion here while sharing ids with its neighbour and opening the
+	 * wrong panel — the exact failure that shipped four size guides with one id
+	 * between them.
+	 */
+	const hotspotImage = importImage(
+		'tests/e2e/fixtures/product-image-1.png'
+	);
+
+	process.env.SUITEMART_HOTSPOTS_URL = ensurePage(
+		HOTSPOTS_SLUG,
+		'Hotspots',
+		[ 'number', 'plus' ]
+			.map(
+				( markerStyle ) =>
+					`<!-- wp:suitemart/hotspots {"mediaId":${ hotspotImage },"markerStyle":"${ markerStyle }"} -->
+<!-- wp:suitemart/hotspot {"x":25,"y":30,"label":"First marker","placement":"bottom"} -->
+<!-- wp:paragraph --><p>First panel, ${ markerStyle }.</p><!-- /wp:paragraph -->
+<!-- /wp:suitemart/hotspot -->
+<!-- wp:suitemart/hotspot {"x":70,"y":65,"label":"Second marker"} -->
+<!-- wp:paragraph --><p>Second panel, ${ markerStyle }.</p><!-- /wp:paragraph -->
+<!-- /wp:suitemart/hotspot -->
+<!-- /wp:suitemart/hotspots -->`
+			)
+			.join( '\n' )
+	);
+
+	/*
 	 * The gallery and the quick view button both read the product from `postId`
 	 * context, and neither belongs on the single-product template: WooCommerce's
 	 * own gallery block stays there until ours handles variation images, and a
@@ -242,6 +271,28 @@ function ensurePage( slug, title, content ) {
 }
 
 /**
+ * Imports a committed fixture image and returns its attachment id.
+ *
+ * From disk, never over the network: a fixture fetched from a remote host makes
+ * the whole suite fail whenever that host is unreachable, and an import guarded
+ * with an `if` quietly turns a spec into an assertion about an empty element.
+ *
+ * @param {string} file Theme-relative path to the image.
+ * @return {string} Attachment id.
+ */
+function importImage( file ) {
+	const attachId = wp( [ 'media', 'import', file, '--porcelain' ] );
+
+	if ( ! /^\d+$/.test( attachId ) ) {
+		throw new Error(
+			`Could not import ${ file }. WP-CLI returned: ${ attachId }`
+		);
+	}
+
+	return attachId;
+}
+
+/**
  * Creates a published product for the commerce specs, and returns its path.
  *
  * WooCommerce is installed in the test environment but ships no products, so
@@ -285,26 +336,13 @@ function ensureProduct() {
 
 	/*
 	 * Real attachments, so wp_get_attachment_image() returns markup rather than
-	 * an empty string and the gallery has something to page through. The files
-	 * are committed and imported from disk: fetching a fixture over the network
-	 * makes the suite fail whenever the remote host is unreachable, and a
-	 * silently skipped import turns the gallery spec into an assertion about an
-	 * empty element.
+	 * an empty string and the gallery has something to page through. See
+	 * importImage() for why they come from disk.
 	 */
 	const gallery = [
 		'tests/e2e/fixtures/product-image-1.png',
 		'tests/e2e/fixtures/product-image-2.png',
-	].map( ( file ) => {
-		const attachId = wp( [ 'media', 'import', file, '--porcelain' ] );
-
-		if ( ! /^\d+$/.test( attachId ) ) {
-			throw new Error(
-				`Could not import ${ file }. WP-CLI returned: ${ attachId }`
-			);
-		}
-
-		return attachId;
-	} );
+	].map( importImage );
 
 	/*
 	 * As WooCommerce itself stores them: the featured image is the first slide

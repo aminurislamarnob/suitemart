@@ -1,0 +1,8 @@
+// A marker's appearance depends entirely on its parent's modifiers — the mark
+// shape, the numbering counter, the pulse — so the rules live in the hotspots
+// stylesheet. This file keeps the one property that has to hold even if a
+// marker somehow renders without its parent's CSS: an unpositioned panel would
+// otherwise push the page around.
+.sm-hotspots__panel {
+	position: absolute;
+}

@@ -1,0 +1,21 @@
+// In the editor a panel is only useful when you can see what you are typing, so
+// the selected marker's panel stays open regardless of the front-end toggle.
+// Everything else about the block looks the same in both places, which is the
+// point of not having a separate editor rendering.
+.sm-hotspots__point .sm-hotspots__panel {
+	display: none;
+}
+
+.sm-hotspots__point.is-open .sm-hotspots__panel {
+	display: block;
+}
+
+// The marker is a drag handle here rather than a button.
+.sm-hotspots__marker {
+	cursor: grab;
+	touch-action: none;
+}
+
+.sm-hotspots__marker:active {
+	cursor: grabbing;
+}
