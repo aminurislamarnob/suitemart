@@ -178,6 +178,44 @@ Use two `glob()` calls.
 parse error. `tools/seed-demo-products.php` is the one file without it, and says
 so in a comment.
 
+**`suitemart_get_icon()` returns markup — it does not print it.** Four blocks
+called it bare, so the icon silently vanished; one of them was a modal's close
+button, which shipped as a visibly empty control. Every call site needs `echo`.
+`tests/phpunit/test-block-output.php` now asserts an `<svg>` reaches the markup.
+
+**Never hardcode a DOM id in a block.** A block appears once on the page you
+tested and twelve times in a product grid. A hardcoded id gave four size guides
+the same `id`, `aria-controls` and `aria-labelledby`, and one click opened all
+four. Derive ids from `postId` context — `suitemart_size_guide_id()` shows the
+shape, including how two sibling blocks with no shared ancestor agree on one.
+Likewise keep per-instance state in **context**, not in `wp_interactivity_state()`:
+global state is global to every instance on the page.
+
+**`supports.interactivity` is what makes the server process directives.** Without
+it the seeded state never reaches the markup, so `data-wp-bind--hidden` does not
+apply and the element flashes visible until hydration. Two blocks shipped with
+`data-wp-*` attributes and no such support.
+
+**`get_woocommerce_currency_symbol()` returns an HTML entity** (`&#36;`, not
+`$`). Seeded into Interactivity state and written out through `data-wp-text` —
+which sets `textContent` — it renders literally as `&#36;19.99`. Decode it with
+`html_entity_decode()`.
+
+**Store API cart writes must be sequential.** They all mutate one session, so
+concurrent `add-item` requests race and drop items; a guest with no session yet
+gets a separate cart per request. `Promise.all` over a set of adds is a bug.
+
+**Never render a nonce into block markup.** Behind a full-page cache it is served
+stale to everyone and every request using it 403s. Read one off the Store API at
+interaction time. There is a test asserting no `render.php` calls
+`wp_create_nonce`.
+
+**A `var()` fallback is not a safety net.** `var( --wp--preset--color--tertiary,
+#b45309 )` hides the fact that the token does not exist *and* stops style
+variations restyling the block, which is the point of decision 6. Reference
+presets bare; `tests/phpunit/test-design-tokens.php` enforces both halves and
+would have caught the nineteen invented tokens that reached `main`.
+
 **Images must be constrained globally.** `src/global.scss` caps `img` at
 `max-width: 100%`. Without it, WooCommerce's full-size gallery image overflowed
 its column, sat invisibly on top of the summary column, and swallowed every
@@ -224,7 +262,19 @@ Two things about the test suites that are easy to get wrong:
 - The PHPUnit bootstrap loads WooCommerce explicitly. The WP test library loads
   no plugins, so without it every commerce test *skips* — and a run that skips
   its entire commerce surface reports green while testing nothing. If you see
-  skips, that is a failure, not a pass.
+  skips, that is a failure, not a pass. Exactly one skip is expected: the
+  inverse-condition guard in `test-block-render.php`, which only runs when
+  WooCommerce is *absent*.
 - Never hardcode a product or page id in an e2e spec. Read the product id off
   the block's `dataset.wpContext`; the fixture page URLs come from environment
   variables exported by `global-setup.js`.
+- **Assert output, not shape.** `toBeVisible()` and `not.toBeEmpty()` pass on a
+  total that reads `&#36;557.00` and on a button with no icon in it. Twelve
+  blocks reached `main` green while carrying six user-visible defects, because
+  nothing checked a rendered icon, a formatted price, a design token, or a
+  second instance of a block on one page. If a defect would survive your test,
+  the test is not testing.
+- Nothing in the fixture setup may reach the network. A fixture downloaded from
+  a remote host fails the suite whenever that host is unreachable, and a
+  download guarded with an `if` turns into a spec asserting against an empty
+  element. The gallery images are committed under `tests/e2e/fixtures/`.

@@ -1,6 +1,6 @@
 # Handoff — state of the work
 
-Last updated: 2026-08-12, at commit `33342ff`.
+Last updated: 2026-08-12, after auditing and repairing the delegated batch B.
 
 Read `AGENTS.md` first — it holds the standing rules. This file is a snapshot:
 what is built, what is verified, and what to pick up next. **Update it when you
@@ -17,46 +17,51 @@ The full plan lives in GitHub issue
 |---|---|
 | **P1 — Foundation** | Complete, with one item outstanding (CSS budget, below) |
 | **P2 batch A — content blocks** | 13 of 18 |
-| **P2 batch B — WooCommerce gaps** | 9 of 15 ← **you are here** |
+| **P2 batch B — WooCommerce gaps** | All 15 built; audited and repaired ← **you are here** |
 | **P2 batch C — site features** | Not started (6 blocks) |
 | **P3 — Design breadth** | 1 of ~15 style variations, 15 of ~100 patterns |
 | **P4 — Integrations** | Not started (27) |
 | **P5 — Hardening** | Not started |
 
-**Green:** 152 PHPUnit tests passing, 70 Playwright tests
-passing / 1 skipped, phpcs clean, PHPStan level 5 clean, ESLint and Stylelint
-clean. CI passes on WP latest *and* WP nightly.
+**Green:** 182 PHPUnit tests passing / 1 skipped (the expected inverse guard),
+75 Playwright tests passing / 1 skipped, phpcs clean, PHPStan level 5 clean,
+ESLint and Stylelint clean.
 
-35 blocks exist under `src/`. 18 templates, 6 parts, 15 patterns, 1 style
+41 blocks exist under `src/`. 18 templates, 6 parts, 20 patterns, 1 style
 variation.
 
 ---
 
-## Pick up here: finish P2 batch B
+## Pick up here: P2 batch A, then batch C
 
-Five blocks remain. Every slug is **already declared** in
-`suitemart_woocommerce_block_slugs()` in `inc/blocks/register.php` — create the
-directory under `src/` and registration is automatic.
+All 15 batch B blocks are built. Twelve of them were written by an outside agent
+and audited afterwards; that audit found twenty defects, six of them visible to
+an end user, on a tree where all seven verification commands passed. They are
+fixed, and the gaps that let them through are now covered by
+`tests/phpunit/test-design-tokens.php`, `tests/phpunit/test-block-output.php`
+and an axe pass over the shop grid. **The new traps in `AGENTS.md` §5 are the
+condensed version — read them before writing another block.**
 
-| Block | Notes |
-|---|---|
-| ~~`product-labels`~~ | Done |
-| ~~`stock-progress-bar`~~ | Done |
-| ~~`sold-counter`~~ | Done |
-| ~~`estimated-delivery`~~ | Done |
-| ~~`product-countdown`~~ | Done |
-| ~~`visitor-counter`~~ | Done |
-| ~~`size-guide` + `size-guide-button`~~ | Done |
-| `quick-view-button` | Modal rendering a product from the Store API. **The most substantial one** — do it when you have a clear run |
-| `fbt-products` | "Frequently bought together". Needs a cart-add for multiple products |
-| `product-gallery` | Thumbnails / vertical / grid variants. Largest surface; leave for last |
+**Still open in batch A:** `hotspots` + `hotspot`, `compare-images`, `view-360`,
+and `lightbox` (PhotoSwipe is already installed, MIT-licensed, not yet imported).
 
-Build them one per commit, each with its PHPUnit render test and at least one
-pattern, each verified against the full command list in `AGENTS.md` §6.
+Build one per commit, each with its PHPUnit render test and at least one pattern,
+each verified against the full command list in `AGENTS.md` §6.
 
-**Also still open in batch A:** `hotspots` + `hotspot`, `compare-images`,
-`view-360`, and `lightbox` (PhotoSwipe is already installed, MIT-licensed, not
-yet imported).
+### Two things left deliberately open
+
+**`suitemart/product-gallery` does not handle variations.** It has no
+variation-image switching, no zoom and no lightbox, so
+`templates/single-product.html` keeps WooCommerce's own
+`product-image-gallery` block. Ours is reachable through the
+`suitemart/commerce-product-gallery` pattern, for simple products. Bringing it
+to parity is what would let it take the template back.
+
+**`suitemart/visitor-counter` invents its number** unless a real source is
+connected through the `suitemart_visitor_count` filter. Fabricated social proof
+is a prohibited commercial practice in the EU and sits inside the FTC's
+endorsement rule, so it is deliberately absent from every template and confined
+to a pattern that says so. Whether it ships at all is the theme owner's call.
 
 ### The pattern to copy
 
