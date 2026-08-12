@@ -83,6 +83,15 @@ jobs:
           WP_ENV_CORE: ${{ matrix.wordpress == 'nightly' && 'WordPress/WordPress#master' || null }}
         run: npx wp-env start --update
 
+      # The plugin URL in .wp-env.json unpacks to an empty directory — wp-env
+      # creates `woocommerce.latest-stable/` and puts nothing in it. Every CI
+      # run from the first commit onwards therefore had no WooCommerce, and the
+      # entire commerce suite reported as skips inside a green run. Installing
+      # it explicitly is deterministic; the bootstrap now refuses to run without
+      # it, so this cannot regress silently again.
+      - name: Install WooCommerce
+        run: npm run env:woo
+
       - name: Install Composer dependencies inside the container
         run: npx wp-env run tests-cli --env-cwd=wp-content/themes/suitemart composer install --no-interaction
 

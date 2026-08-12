@@ -23,6 +23,7 @@
 		"test:e2e:ui": "playwright test --ui",
 		"makepot": "wp i18n make-pot . languages/suitemart.pot --domain=suitemart --exclude=build,node_modules,vendor,tests",
 		"env:start": "wp-env start",
+		"env:woo": "wp-env run cli wp plugin install woocommerce --activate && wp-env run tests-cli wp plugin install woocommerce --activate",
 		"env:stop": "wp-env stop",
 		"env:destroy": "wp-env destroy",
 		"build:icons": "node tools/build-sprite.mjs",
