@@ -42,14 +42,18 @@ tests_add_filter( 'muplugins_loaded', 'suitemart_register_theme_for_tests' );
 /**
  * Locates WooCommerce's entry file, whatever its directory is called.
  *
- * The directory name is not `woocommerce/` on every install: wp-env names it
- * after the source it came from, so the zip URL in `.wp-env.json` produces
- * `woocommerce.latest-stable/` instead — and in practice leaves it empty, the
- * download having failed without saying so. Looking only for the conventional
- * name found nothing on any clean environment, which is why CI ran the entire
- * commerce suite as skips from the first commit while reporting green. It
- * passed locally purely because a manual `wp plugin install` had left a working
- * copy under the expected name.
+ * The directory is not called `woocommerce/` everywhere. wp-env names a plugin
+ * after the source it came from, so the `woocommerce.latest-stable.zip` URL in
+ * `.wp-env.json` installs to `woocommerce.latest-stable/`. Looking only for the
+ * conventional name found nothing on CI, which is why every commerce test there
+ * reported as a skip from the first commit onwards while the build stayed green
+ * — 113 tests and 12 skips against 125 run locally, where a manual
+ * `wp plugin install` had happened to leave a copy under the expected name.
+ *
+ * Matching on the plugin header instead covers both, and does not care what the
+ * next environment decides to call the directory. Do not "fix" this by
+ * installing a second copy: with one already present under another name, that
+ * is a fatal redeclaration of WC().
  *
  * @return string Absolute path to woocommerce.php, or '' if it is not installed.
  */
