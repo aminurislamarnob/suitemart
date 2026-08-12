@@ -1,0 +1,30 @@
+import { store, getContext } from '@wordpress/interactivity';
+
+store( 'suitemart/visitor-counter', {
+	callbacks: {
+		start: () => {
+			const context = getContext();
+
+			const scheduleNext = () => {
+				// Update every 5-10 seconds.
+				const delay = Math.floor( Math.random() * 5000 ) + 5000;
+				setTimeout( () => {
+					// Fluctuate by -2 to +2.
+					const change = Math.floor( Math.random() * 5 ) - 2;
+					let next = context.current + change;
+
+					if ( next < context.min ) {
+						next = context.min;
+					} else if ( next > context.max ) {
+						next = context.max;
+					}
+
+					context.current = next;
+					scheduleNext();
+				}, delay );
+			};
+
+			scheduleNext();
+		},
+	},
+} );
