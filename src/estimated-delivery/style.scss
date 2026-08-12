@@ -1,0 +1,11 @@
+.sm-estimated-delivery {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--wp--preset--spacing--20);
+	font-size: var(--wp--preset--font-size--sm);
+	color: var(--wp--preset--color--neutral-700);
+
+	svg {
+		color: var(--wp--preset--color--neutral-500);
+	}
+}

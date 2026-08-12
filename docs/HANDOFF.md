@@ -17,24 +17,24 @@ The full plan lives in GitHub issue
 |---|---|
 | **P1 — Foundation** | Complete, with one item outstanding (CSS budget, below) |
 | **P2 batch A — content blocks** | 13 of 18 |
-| **P2 batch B — WooCommerce gaps** | 6 of 15 ← **you are here** |
+| **P2 batch B — WooCommerce gaps** | 7 of 15 ← **you are here** |
 | **P2 batch C — site features** | Not started (6 blocks) |
 | **P3 — Design breadth** | 1 of ~15 style variations, 15 of ~100 patterns |
 | **P4 — Integrations** | Not started (27) |
 | **P5 — Hardening** | Not started |
 
-**Green:** 132 PHPUnit tests passing, 70 Playwright tests
+**Green:** 142 PHPUnit tests passing, 70 Playwright tests
 passing / 1 skipped, phpcs clean, PHPStan level 5 clean, ESLint and Stylelint
 clean. CI passes on WP latest *and* WP nightly.
 
-32 blocks exist under `src/`. 18 templates, 6 parts, 15 patterns, 1 style
+33 blocks exist under `src/`. 18 templates, 6 parts, 15 patterns, 1 style
 variation.
 
 ---
 
 ## Pick up here: finish P2 batch B
 
-Nine blocks remain. Every slug is **already declared** in
+Seven blocks remain. Every slug is **already declared** in
 `suitemart_woocommerce_block_slugs()` in `inc/blocks/register.php` — create the
 directory under `src/` and registration is automatic.
 
@@ -42,8 +42,8 @@ directory under `src/` and registration is automatic.
 |---|---|
 | ~~`product-labels`~~ | Done |
 | ~~`stock-progress-bar`~~ | Done |
-| `sold-counter` | Units sold. Read Woo's `total_sales` meta |
-| `estimated-delivery` | Date range from a configurable working-day offset. Watch timezones and `wp_date()` |
+| ~~`sold-counter`~~ | Done |
+| ~~`estimated-delivery`~~ | Done |
 | `product-countdown` | Sale-end countdown. `src/countdown/` already solves the timer; reuse rather than re-derive |
 | `visitor-counter` | Deliberately synthetic ("N people viewing"). Must be honest in the editor description about what it is |
 | `size-guide` + `size-guide-button` | Modal pair. Reuse the off-canvas focus handling in `src/_shared/focus.js` |

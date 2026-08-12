@@ -1,0 +1,40 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "suitemart/estimated-delivery",
+	"title": "Estimated Delivery",
+	"category": "suitemart-commerce",
+	"icon": "truck",
+	"description": "Displays an estimated delivery date range based on working days.",
+	"keywords": [ "product", "delivery", "shipping", "estimated", "date" ],
+	"textdomain": "suitemart",
+	"usesContext": [ "postId" ],
+	"attributes": {
+		"minDays": {
+			"type": "number",
+			"default": 3
+		},
+		"maxDays": {
+			"type": "number",
+			"default": 5
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"html": false,
+		"color": {
+			"text": true,
+			"background": true
+		},
+		"typography": {
+			"fontSize": true
+		},
+		"spacing": {
+			"padding": true,
+			"margin": true
+		}
+	},
+	"render": "file:./render.php",
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css"
+}
