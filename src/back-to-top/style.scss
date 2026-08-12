@@ -1,0 +1,62 @@
+.sm-back-to-top {
+	position: fixed;
+	z-index: var(--wp--custom--z--sticky);
+	inset-block-end: var(--wp--preset--spacing--40);
+	opacity: 0;
+	transition: opacity var(--wp--custom--transition--base),
+		translate var(--wp--custom--transition--base);
+	translate: 0 0.75rem;
+}
+
+.sm-back-to-top--end {
+	inset-inline-end: var(--wp--preset--spacing--40);
+}
+
+.sm-back-to-top--start {
+	inset-inline-start: var(--wp--preset--spacing--40);
+}
+
+.sm-back-to-top.is-visible {
+	opacity: 1;
+	translate: 0 0;
+}
+
+.sm-back-to-top__button {
+	display: inline-flex;
+	align-items: center;
+	padding: 0.7rem;
+	border: 1px solid var(--wp--preset--color--neutral-300);
+	border-radius: var(--wp--custom--radius--pill);
+	background: var(--wp--preset--color--base);
+	box-shadow: 0 4px 16px var(--wp--custom--color--scrim);
+	color: var(--wp--preset--color--contrast);
+	cursor: pointer;
+	font-size: inherit;
+	gap: 0.45em;
+	line-height: 1;
+	transition: background var(--wp--custom--transition--fast);
+}
+
+.sm-back-to-top--icon-label .sm-back-to-top__button {
+	padding-inline: 0.9rem 1.1rem;
+}
+
+.sm-back-to-top__button:hover {
+	background: var(--wp--preset--color--neutral-100);
+}
+
+// The button is `inert` until it is wanted, so it cannot be clicked through a
+// transparent layer; this stops it eating pointer events over the content
+// underneath while it is on its way in or out.
+.sm-back-to-top:not(.is-visible) {
+	pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+	.sm-back-to-top,
+	.sm-back-to-top__button {
+		transition: none;
+		translate: none;
+	}
+}

@@ -1,0 +1,54 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "suitemart/back-to-top",
+	"title": "Back to Top",
+	"category": "suitemart",
+	"icon": "arrow-up-alt2",
+	"description": "A button that appears once the visitor has scrolled, and returns them to the top of the page.",
+	"keywords": [ "scroll", "top", "up", "floating" ],
+	"textdomain": "suitemart",
+	"attributes": {
+		"threshold": {
+			"type": "number",
+			"default": 400
+		},
+		"position": {
+			"type": "string",
+			"enum": [ "start", "end" ],
+			"default": "end"
+		},
+		"label": {
+			"type": "string",
+			"default": ""
+		},
+		"appearance": {
+			"type": "string",
+			"enum": [ "icon", "icon-label" ],
+			"default": "icon"
+		}
+	},
+	"supports": {
+		"html": false,
+		"interactivity": true,
+		"multiple": false,
+		"color": {
+			"text": true,
+			"background": true
+		},
+		"typography": {
+			"fontSize": true
+		},
+		"__experimentalBorder": {
+			"color": true,
+			"radius": true,
+			"style": true,
+			"width": true
+		}
+	},
+	"render": "file:./render.php",
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css",
+	"editorStyle": "file:./index.css",
+	"viewScriptModule": "file:./view.js"
+}

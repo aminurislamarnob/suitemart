@@ -152,6 +152,16 @@ the same comparison written in `render.php` and in `view.js`. Yes, it is
 duplicated logic; the alternative is a block that renders nothing until
 hydration.
 
+**A captured `getContext()` proxy goes stale outside its scope.** Reading it
+back from a listener, timer or promise the store did not invoke returns the
+value the page was *served* with, forever. Writes still land, which is what
+makes it so hard to see: the state changes once and then appears frozen. A
+back-to-top button appeared on the first scroll and never went away again, and
+`view-360`'s auto-rotate would have advanced one frame and spun in place. Wrap
+the callback in `withScope()` and call `getContext()` **inside** it. Test both
+directions of anything that toggles — a spec that only scrolled down passed the
+broken version.
+
 **Never write to the DOM imperatively inside a hydrated tree.** `view-360`
 originally moved an `is-current` class between frames from a `data-wp-watch`
 callback. It worked in isolation and skipped frames at random in a browser:

@@ -10,13 +10,42 @@
  * the right frame and the browser to keep rendering the right one after that.
  */
 
-import { store, getContext, getElement } from '@wordpress/interactivity';
+import {
+	store,
+	getContext,
+	getElement,
+	withScope,
+} from '@wordpress/interactivity';
 
 // Timers, keyed by the block element, because they are the one thing that has
 // to be reachable from a different callback than the one that created them.
 const timers = new WeakMap();
 
 const AUTO_ROTATE_MS = 90;
+
+/**
+ * Starts the automatic rotation for one viewer.
+ *
+ * The tick is wrapped in `withScope` and reads its context inside rather than
+ * closing over one. A context proxy captured outside and read from a timer the
+ * store did not invoke goes stale: the first write lands and every read after
+ * it still sees the value the page was served with, so the sequence advances
+ * one frame and then spins in place.
+ *
+ * @param {HTMLElement} root Block element, used as the timer's key.
+ */
+const startTimer = ( root ) => {
+	timers.set(
+		root,
+		setInterval(
+			withScope( () => {
+				const context = getContext();
+				context.index = wrap( context.index + 1, context.count );
+			} ),
+			AUTO_ROTATE_MS
+		)
+	);
+};
 
 /**
  * Wraps an index into the frame range.
@@ -90,15 +119,7 @@ store(
 				context.autoRotate = ! context.autoRotate;
 
 				if ( context.autoRotate ) {
-					timers.set(
-						root,
-						setInterval( () => {
-							context.index = wrap(
-								context.index + 1,
-								context.count
-							);
-						}, AUTO_ROTATE_MS )
-					);
+					startTimer( root );
 				} else {
 					stopTimer( root );
 				}
@@ -189,15 +210,7 @@ store(
 				// Rotating on its own is exactly the kind of movement that
 				// setting asks to be spared. The controls still work.
 				if ( context.autoRotate && ! still ) {
-					timers.set(
-						ref,
-						setInterval( () => {
-							context.index = wrap(
-								context.index + 1,
-								context.count
-							);
-						}, AUTO_ROTATE_MS )
-					);
+					startTimer( ref );
 				} else if ( context.autoRotate ) {
 					context.autoRotate = false;
 				}

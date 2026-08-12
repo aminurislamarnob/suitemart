@@ -1,0 +1,9 @@
+// Fixed positioning inside the editor canvas would pin the button to the
+// editor's own viewport, floating over the block list. In here it sits in the
+// flow where it was inserted, visible, so it can be selected and configured.
+.wp-block-suitemart-back-to-top {
+	position: static;
+	opacity: 1;
+	pointer-events: auto;
+	translate: none;
+}
