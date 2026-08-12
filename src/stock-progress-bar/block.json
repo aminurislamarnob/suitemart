@@ -1,0 +1,30 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "suitemart/stock-progress-bar",
+	"title": "Stock Progress Bar",
+	"category": "suitemart-commerce",
+	"icon": "minus",
+	"description": "Displays a progress bar showing how much stock is left.",
+	"keywords": [ "product", "stock", "progress", "bar", "left" ],
+	"textdomain": "suitemart",
+	"usesContext": [ "postId" ],
+	"supports": {
+		"anchor": true,
+		"html": false,
+		"color": {
+			"text": true,
+			"background": true
+		},
+		"typography": {
+			"fontSize": true
+		},
+		"spacing": {
+			"padding": true,
+			"margin": true
+		}
+	},
+	"render": "file:./render.php",
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css"
+}

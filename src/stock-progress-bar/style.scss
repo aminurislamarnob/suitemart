@@ -1,0 +1,31 @@
+@use "../_shared/mixins" as *;
+
+.sm-stock-progress-bar {
+
+	&__message {
+		margin-bottom: var(--wp--preset--spacing--20);
+		font-size: var(--wp--preset--font-size--sm);
+		font-weight: 500;
+	}
+
+	&__track {
+		height: 8px;
+		background-color: var(--wp--preset--color--neutral-200);
+		border-radius: var(--wp--custom--radius--pill);
+		overflow: hidden;
+	}
+
+	&__fill {
+		height: 100%;
+		background-color: var(--wp--preset--color--primary);
+		transition: width var(--wp--custom--transition--base);
+	}
+
+	&.is-low-stock &__message {
+		color: var(--wp--preset--color--error);
+	}
+
+	&.is-low-stock &__fill {
+		background-color: var(--wp--preset--color--error);
+	}
+}

@@ -41,6 +41,8 @@ if ( ! suitemart_has_woocommerce() ) {
 
 <!-- wp:woocommerce/product-price /-->
 
+<!-- wp:suitemart/stock-progress-bar /-->
+
 <!-- wp:woocommerce/product-button {"fontSize":"sm"} /-->
 <!-- /wp:woocommerce/product-template -->
 
