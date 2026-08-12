@@ -60,28 +60,41 @@ $sm_format  = _x( 'M j', 'Delivery date format', 'suitemart' );
 $sm_min_str = wp_date( $sm_format, $sm_min_date->getTimestamp() );
 $sm_max_str = wp_date( $sm_format, $sm_max_date->getTimestamp() );
 
+/* translators: %s: delivery date. */
+$sm_single_label = __( 'Estimated delivery: %s', 'suitemart' );
+/* translators: 1: start date, 2: end date. */
+$sm_range_label = __( 'Estimated delivery: %1$s – %2$s', 'suitemart' );
+
+$sm_text = $sm_min_str === $sm_max_str
+	? sprintf( $sm_single_label, $sm_min_str )
+	: sprintf( $sm_range_label, $sm_min_str, $sm_max_str );
+
+/*
+ * The window is relative to the day it was rendered, and this markup can sit in
+ * a full-page cache for weeks — long enough to keep promising a date that has
+ * already passed. The day of rendering travels with it so the browser can spot
+ * a stale window and recompute one, while the server-rendered text stays
+ * correct for the no-JS case.
+ */
+$sm_context = array(
+	'minDays'     => $sm_min_days,
+	'maxDays'     => $sm_max_days,
+	'renderedOn'  => wp_date( 'Y-m-d' ),
+	'singleLabel' => $sm_single_label,
+	'rangeLabel'  => $sm_range_label,
+	'text'        => $sm_text,
+);
+
 $sm_wrapper = get_block_wrapper_attributes(
 	array( 'class' => 'sm-estimated-delivery' )
 );
 ?>
-<div <?php echo $sm_wrapper; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() escapes its output. ?>>
-	<?php suitemart_get_icon( 'truck', array( 'size' => 20 ) ); ?>
-	<span>
-		<?php
-		if ( $sm_min_str === $sm_max_str ) {
-			printf(
-				/* translators: %s: delivery date. */
-				esc_html__( 'Estimated delivery: %s', 'suitemart' ),
-				esc_html( $sm_min_str )
-			);
-		} else {
-			printf(
-				/* translators: 1: start date, 2: end date. */
-				esc_html__( 'Estimated delivery: %1$s – %2$s', 'suitemart' ),
-				esc_html( $sm_min_str ),
-				esc_html( $sm_max_str )
-			);
-		}
-		?>
-	</span>
+<div
+	<?php echo $sm_wrapper; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_block_wrapper_attributes() escapes its output. ?>
+	data-wp-interactive="suitemart/estimated-delivery"
+	<?php echo wp_interactivity_data_wp_context( $sm_context ); ?>
+	data-wp-init="callbacks.refresh"
+>
+	<?php echo suitemart_get_icon( 'truck', array( 'size' => 20 ) ); ?>
+	<span data-wp-text="context.text"><?php echo esc_html( $sm_text ); ?></span>
 </div>

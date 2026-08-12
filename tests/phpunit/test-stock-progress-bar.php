@@ -94,7 +94,11 @@ class Test_Stock_Progress_Bar extends WP_UnitTestCase {
 
 		$html = $this->render( $product_id );
 
-		$this->assertStringContainsString( 'Only 15 left', $html );
+		// Well above the shop's own low-stock threshold, so the bar states the
+		// level plainly. "Only N left" is a scarcity claim and is reserved for
+		// stock that has actually fallen that far — see the low-stock test.
+		$this->assertStringContainsString( '15 in stock', $html );
+		$this->assertStringNotContainsString( 'Only 15 left', $html );
 		$this->assertStringContainsString( 'width: 75%', $html );
 		$this->assertStringNotContainsString( 'is-low-stock', $html );
 	}

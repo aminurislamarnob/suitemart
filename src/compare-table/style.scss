@@ -10,7 +10,7 @@
 
 	th,
 	td {
-		padding: var(--wp--preset--spacing--20, 0.75rem);
+		padding: var(--wp--preset--spacing--20);
 		border-bottom: 1px solid
 			color-mix(in srgb, currentcolor 12%, transparent);
 		text-align: start;
@@ -35,7 +35,7 @@
 	display: block;
 	width: 64px;
 	height: auto;
-	border-radius: var(--wp--custom--radius--sm, 4px);
+	border-radius: var(--wp--custom--radius--sm);
 }
 
 .sm-compare-table__empty,
@@ -44,7 +44,7 @@
 }
 
 .sm-compare-table__status:not(:empty) {
-	margin-block: var(--wp--preset--spacing--20, 0.75rem);
+	margin-block: var(--wp--preset--spacing--20);
 	color: var(--wp--preset--color--error);
 }
 

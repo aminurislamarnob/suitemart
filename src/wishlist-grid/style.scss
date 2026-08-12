@@ -75,7 +75,7 @@ $sm-wishlist-grid-max-columns: 6;
 	width: 100%;
 	aspect-ratio: 1;
 	object-fit: cover;
-	border-radius: var(--wp--custom--radius--md, 8px);
+	border-radius: var(--wp--custom--radius--md);
 }
 
 .sm-wishlist-grid__name {
@@ -114,6 +114,6 @@ $sm-wishlist-grid-max-columns: 6;
 }
 
 .sm-wishlist-grid__status:not(:empty) {
-	margin-block: var(--wp--preset--spacing--20, 0.75rem);
+	margin-block: var(--wp--preset--spacing--20);
 	color: var(--wp--preset--color--error);
 }

@@ -6,8 +6,16 @@
 	"category": "suitemart-commerce",
 	"icon": "feedback",
 	"description": "A modal dialog that holds the product size guide. Opened by the Size Guide Button.",
-	"keywords": [ "size", "guide", "modal", "dialog" ],
+	"keywords": [
+		"size",
+		"guide",
+		"modal",
+		"dialog"
+	],
 	"textdomain": "suitemart",
+	"usesContext": [
+		"postId"
+	],
 	"attributes": {
 		"title": {
 			"type": "string",

@@ -15,7 +15,7 @@
 	@include focus-ring;
 
 	@media (prefers-reduced-motion: no-preference) {
-		transition: color var(--wp--custom--transition--fast, 0.15s ease);
+		transition: color var(--wp--custom--transition--fast);
 	}
 }
 
@@ -27,7 +27,7 @@
 .sm-wishlist-button--icon-label {
 	padding-block: 0.6em;
 	padding-inline: 1em;
-	border-radius: var(--wp--custom--radius--pill, 999px);
+	border-radius: var(--wp--custom--radius--pill);
 }
 
 .sm-wishlist-button__icon {

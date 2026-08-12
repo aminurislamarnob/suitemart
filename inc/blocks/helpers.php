@@ -428,3 +428,38 @@ function suitemart_compare_limit(): int {
 
 	return suitemart_clamp_int( $limit, 4, 2, 6 );
 }
+
+/**
+ * The DOM id shared by a size guide modal and the button that opens it.
+ *
+ * The two are separate blocks with no common ancestor, so they cannot pass an
+ * id to each other through block context — they have to derive the same one
+ * independently. The post they sit inside does that, and it is what keeps a
+ * product grid working: every card holds a different product, so every card
+ * gets a distinct id and one click opens one modal. Hardcoding the id instead
+ * gave four cards the same `id` and `aria-controls`, and opened all four.
+ *
+ * Outside a post — a pattern previewed on its own, a bare `do_blocks()` call —
+ * there is no id to derive from, so the pair fall back to matching in document
+ * order: the second button on the page targets the second modal.
+ *
+ * @param int    $post_id Post the block is rendering against, or 0 if none.
+ * @param string $role    Either 'modal' or 'button'.
+ * @return string DOM id.
+ */
+function suitemart_size_guide_id( int $post_id, string $role ): string {
+	static $counts = array(
+		'modal'  => 0,
+		'button' => 0,
+	);
+
+	if ( $post_id > 0 ) {
+		return 'sm-size-guide-' . $post_id;
+	}
+
+	$role = isset( $counts[ $role ] ) ? $role : 'modal';
+
+	++$counts[ $role ];
+
+	return 'sm-size-guide-n' . $counts[ $role ];
+}

@@ -55,7 +55,7 @@
 	align-items: center;
 	justify-content: space-between;
 	padding: var(--wp--preset--spacing--30) var(--wp--preset--spacing--40);
-	border-bottom: 1px solid var(--wp--preset--color--border);
+	border-bottom: 1px solid var(--wp--preset--color--neutral-300);
 }
 
 .sm-size-guide__title {
@@ -81,7 +81,7 @@
 	transition: color 0.1s ease, background 0.1s ease;
 
 	&:hover {
-		color: var(--wp--preset--color--foreground);
+		color: var(--wp--preset--color--contrast);
 		background: var(--wp--preset--color--neutral-100);
 	}
 }

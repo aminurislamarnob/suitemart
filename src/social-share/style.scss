@@ -40,8 +40,8 @@
 
 	@media (prefers-reduced-motion: no-preference) {
 		transition:
-			background-color var(--wp--custom--transition--fast, 0.15s ease),
-			color var(--wp--custom--transition--fast, 0.15s ease);
+			background-color var(--wp--custom--transition--fast),
+			color var(--wp--custom--transition--fast);
 	}
 
 	&:hover {
@@ -77,7 +77,7 @@
 }
 
 .sm-share--rounded .sm-share__link {
-	border-radius: var(--wp--custom--radius--md, 8px);
+	border-radius: var(--wp--custom--radius--md);
 }
 
 .sm-share--circle .sm-share__link {
@@ -100,5 +100,5 @@
 	min-width: 0;
 	padding-block: 0.5em;
 	padding-inline: 0.9em;
-	border-radius: var(--wp--custom--radius--pill, 999px);
+	border-radius: var(--wp--custom--radius--pill);
 }

@@ -41,23 +41,7 @@ if ( ! suitemart_has_woocommerce() ) {
 
 <!-- wp:woocommerce/product-price /-->
 
-<!-- wp:suitemart/stock-progress-bar /-->
-
-<!-- wp:suitemart/sold-counter /-->
-
-<!-- wp:suitemart/estimated-delivery /-->
-
-<!-- wp:suitemart/product-countdown /-->
-
-<!-- wp:suitemart/visitor-counter /-->
-
-<!-- wp:suitemart/size-guide-button /-->
-
-<!-- wp:suitemart/size-guide -->
-<!-- wp:paragraph -->
-<p>This is a sample size guide.</p>
-<!-- /wp:paragraph -->
-<!-- /wp:suitemart/size-guide -->
+<!-- wp:suitemart/quick-view-button {"appearance":"icon"} /-->
 
 <!-- wp:woocommerce/product-button {"fontSize":"sm"} /-->
 <!-- /wp:woocommerce/product-template -->

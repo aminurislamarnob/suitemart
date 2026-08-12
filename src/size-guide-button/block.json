@@ -6,8 +6,16 @@
 	"category": "suitemart-commerce",
 	"icon": "button",
 	"description": "A button that opens the product size guide modal.",
-	"keywords": [ "size", "guide", "button", "modal" ],
+	"keywords": [
+		"size",
+		"guide",
+		"button",
+		"modal"
+	],
 	"textdomain": "suitemart",
+	"usesContext": [
+		"postId"
+	],
 	"attributes": {
 		"label": {
 			"type": "string",
@@ -33,6 +41,5 @@
 	},
 	"render": "file:./render.php",
 	"editorScript": "file:./index.js",
-	"style": "file:./style-index.css",
-	"viewScriptModule": "file:./view.js"
+	"style": "file:./style-index.css"
 }

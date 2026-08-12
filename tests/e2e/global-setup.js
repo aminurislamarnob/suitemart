@@ -20,6 +20,7 @@ const SLUG = 'suitemart-block-test';
 const PRODUCT_SLUG = 'suitemart-test-product';
 const COMPARE_SLUG = 'suitemart-compare';
 const WISHLIST_SLUG = 'suitemart-wishlist';
+const PRODUCT_BLOCKS_SLUG = 'suitemart-product-blocks';
 const FIXTURE = 'tests/e2e/fixtures/blocks-page.html';
 
 // Present on the fixture page and nowhere else, so finding it proves the page
@@ -152,6 +153,22 @@ module.exports = async ( config ) => {
 		'Wishlist',
 		'<!-- wp:suitemart/wishlist-grid /-->'
 	);
+
+	/*
+	 * The gallery and the quick view button both read the product from `postId`
+	 * context, and neither belongs on the single-product template: WooCommerce's
+	 * own gallery block stays there until ours handles variation images, and a
+	 * quick view of the product you are already looking at is pointless. So they
+	 * get a page that supplies the context explicitly.
+	 */
+	process.env.SUITEMART_PRODUCT_BLOCKS_URL = ensurePage(
+		PRODUCT_BLOCKS_SLUG,
+		'Product blocks',
+		`<!-- wp:woocommerce/single-product {"productId":${ process.env.SUITEMART_PRODUCT_ID }} -->
+<div class="wp-block-woocommerce-single-product"><!-- wp:suitemart/product-gallery {"layout":"horizontal"} /-->
+<!-- wp:suitemart/quick-view-button /--></div>
+<!-- /wp:woocommerce/single-product -->`
+	);
 };
 
 /**
@@ -243,7 +260,87 @@ function ensureProduct() {
 	wp( [ 'post', 'meta', 'update', id, '_price', '19.99' ] );
 	wp( [ 'post', 'meta', 'update', id, '_regular_price', '19.99' ] );
 
+	/*
+	 * Real attachments, so wp_get_attachment_image() returns markup rather than
+	 * an empty string and the gallery has something to page through. The files
+	 * are committed and imported from disk: fetching a fixture over the network
+	 * makes the suite fail whenever the remote host is unreachable, and a
+	 * silently skipped import turns the gallery spec into an assertion about an
+	 * empty element.
+	 */
+	const gallery = [
+		'tests/e2e/fixtures/product-image-1.png',
+		'tests/e2e/fixtures/product-image-2.png',
+	].map( ( file ) => {
+		const attachId = wp( [ 'media', 'import', file, '--porcelain' ] );
+
+		if ( ! /^\d+$/.test( attachId ) ) {
+			throw new Error(
+				`Could not import ${ file }. WP-CLI returned: ${ attachId }`
+			);
+		}
+
+		return attachId;
+	} );
+
+	/*
+	 * As WooCommerce itself stores them: the featured image is the first slide
+	 * and `_product_image_gallery` holds the rest. Listing the featured image
+	 * in the gallery too would give the block the same picture twice, which is
+	 * exactly the case a "does the second thumbnail select the second slide"
+	 * assertion cannot detect.
+	 */
+	wp( [ 'post', 'meta', 'update', id, '_thumbnail_id', gallery[ 0 ] ] );
+	wp( [
+		'post',
+		'meta',
+		'update',
+		id,
+		'_product_image_gallery',
+		gallery[ 1 ],
+	] );
+
 	const parsed = new URL( wp( [ 'post', 'get', id, '--field=url' ] ) );
+
+	// Create a second product to act as a cross-sell.
+	const crossExisting = wp( [
+		'post',
+		'list',
+		'--post_type=product',
+		`--name=${ PRODUCT_SLUG }-cross`,
+		'--field=ID',
+	] );
+
+	const crossId = /^\d+$/.test( crossExisting )
+		? crossExisting
+		: wp( [
+				'post',
+				'create',
+				'--post_type=product',
+				'--post_title=Suitemart cross sell',
+				`--post_name=${ PRODUCT_SLUG }-cross`,
+				'--post_status=publish',
+				'--porcelain',
+		  ] );
+
+	if ( /^\d+$/.test( crossId ) ) {
+		wp( [ 'post', 'meta', 'update', crossId, '_price', '9.99' ] );
+		wp( [ 'post', 'meta', 'update', crossId, '_regular_price', '9.99' ] );
+		// Link it to the main product. The meta key is _crosssell_ids and it holds an array.
+		wp( [
+			'post',
+			'meta',
+			'update',
+			id,
+			'_crosssell_ids',
+			`[${ crossId }]`,
+			'--format=json',
+		] );
+	}
+
+	// The product-context blocks need the id, not just the permalink, so they
+	// can be placed on a page of their own inside woocommerce/single-product.
+	process.env.SUITEMART_PRODUCT_ID = id;
 
 	return `${ parsed.pathname }${ parsed.search }`;
 }

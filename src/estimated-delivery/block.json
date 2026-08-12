@@ -6,9 +6,17 @@
 	"category": "suitemart-commerce",
 	"icon": "truck",
 	"description": "Displays an estimated delivery date range based on working days.",
-	"keywords": [ "product", "delivery", "shipping", "estimated", "date" ],
+	"keywords": [
+		"product",
+		"delivery",
+		"shipping",
+		"estimated",
+		"date"
+	],
 	"textdomain": "suitemart",
-	"usesContext": [ "postId" ],
+	"usesContext": [
+		"postId"
+	],
 	"attributes": {
 		"minDays": {
 			"type": "number",
@@ -32,9 +40,11 @@
 		"spacing": {
 			"padding": true,
 			"margin": true
-		}
+		},
+		"interactivity": true
 	},
 	"render": "file:./render.php",
 	"editorScript": "file:./index.js",
-	"style": "file:./style-index.css"
+	"style": "file:./style-index.css",
+	"viewScriptModule": "file:./view.js"
 }

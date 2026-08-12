@@ -6,8 +6,17 @@
 	"category": "suitemart-commerce",
 	"icon": "users",
 	"description": "Displays a synthetic, randomly generated number of active viewers to create urgency.",
-	"keywords": [ "product", "visitors", "viewers", "counter", "urgency" ],
+	"keywords": [
+		"product",
+		"visitors",
+		"viewers",
+		"counter",
+		"urgency"
+	],
 	"textdomain": "suitemart",
+	"usesContext": [
+		"postId"
+	],
 	"attributes": {
 		"minVisitors": {
 			"type": "number",
