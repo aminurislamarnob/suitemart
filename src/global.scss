@@ -138,11 +138,29 @@ body {
 	padding-inline-start: var(--wp--preset--spacing--40);
 }
 
-.wp-block-image {
+/*
+ * An image never exceeds its container.
+ *
+ * This is not cosmetic. WooCommerce's product gallery renders the full-size
+ * file with width and height attributes, so a 1200px image in a 512px column
+ * kept its intrinsic width, spilled across the page, and sat on top of the
+ * summary column — where it swallowed every click meant for add-to-cart or the
+ * wishlist button. The overlap was invisible: the image is mostly white space,
+ * so the page looked correct and simply did not respond.
+ *
+ * `height: auto` has to come with it, or constraining the width against the
+ * HTML height attribute distorts the image.
+ */
+img,
+svg,
+video,
+iframe {
+	max-width: 100%;
+}
 
-	img {
-		height: auto;
-	}
+img,
+video {
+	height: auto;
 }
 
 // Core renders an empty <figcaption> wrapper even with no caption.

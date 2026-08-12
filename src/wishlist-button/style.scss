@@ -1,0 +1,50 @@
+@use "../_shared/mixins" as *;
+
+.sm-wishlist-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5em;
+	border: 1px solid color-mix(in srgb, currentcolor 20%, transparent);
+	background: none;
+	color: inherit;
+	font: inherit;
+	cursor: pointer;
+
+	@include tap-target;
+	@include focus-ring;
+
+	@media (prefers-reduced-motion: no-preference) {
+		transition: color var(--wp--custom--transition--fast, 0.15s ease);
+	}
+}
+
+.sm-wishlist-button--icon {
+	padding: 0.5em;
+	border-radius: 50%;
+}
+
+.sm-wishlist-button--icon-label {
+	padding-block: 0.6em;
+	padding-inline: 1em;
+	border-radius: var(--wp--custom--radius--pill, 999px);
+}
+
+.sm-wishlist-button__icon {
+	display: flex;
+}
+
+// Saved state: the heart fills in. Colour alone would not distinguish it for
+// anyone who cannot see the difference, which is why `aria-pressed` carries
+// the state and the label changes too.
+.sm-wishlist-button.is-saved {
+	color: var(--wp--preset--color--error);
+
+	.sm-wishlist-button__icon svg {
+		fill: currentcolor;
+	}
+}
+
+.sm-wishlist-button:hover {
+	color: var(--wp--preset--color--error);
+}

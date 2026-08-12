@@ -1,0 +1,49 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "suitemart/wishlist-button",
+	"title": "Wishlist Button",
+	"category": "suitemart-commerce",
+	"icon": "heart",
+	"description": "Saves a product to the visitor's wishlist, kept in their browser.",
+	"keywords": [ "wishlist", "favourite", "save", "product" ],
+	"textdomain": "suitemart",
+	"usesContext": [ "postId" ],
+	"attributes": {
+		"appearance": {
+			"type": "string",
+			"enum": [ "icon", "icon-label" ],
+			"default": "icon-label"
+		},
+		"iconSize": {
+			"type": "number",
+			"default": 20
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"interactivity": true,
+		"html": false,
+		"color": {
+			"text": true,
+			"background": true
+		},
+		"typography": {
+			"fontSize": true
+		},
+		"spacing": {
+			"padding": true,
+			"margin": true
+		},
+		"__experimentalBorder": {
+			"color": true,
+			"radius": true,
+			"style": true,
+			"width": true
+		}
+	},
+	"render": "file:./render.php",
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css",
+	"viewScriptModule": "file:./view.js"
+}

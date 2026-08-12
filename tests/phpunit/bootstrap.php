@@ -39,4 +39,24 @@ function suitemart_register_theme_for_tests(): void {
 }
 tests_add_filter( 'muplugins_loaded', 'suitemart_register_theme_for_tests' );
 
+/**
+ * Loads WooCommerce when the environment has it.
+ *
+ * The test library loads no plugins of its own, so without this every commerce
+ * block is unregistered and every test covering one reports as skipped — which
+ * reads as a green run while testing nothing. It stays optional so the suite
+ * still runs on a plain WordPress checkout, where the commerce blocks are
+ * expected to be absent and are asserted to be.
+ *
+ * @return void
+ */
+function suitemart_load_woocommerce_for_tests(): void {
+	$plugin = WP_PLUGIN_DIR . '/woocommerce/woocommerce.php';
+
+	if ( file_exists( $plugin ) ) {
+		require_once $plugin;
+	}
+}
+tests_add_filter( 'muplugins_loaded', 'suitemart_load_woocommerce_for_tests' );
+
 require $_tests_dir . '/includes/bootstrap.php';

@@ -17,6 +17,7 @@ const { execFileSync } = require( 'node:child_process' );
 const { join } = require( 'node:path' );
 
 const SLUG = 'suitemart-block-test';
+const PRODUCT_SLUG = 'suitemart-test-product';
 const FIXTURE = 'tests/e2e/fixtures/blocks-page.html';
 
 // Present on the fixture page and nowhere else, so finding it proves the page
@@ -56,6 +57,12 @@ const wp = ( args ) => {
 };
 
 module.exports = async ( config ) => {
+	// wp-env installs the themes it is given but does not reliably activate one,
+	// so locally this passed on a theme activated by hand months ago while CI
+	// tested a default theme: the fixture page served a healthy 200 with none of
+	// Suitemart's blocks in it. Activating here makes the run self-contained.
+	wp( [ 'theme', 'activate', 'suitemart' ] );
+
 	const existing = wp( [
 		'post',
 		'list',
@@ -107,13 +114,77 @@ module.exports = async ( config ) => {
 	const html = await response.text();
 
 	if ( ! response.ok || ! html.includes( MARKER ) ) {
+		// The bare "did not serve its blocks" message cost a CI round-trip to
+		// interpret, so the two things that explain almost every occurrence —
+		// the wrong theme, or an unbuilt block — are reported with it.
+		const theme = wp( [
+			'theme',
+			'list',
+			'--status=active',
+			'--field=name',
+		] );
+		const registered = wp( [
+			'eval',
+			'echo WP_Block_Type_Registry::get_instance()->is_registered( "suitemart/counter" ) ? "yes" : "no";',
+		] );
+
 		throw new Error(
 			`The fixture page at ${ reachable } did not serve its blocks ` +
 				`(HTTP ${ response.status }, ${ html.length } bytes). ` +
+				`Active theme: ${ theme }. suitemart/counter registered: ${ registered }. ` +
 				`Every fixture spec would fail with "element(s) not found".`
 		);
 	}
 
 	// Handed to the specs so they never guess at the URL form.
 	process.env.SUITEMART_FIXTURE_URL = path;
+
+	process.env.SUITEMART_PRODUCT_URL = ensureProduct();
 };
+
+/**
+ * Creates a published product for the commerce specs, and returns its path.
+ *
+ * WooCommerce is installed in the test environment but ships no products, so
+ * without this the wishlist specs would have nothing to act on. A bare post of
+ * type `product` with a price is enough: these tests are about the theme's
+ * blocks, not about WooCommerce's own behaviour.
+ *
+ * @return {string} Path to the product, including any query string.
+ */
+function ensureProduct() {
+	const existing = wp( [
+		'post',
+		'list',
+		'--post_type=product',
+		`--name=${ PRODUCT_SLUG }`,
+		'--field=ID',
+	] );
+
+	const id = /^\d+$/.test( existing )
+		? existing
+		: wp( [
+				'post',
+				'create',
+				'--post_type=product',
+				'--post_title=Suitemart test product',
+				`--post_name=${ PRODUCT_SLUG }`,
+				'--post_status=publish',
+				'--porcelain',
+		  ] );
+
+	if ( ! /^\d+$/.test( id ) ) {
+		throw new Error(
+			`Could not create the test product. WP-CLI returned: ${ id }`
+		);
+	}
+
+	// Without a price WooCommerce treats the product as incomplete and some
+	// blocks decline to render.
+	wp( [ 'post', 'meta', 'update', id, '_price', '19.99' ] );
+	wp( [ 'post', 'meta', 'update', id, '_regular_price', '19.99' ] );
+
+	const parsed = new URL( wp( [ 'post', 'get', id, '--field=url' ] ) );
+
+	return `${ parsed.pathname }${ parsed.search }`;
+}
