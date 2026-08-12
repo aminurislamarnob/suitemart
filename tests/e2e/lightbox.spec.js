@@ -17,26 +17,40 @@ const ITEM = 'a.sm-lightbox__item';
 const VIEWER = '.pswp';
 
 /**
- * Waits until the viewer has finished opening.
+ * Waits until the viewer has finished opening, and settles its animation.
  *
  * `.pswp--ui-visible` appears before the interface has actually faded in, and
  * two things depend on the difference: PhotoSwipe binds its keyboard handling
- * as part of that fade, so an Escape sent earlier lands nowhere, and the top
- * bar sits at `opacity: 0.005` until it completes, which makes every contrast
+ * as part of opening, so an Escape sent earlier lands nowhere, and the top bar
+ * sits at `opacity: 0.005` until the fade completes, which makes every contrast
  * reading inside it meaningless.
+ *
+ * The fade is finished rather than waited for. A browser that is not painting —
+ * a backgrounded tab locally, a headless runner in CI — freezes its animation
+ * timeline, so the transition is created and never advances: `currentTime` stays
+ * at 0 indefinitely. Polling for the end state passes on a developer's machine
+ * and hangs on CI, which is exactly how this spec first went red. `finish()`
+ * jumps to the end state without needing the clock.
  *
  * @param {import('@playwright/test').Page} page Page.
  */
 const waitForViewer = async ( page ) => {
 	await expect( page.locator( VIEWER ) ).toBeVisible();
 
-	await expect
-		.poll( () =>
-			page
-				.locator( '.pswp__top-bar' )
-				.evaluate( ( bar ) => getComputedStyle( bar ).opacity )
-		)
-		.toBe( '1' );
+	await page.evaluate( () => {
+		for ( const animation of document.getAnimations() ) {
+			if (
+				animation.effect?.getComputedTiming()?.iterations !== Infinity
+			) {
+				try {
+					animation.finish();
+				} catch {
+					// A cancelled or fill-less animation cannot be finished,
+					// and does not need to be.
+				}
+			}
+		}
+	} );
 
 	// And focus has actually moved inside. PhotoSwipe takes focus as part of
 	// opening; pressing Escape before it does was the remaining flake.
