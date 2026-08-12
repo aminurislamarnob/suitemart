@@ -17,30 +17,30 @@ The full plan lives in GitHub issue
 |---|---|
 | **P1 — Foundation** | Complete, with one item outstanding (CSS budget, below) |
 | **P2 batch A — content blocks** | 13 of 18 |
-| **P2 batch B — WooCommerce gaps** | 4 of 15 ← **you are here** |
+| **P2 batch B — WooCommerce gaps** | 5 of 15 ← **you are here** |
 | **P2 batch C — site features** | Not started (6 blocks) |
 | **P3 — Design breadth** | 1 of ~15 style variations, 15 of ~100 patterns |
 | **P4 — Integrations** | Not started (27) |
 | **P5 — Hardening** | Not started |
 
-**Green as of `33342ff`:** 121 PHPUnit tests passing, 70 Playwright tests
+**Green:** 125 PHPUnit tests passing, 70 Playwright tests
 passing / 1 skipped, phpcs clean, PHPStan level 5 clean, ESLint and Stylelint
 clean. CI passes on WP latest *and* WP nightly.
 
-30 blocks exist under `src/`. 18 templates, 6 parts, 15 patterns, 1 style
+31 blocks exist under `src/`. 18 templates, 6 parts, 15 patterns, 1 style
 variation.
 
 ---
 
 ## Pick up here: finish P2 batch B
 
-Eleven blocks remain. Every slug is **already declared** in
+Ten blocks remain. Every slug is **already declared** in
 `suitemart_woocommerce_block_slugs()` in `inc/blocks/register.php` — create the
 directory under `src/` and registration is automatic.
 
 | Block | Notes |
 |---|---|
-| `product-labels` | Sale / new / out-of-stock badges. Pure server render, no JS. **Easiest — good first task to calibrate on.** |
+| ~~`product-labels`~~ | Done |
 | `stock-progress-bar` | "Only N left". Products are seeded with real quantities and `low_stock_amount = 5` |
 | `sold-counter` | Units sold. Read Woo's `total_sales` meta |
 | `estimated-delivery` | Date range from a configurable working-day offset. Watch timezones and `wp_date()` |

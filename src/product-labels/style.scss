@@ -1,0 +1,35 @@
+@use "../_shared/mixins" as *;
+
+.sm-product-labels {
+	display: flex;
+	flex-direction: column;
+	gap: var(--wp--preset--spacing--20, 0.5rem);
+	align-items: flex-start;
+	pointer-events: none; // Let clicks pass through to the product image underneath.
+
+	&__label {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0.25rem 0.5rem;
+		font-size: var(--wp--preset--typography--font-size--xs, 0.75rem);
+		font-weight: 600;
+		line-height: 1;
+		text-transform: uppercase;
+		border-radius: var(--wp--custom--radius--small, 4px);
+		color: var(--wp--preset--color--base);
+		pointer-events: auto;
+
+		&--sale {
+			background-color: var(--wp--preset--color--primary);
+		}
+
+		&--new {
+			background-color: var(--wp--preset--color--tertiary);
+		}
+
+		&--out-of-stock {
+			background-color: var(--wp--preset--color--contrast);
+		}
+	}
+}
