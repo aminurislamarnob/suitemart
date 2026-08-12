@@ -3,7 +3,7 @@
  * Title: Product gallery with thumbnails
  * Slug: suitemart/commerce-product-gallery
  * Categories: suitemart/commerce, woocommerce
- * Description: A two-column product header using Suitemart's gallery, for products without variations.
+ * Description: A two-column product header using Suitemart's gallery, which follows the selected variation.
  * Keywords: gallery, images, thumbnails, product, slider
  * Viewport Width: 1400
  *
@@ -17,12 +17,6 @@ defined( 'ABSPATH' ) || exit;
 if ( ! suitemart_has_woocommerce() ) {
 	return;
 }
-
-/*
- * This gallery does not yet swap the main image when a variation is chosen, so
- * the single-product template keeps WooCommerce's own gallery block. Reach for
- * this one on simple products, where its thumbnail layouts are the point.
- */
 
 ?>
 <!-- wp:columns {"align":"wide","style":{"spacing":{"blockGap":{"left":"var:preset|spacing|60"}}}} -->

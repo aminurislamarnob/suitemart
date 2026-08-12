@@ -1,11 +1,16 @@
-import { store, getElement } from '@wordpress/interactivity';
+import { store, getElement, getContext } from '@wordpress/interactivity';
+import { watchVariations } from './variations';
 
 const instances = new WeakMap();
 
 store( 'suitemart/product-gallery', {
 	callbacks: {
 		/**
-		 * Loads Swiper and initializes the main and thumb galleries.
+		 * Sets up the carousels, and follows the selected variation.
+		 *
+		 * Both jobs share one callback because a second `data-wp-init` on the
+		 * same element needs the unique-suffix syntax added in WordPress 6.9,
+		 * and the theme supports 6.7 (decision 19).
 		 */
 		init: async () => {
 			const { ref } = getElement();
@@ -13,62 +18,81 @@ store( 'suitemart/product-gallery', {
 				return;
 			}
 
+			const context = getContext();
+			const state = {};
+
+			instances.set( ref, state );
+
+			// The grid layout has no Swiper, so variation switching scrolls to
+			// the image instead of sliding to it.
+			const getSwiper = () => state.mainSwiper;
+
+			if ( context?.variations?.length ) {
+				state.releaseVariations = watchVariations(
+					ref,
+					context,
+					getSwiper
+				);
+			}
+
 			const mainEl = ref.querySelector( '.sm-product-gallery__main' );
 			const thumbsEl = ref.querySelector( '.sm-product-gallery__thumbs' );
 
-			if ( ! mainEl || ! thumbsEl ) {
-				return;
+			if ( mainEl && thumbsEl ) {
+				try {
+					const [ { default: Swiper }, modules ] = await Promise.all(
+						[ import( 'swiper' ), import( 'swiper/modules' ) ]
+					);
+
+					const thumbsSwiper = new Swiper( thumbsEl, {
+						modules: [ modules.FreeMode ],
+						spaceBetween: 10,
+						slidesPerView: 4,
+						freeMode: true,
+						watchSlidesProgress: true,
+						direction: ref.classList.contains(
+							'sm-product-gallery--vertical'
+						)
+							? 'vertical'
+							: 'horizontal',
+					} );
+
+					const mainSwiper = new Swiper( mainEl, {
+						modules: [ modules.Navigation, modules.Thumbs ],
+						spaceBetween: 10,
+						navigation: {
+							nextEl: ref.querySelector(
+								'.sm-product-gallery__button-next'
+							),
+							prevEl: ref.querySelector(
+								'.sm-product-gallery__button-prev'
+							),
+						},
+						thumbs: {
+							swiper: thumbsSwiper,
+						},
+					} );
+
+					state.mainSwiper = mainSwiper;
+					state.thumbsSwiper = thumbsSwiper;
+				} catch ( error ) {
+					// Swiper could not be loaded. The slides are still in the
+					// document and still readable; only the carousel is lost.
+				}
 			}
 
-			try {
-				const [ { default: Swiper }, modules ] = await Promise.all( [
-					import( 'swiper' ),
-					import( 'swiper/modules' ),
-				] );
+			return () => {
+				const current = instances.get( ref );
 
-				const thumbsSwiper = new Swiper( thumbsEl, {
-					modules: [ modules.FreeMode ],
-					spaceBetween: 10,
-					slidesPerView: 4,
-					freeMode: true,
-					watchSlidesProgress: true,
-					direction: ref.classList.contains(
-						'sm-product-gallery--vertical'
-					)
-						? 'vertical'
-						: 'horizontal',
-				} );
+				if ( ! current ) {
+					return;
+				}
 
-				const mainSwiper = new Swiper( mainEl, {
-					modules: [ modules.Navigation, modules.Thumbs ],
-					spaceBetween: 10,
-					navigation: {
-						nextEl: ref.querySelector(
-							'.sm-product-gallery__button-next'
-						),
-						prevEl: ref.querySelector(
-							'.sm-product-gallery__button-prev'
-						),
-					},
-					thumbs: {
-						swiper: thumbsSwiper,
-					},
-				} );
-
-				instances.set( ref, { mainSwiper, thumbsSwiper } );
-
-				return () => {
-					if ( instances.has( ref ) ) {
-						const { mainSwiper: m, thumbsSwiper: t } =
-							instances.get( ref );
-						m.destroy( true, true );
-						t.destroy( true, true );
-						instances.delete( ref );
-					}
-				};
-			} catch ( error ) {
-				// Failed to load Swiper
-			}
+				current.releaseVariations?.();
+				current.mainSwiper?.destroy( true, true );
+				current.thumbsSwiper?.destroy( true, true );
+				instances.delete( ref );
+			};
 		},
 	},
 } );

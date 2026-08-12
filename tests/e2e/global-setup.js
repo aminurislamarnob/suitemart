@@ -21,6 +21,7 @@ const PRODUCT_SLUG = 'suitemart-test-product';
 const COMPARE_SLUG = 'suitemart-compare';
 const WISHLIST_SLUG = 'suitemart-wishlist';
 const PRODUCT_BLOCKS_SLUG = 'suitemart-product-blocks';
+const VARIABLE_SLUG = 'suitemart-variable-blocks';
 const FIXTURE = 'tests/e2e/fixtures/blocks-page.html';
 
 // Present on the fixture page and nowhere else, so finding it proves the page
@@ -167,6 +168,28 @@ module.exports = async ( config ) => {
 		`<!-- wp:woocommerce/single-product {"productId":${ process.env.SUITEMART_PRODUCT_ID }} -->
 <div class="wp-block-woocommerce-single-product"><!-- wp:suitemart/product-gallery {"layout":"horizontal"} /-->
 <!-- wp:suitemart/quick-view-button /--></div>
+<!-- /wp:woocommerce/single-product -->`
+	);
+
+	// A variable product, so the gallery's variation switching has two colours
+	// and two images to move between.
+	const variableId = wp( [
+		'eval-file',
+		'tests/e2e/fixtures/variable-product.php',
+	] );
+
+	if ( ! /^\d+$/.test( variableId ) ) {
+		throw new Error(
+			`Could not seed the variable product. WP-CLI returned: ${ variableId }`
+		);
+	}
+
+	process.env.SUITEMART_VARIABLE_URL = ensurePage(
+		VARIABLE_SLUG,
+		'Variable product blocks',
+		`<!-- wp:woocommerce/single-product {"productId":${ variableId }} -->
+<div class="wp-block-woocommerce-single-product"><!-- wp:suitemart/product-gallery {"layout":"horizontal"} /-->
+<!-- wp:woocommerce/add-to-cart-with-options /--></div>
 <!-- /wp:woocommerce/single-product -->`
 	);
 };

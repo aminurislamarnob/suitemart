@@ -23,9 +23,10 @@ The full plan lives in GitHub issue
 | **P4 — Integrations** | Not started (27) |
 | **P5 — Hardening** | Not started |
 
-**Green:** 182 PHPUnit tests passing / 1 skipped (the expected inverse guard),
-75 Playwright tests passing / 1 skipped, phpcs clean, PHPStan level 5 clean,
-ESLint and Stylelint clean.
+**Green:** 186 PHPUnit tests passing / 1 skipped (the expected inverse guard),
+78 Playwright tests passing / 1 skipped, phpcs clean, PHPStan level 5 clean,
+ESLint and Stylelint clean — and CI now genuinely runs the commerce suite
+rather than skipping it.
 
 41 blocks exist under `src/`. 18 templates, 6 parts, 20 patterns, 1 style
 variation.
@@ -48,14 +49,11 @@ and `lightbox` (PhotoSwipe is already installed, MIT-licensed, not yet imported)
 Build one per commit, each with its PHPUnit render test and at least one pattern,
 each verified against the full command list in `AGENTS.md` §6.
 
-### Two things left deliberately open
+### One thing left deliberately open
 
-**`suitemart/product-gallery` does not handle variations.** It has no
-variation-image switching, no zoom and no lightbox, so
-`templates/single-product.html` keeps WooCommerce's own
-`product-image-gallery` block. Ours is reachable through the
-`suitemart/commerce-product-gallery` pattern, for simple products. Bringing it
-to parity is what would let it take the template back.
+`suitemart/product-gallery` now follows the selected variation and holds
+`templates/single-product.html`. It still has no zoom or lightbox — that is
+batch A's `lightbox` block (PhotoSwipe), not gallery work.
 
 **`suitemart/visitor-counter` invents its number** unless a real source is
 connected through the `suitemart_visitor_count` filter. Fabricated social proof

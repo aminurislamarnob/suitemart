@@ -216,6 +216,16 @@ variations restyling the block, which is the point of decision 6. Reference
 presets bare; `tests/phpunit/test-design-tokens.php` enforces both halves and
 would have caught the nineteen invented tokens that reached `main`.
 
+**WooCommerce's variation state is off limits.** The selected variation lives in
+Woo's `woocommerce/products` Interactivity store, which is locked private behind
+an unlock string that says in as many words that reading it will break on the
+next release. Integrate through the add-to-cart form instead: classic and block
+forms both carry one `attribute_<name>` field per attribute, because that is
+what the cart consumes. `src/product-gallery/variations.js` is the worked
+example. Related: `WC_Product_Variation::get_image_id()` falls back to the
+parent's image, so ask for `get_image_id( 'edit' )` when you need to know
+whether the variation has one of its own.
+
 **Images must be constrained globally.** `src/global.scss` caps `img` at
 `max-width: 100%`. Without it, WooCommerce's full-size gallery image overflowed
 its column, sat invisibly on top of the summary column, and swallowed every

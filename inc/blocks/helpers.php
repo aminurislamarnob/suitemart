@@ -463,3 +463,33 @@ function suitemart_size_guide_id( int $post_id, string $role ): string {
 
 	return 'sm-size-guide-n' . $counts[ $role ];
 }
+
+/**
+ * The parts of an attachment a gallery needs in order to swap it in client-side.
+ *
+ * A variation's image is not always one of the gallery's own slides, so the
+ * browser sometimes has to rewrite the visible <img> rather than move to an
+ * existing one. Passing the resolved sources means it can do that without a
+ * round trip, and without guessing at WordPress's image-size naming.
+ *
+ * @param int $attachment_id Attachment to describe.
+ * @return array{src: string, srcset: string, sizes: string, alt: string}|null
+ *         Null when the attachment has no image of the expected size.
+ */
+function suitemart_gallery_image_data( int $attachment_id ): ?array {
+	$image = wp_get_attachment_image_src( $attachment_id, 'woocommerce_single' );
+
+	if ( ! is_array( $image ) || '' === (string) $image[0] ) {
+		return null;
+	}
+
+	$srcset = wp_get_attachment_image_srcset( $attachment_id, 'woocommerce_single' );
+	$sizes  = wp_get_attachment_image_sizes( $attachment_id, 'woocommerce_single' );
+
+	return array(
+		'src'    => (string) $image[0],
+		'srcset' => is_string( $srcset ) ? $srcset : '',
+		'sizes'  => is_string( $sizes ) ? $sizes : '',
+		'alt'    => (string) get_post_meta( $attachment_id, '_wp_attachment_image_alt', true ),
+	);
+}
