@@ -57,6 +57,7 @@ work around it.
 | 21 | WCAG 2.1 AA, full RTL, translation-ready |
 | 22 | No licence checking, no auto-updater |
 | 23 | No page-builder support. FSE only |
+| 26 | `suitemart/visitor-counter` ships simulating its number, for Woodmart parity. The legal exposure was put to the owner in full and accepted (2026-08-12). Keep it out of every template — `patterns/commerce-visitor-count.php` is its only route in, and the `suitemart_visitor_count` filter its only route to real data |
 
 **Out of scope, do not build:** licence validation, auto-updates, white-label,
 setup wizard, Elementor/WPBakery anything, a custom CSS engine, a custom

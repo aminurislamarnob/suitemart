@@ -49,17 +49,25 @@ and `lightbox` (PhotoSwipe is already installed, MIT-licensed, not yet imported)
 Build one per commit, each with its PHPUnit render test and at least one pattern,
 each verified against the full command list in `AGENTS.md` §6.
 
-### One thing left deliberately open
+### Two notes on batch B blocks
 
 `suitemart/product-gallery` now follows the selected variation and holds
 `templates/single-product.html`. It still has no zoom or lightbox — that is
 batch A's `lightbox` block (PhotoSwipe), not gallery work.
 
-**`suitemart/visitor-counter` invents its number** unless a real source is
-connected through the `suitemart_visitor_count` filter. Fabricated social proof
-is a prohibited commercial practice in the EU and sits inside the FTC's
-endorsement rule, so it is deliberately absent from every template and confined
-to a pattern that says so. Whether it ships at all is the theme owner's call.
+`suitemart/visitor-counter` **ships as it is, by the owner's decision on
+2026-08-12.** It invents its number unless a real source is connected through
+the `suitemart_visitor_count` filter, which matches Woodmart's equivalent block
+and decision 1's parity goal. The risks were put to the owner in full and
+accepted: fabricated social proof is a prohibited commercial practice under the
+EU Unfair Commercial Practices Directive as amended, is named in the UK's DMCC
+Act 2024, and falls under the FTC's rule on deceptive endorsements — exposure
+that lands on the merchant using the theme.
+
+Do not re-open this, and do not quietly soften it either. The containment it has
+is deliberate and is the thing to preserve: it appears in **no template**, only
+in `patterns/commerce-visitor-count.php`, whose description states what the
+block does. Leave that pattern the only route in.
 
 ### The pattern to copy
 
