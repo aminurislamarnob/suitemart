@@ -17,51 +17,70 @@ const ITEM = 'a.sm-lightbox__item';
 const VIEWER = '.pswp';
 
 /**
- * Waits until the viewer has finished opening, and settles its animation.
- *
- * `.pswp--ui-visible` appears before the interface has actually faded in, and
- * two things depend on the difference: PhotoSwipe binds its keyboard handling
- * as part of opening, so an Escape sent earlier lands nowhere, and the top bar
- * sits at `opacity: 0.005` until the fade completes, which makes every contrast
- * reading inside it meaningless.
+ * Waits for the viewer and settles its opening animation.
  *
  * The fade is finished rather than waited for. A browser that is not painting —
  * a backgrounded tab locally, a headless runner in CI — freezes its animation
- * timeline, so the transition is created and never advances: `currentTime` stays
- * at 0 indefinitely. Polling for the end state passes on a developer's machine
- * and hangs on CI, which is exactly how this spec first went red. `finish()`
- * jumps to the end state without needing the clock.
+ * timeline, so PhotoSwipe's transition is created and never advances:
+ * `currentTime` stays at 0 indefinitely and the top bar sits at the
+ * `opacity: 0.005` it starts from, which makes every contrast reading inside it
+ * a reading through a near-transparent element. Polling for the end state
+ * passes on a developer's machine and fails on CI. `finish()` jumps to it
+ * without needing the clock.
  *
  * @param {import('@playwright/test').Page} page Page.
  */
-const waitForViewer = async ( page ) => {
+const settleViewer = async ( page ) => {
 	await expect( page.locator( VIEWER ) ).toBeVisible();
 
-	await page.evaluate( () => {
-		for ( const animation of document.getAnimations() ) {
-			if (
-				animation.effect?.getComputedTiming()?.iterations !== Infinity
-			) {
-				try {
-					animation.finish();
-				} catch {
-					// A cancelled or fill-less animation cannot be finished,
-					// and does not need to be.
-				}
-			}
-		}
-	} );
-
-	// And focus has actually moved inside. PhotoSwipe takes focus as part of
-	// opening; pressing Escape before it does was the remaining flake.
+	// Finished inside the poll, not before it: the transition is created a tick
+	// or two after the viewer appears, so a single pass can run before there is
+	// anything to finish and settle nothing at all.
 	await expect
+		.poll(
+			() =>
+				page.evaluate( () => {
+					for ( const animation of document.getAnimations() ) {
+						if (
+							animation.effect?.getComputedTiming()
+								?.iterations !== Infinity
+						) {
+							try {
+								animation.finish();
+							} catch {
+								// A cancelled or fill-less animation cannot be
+								// finished, and does not need to be.
+							}
+						}
+					}
+
+					const bar = document.querySelector( '.pswp__top-bar' );
+
+					return bar ? getComputedStyle( bar ).opacity : null;
+				} ),
+			{ timeout: 10000 }
+		)
+		.toBe( '1' );
+};
+
+/**
+ * Waits until focus has moved inside the viewer.
+ *
+ * Only meaningful for a keyboard-opened lightbox. PhotoSwipe deliberately
+ * leaves focus alone when it was opened by pointer, so waiting for this after a
+ * click waits forever — which is how this spec went red on CI while passing
+ * locally, where the click happened to focus the link first.
+ *
+ * @param {import('@playwright/test').Page} page Page.
+ */
+const waitForViewerFocus = ( page ) =>
+	expect
 		.poll( () =>
 			page.evaluate( () =>
 				Boolean( document.activeElement?.closest( '.pswp' ) )
 			)
 		)
 		.toBe( true );
-};
 
 test.describe( 'Lightbox', () => {
 	test.beforeEach( async ( { page } ) => {
@@ -137,7 +156,7 @@ test.describe( 'Lightbox', () => {
 		page,
 	} ) => {
 		await page.locator( ITEM ).first().click();
-		await waitForViewer( page );
+		await settleViewer( page );
 
 		// PhotoSwipe's own defaults are "Close", "Next" and "Previous". These
 		// come through wp_interactivity_config(), so a translated site gets
@@ -169,7 +188,11 @@ test.describe( 'Lightbox', () => {
 
 		await first.focus();
 		await page.keyboard.press( 'Enter' );
-		await waitForViewer( page );
+		await settleViewer( page );
+
+		// Opened from the keyboard, so PhotoSwipe takes focus — and Escape
+		// before it has is the race this avoids.
+		await waitForViewerFocus( page );
 
 		await page.keyboard.press( 'Escape' );
 
@@ -212,7 +235,7 @@ test.describe( 'Lightbox', () => {
 		expect( await scan() ).toEqual( [] );
 
 		await page.locator( ITEM ).first().click();
-		await waitForViewer( page );
+		await settleViewer( page );
 
 		expect( await scan() ).toEqual( [] );
 	} );
