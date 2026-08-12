@@ -1,0 +1,25 @@
+.sm-product-gallery {
+	// In the editor, without Swiper running, ensure things look decent.
+	&--horizontal {
+
+		.sm-product-gallery__main-track {
+			flex-wrap: wrap; // Just show them stacked or in a grid
+		}
+
+		.sm-product-gallery__thumbs {
+			display: none; // Hide thumbs in editor to avoid clutter
+		}
+	}
+
+	&--vertical {
+
+		.sm-product-gallery__main-track {
+			flex-wrap: wrap;
+		}
+
+		.sm-product-gallery__thumbs {
+			display: none;
+		}
+	}
+}
+

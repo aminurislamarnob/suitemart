@@ -1,0 +1,15 @@
+.sm-fbt-products__placeholder {
+	padding: var(--wp--preset--spacing--40);
+	border: 1px dashed var(--wp--preset--color--neutral-300);
+	border-radius: var(--wp--custom--radius--md);
+	background: var(--wp--preset--color--neutral-100);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--wp--preset--spacing--20);
+	color: var(--wp--preset--color--neutral-600);
+}
+
+.sm-fbt-products__placeholder-icon {
+	font-size: 24px;
+}

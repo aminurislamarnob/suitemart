@@ -1,0 +1,173 @@
+@use "../_shared/breakpoints" as *;
+
+.sm-product-gallery {
+	position: relative;
+	width: 100%;
+}
+
+.sm-product-gallery--empty {
+	background: var(--wp--preset--color--neutral-100);
+	aspect-ratio: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+}
+
+.sm-product-gallery__main {
+	position: relative;
+	width: 100%;
+	overflow: hidden; // For swiper
+}
+
+.sm-product-gallery__main-track {
+	display: flex;
+}
+
+.sm-product-gallery__main-slide {
+	flex-shrink: 0;
+	width: 100%;
+	position: relative;
+
+	img {
+		width: 100%;
+		height: auto;
+		display: block;
+	}
+}
+
+.sm-product-gallery__thumbs {
+	margin-block-start: 10px;
+	overflow: hidden; // For swiper
+}
+
+.sm-product-gallery__thumbs-track {
+	display: flex;
+}
+
+.sm-product-gallery__thumbs-slide {
+	flex-shrink: 0;
+	width: 25%; // default for 4 slides per view
+	cursor: pointer;
+	opacity: 0.6;
+	transition: opacity 0.3s ease;
+
+	img {
+		width: 100%;
+		height: auto;
+		display: block;
+	}
+
+	&.swiper-slide-thumb-active {
+		opacity: 1;
+	}
+}
+
+// Horizontal Layout (default)
+.sm-product-gallery--horizontal {
+	display: flex;
+	flex-direction: column;
+}
+
+// Vertical Layout
+.sm-product-gallery--vertical {
+	display: flex;
+	flex-direction: row-reverse; // Main on right, thumbs on left
+	gap: 10px;
+
+	.sm-product-gallery__main {
+		width: calc(100% - 80px - 10px);
+	}
+
+	.sm-product-gallery__thumbs {
+		width: 80px;
+		margin-block-start: 0;
+		height: 100%; // Need a height for vertical swiper
+		max-height: 500px;
+	}
+
+	.sm-product-gallery__thumbs-track {
+		flex-direction: column;
+	}
+
+	.sm-product-gallery__thumbs-slide {
+		width: 100%;
+		height: auto;
+	}
+}
+
+// Grid Layout
+.sm-product-gallery--grid {
+
+	.sm-product-gallery__grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 10px;
+	}
+
+	.sm-product-gallery__grid-item {
+
+		img {
+			width: 100%;
+			height: auto;
+			display: block;
+		}
+
+		&:first-child {
+			grid-column: 1 / -1; // First image spans full width
+		}
+	}
+}
+
+// Navigation arrows (simplified)
+.sm-product-gallery__button-prev,
+.sm-product-gallery__button-next {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 40px;
+	height: 40px;
+	background: var(--wp--preset--color--base);
+	border-radius: 50%;
+	z-index: 10;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-shadow: var(--wp--preset--shadow--sm);
+
+	&::after {
+		content: "";
+		border: solid currentcolor;
+		border-width: 0 2px 2px 0;
+		display: inline-block;
+		padding: 4px;
+	}
+}
+
+.sm-product-gallery__button-prev {
+	inset-inline-start: 10px;
+
+	&::after {
+		transform: rotate(135deg);
+	}
+}
+
+.sm-product-gallery__button-next {
+	inset-inline-end: 10px;
+
+	&::after {
+		transform: rotate(-45deg);
+	}
+}
+
+.swiper-button-disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+

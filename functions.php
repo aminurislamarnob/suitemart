@@ -34,6 +34,7 @@ require_once SUITEMART_DIR . '/inc/setup.php';
 require_once SUITEMART_DIR . '/inc/enqueue.php';
 require_once SUITEMART_DIR . '/inc/blocks/helpers.php';
 require_once SUITEMART_DIR . '/inc/blocks/register.php';
+require_once SUITEMART_DIR . '/inc/blocks/quick-view.php';
 require_once SUITEMART_DIR . '/inc/patterns.php';
 require_once SUITEMART_DIR . '/inc/post-types/portfolio.php';
 require_once SUITEMART_DIR . '/inc/integrations/load.php';

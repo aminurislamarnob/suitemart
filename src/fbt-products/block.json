@@ -1,0 +1,35 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "suitemart/fbt-products",
+	"version": "1.0.0",
+	"title": "Frequently Bought Together",
+	"category": "woocommerce",
+	"icon": "cart",
+	"description": "Displays frequently bought together products (cross-sells) with a combined add to cart button.",
+	"supports": {
+		"html": false,
+		"align": [
+			"wide",
+			"full"
+		],
+		"spacing": {
+			"margin": true,
+			"padding": true
+		},
+		"typography": {
+			"fontSize": true,
+			"lineHeight": true
+		},
+		"interactivity": true
+	},
+	"usesContext": [
+		"postId"
+	],
+	"textdomain": "suitemart",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php",
+	"viewScriptModule": "file:./view.js"
+}
