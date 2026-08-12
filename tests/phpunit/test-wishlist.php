@@ -153,4 +153,69 @@ class Test_Wishlist extends WP_UnitTestCase {
 			'The button has no product id, so clicking it would store nothing.'
 		);
 	}
+
+	/**
+	 * The grid must ship no visitor data, because a cache will keep it.
+	 */
+	public function test_the_grid_renders_no_products(): void {
+		if ( ! WP_Block_Type_Registry::get_instance()->is_registered( 'suitemart/wishlist-grid' ) ) {
+			$this->markTestSkipped( 'suitemart/wishlist-grid is not registered here.' );
+		}
+
+		$product = $this->create_product();
+
+		$html = render_block(
+			array(
+				'blockName'    => 'suitemart/wishlist-grid',
+				'attrs'        => array( 'columns' => 3 ),
+				'innerBlocks'  => array(),
+				'innerHTML'    => '',
+				'innerContent' => array(),
+			)
+		);
+
+		$this->assertStringNotContainsString(
+			(string) $product,
+			$html,
+			'The grid rendered product data the server has no way of knowing the visitor saved.'
+		);
+
+		// The column count has to be a class: `repeat( var( --n ), 1fr )` is
+		// invalid CSS and drops the whole declaration, which looks like a
+		// layout bug rather than the CSS error it is.
+		$this->assertStringContainsString(
+			'sm-wishlist-grid--cols-3',
+			$html,
+			'The column setting never reaches the stylesheet.'
+		);
+
+		$this->assertStringContainsString(
+			'sm-wishlist-grid__empty',
+			$html,
+			'Without JavaScript the block renders nothing at all, not even an explanation.'
+		);
+	}
+
+	/**
+	 * An out-of-range column count must not reach the class name.
+	 */
+	public function test_the_column_count_is_clamped(): void {
+		if ( ! WP_Block_Type_Registry::get_instance()->is_registered( 'suitemart/wishlist-grid' ) ) {
+			$this->markTestSkipped( 'suitemart/wishlist-grid is not registered here.' );
+		}
+
+		$html = render_block(
+			array(
+				'blockName'    => 'suitemart/wishlist-grid',
+				'attrs'        => array( 'columns' => 40 ),
+				'innerBlocks'  => array(),
+				'innerHTML'    => '',
+				'innerContent' => array(),
+			)
+		);
+
+		// Only classes up to six are generated, so anything past that would be
+		// a class with no rule behind it.
+		$this->assertStringContainsString( 'sm-wishlist-grid--cols-6', $html );
+	}
 }

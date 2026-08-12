@@ -19,6 +19,7 @@ const { join } = require( 'node:path' );
 const SLUG = 'suitemart-block-test';
 const PRODUCT_SLUG = 'suitemart-test-product';
 const COMPARE_SLUG = 'suitemart-compare';
+const WISHLIST_SLUG = 'suitemart-wishlist';
 const FIXTURE = 'tests/e2e/fixtures/blocks-page.html';
 
 // Present on the fixture page and nowhere else, so finding it proves the page
@@ -141,26 +142,37 @@ module.exports = async ( config ) => {
 	process.env.SUITEMART_FIXTURE_URL = path;
 
 	process.env.SUITEMART_PRODUCT_URL = ensureProduct();
-	process.env.SUITEMART_COMPARE_URL = ensureComparePage();
+	process.env.SUITEMART_COMPARE_URL = ensurePage(
+		COMPARE_SLUG,
+		'Compare',
+		'<!-- wp:suitemart/compare-table {"showSku":true} /-->'
+	);
+	process.env.SUITEMART_WISHLIST_URL = ensurePage(
+		WISHLIST_SLUG,
+		'Wishlist',
+		'<!-- wp:suitemart/wishlist-grid /-->'
+	);
 };
 
 /**
- * Creates the page holding the comparison table, and returns its path.
+ * Creates or updates a one-block page, and returns its path.
  *
- * The table has no home in the block fixture page: it belongs on a page of its
- * own, the way a shop would place it, and its whole behaviour is what happens
- * when the visitor's stored list changes underneath it.
+ * The commerce list blocks each need a page of their own, the way a shop would
+ * place them: their whole behaviour is what happens when the visitor's stored
+ * list changes underneath them, which the shared block fixture page cannot
+ * express.
  *
+ * @param {string} slug    Page slug.
+ * @param {string} title   Page title.
+ * @param {string} content Block markup for the page.
  * @return {string} Path to the page, including any query string.
  */
-function ensureComparePage() {
-	const content = '<!-- wp:suitemart/compare-table {"showSku":true} /-->';
-
+function ensurePage( slug, title, content ) {
 	const existing = wp( [
 		'post',
 		'list',
 		'--post_type=page',
-		`--name=${ COMPARE_SLUG }`,
+		`--name=${ slug }`,
 		'--field=ID',
 	] );
 
@@ -171,8 +183,8 @@ function ensureComparePage() {
 				'post',
 				'create',
 				'--post_type=page',
-				'--post_title=Compare',
-				`--post_name=${ COMPARE_SLUG }`,
+				`--post_title=${ title }`,
+				`--post_name=${ slug }`,
 				'--post_status=publish',
 				`--post_content=${ content }`,
 				'--porcelain',
@@ -180,7 +192,7 @@ function ensureComparePage() {
 
 	if ( ! /^\d+$/.test( id ) ) {
 		throw new Error(
-			`Could not create the compare page. WP-CLI returned: ${ id }`
+			`Could not create the ${ slug } page. WP-CLI returned: ${ id }`
 		);
 	}
 

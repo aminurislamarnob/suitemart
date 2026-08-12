@@ -1,0 +1,119 @@
+@use "../_shared/mixins" as *;
+@use "../_shared/breakpoints" as *;
+
+.sm-wishlist-grid__list {
+	display: grid;
+	gap: var(--wp--style--block-gap, 1.5rem);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+
+	// One column on a phone whatever the setting says: the setting describes
+	// the widest layout, and the grid steps up to it.
+	grid-template-columns: 1fr;
+}
+
+/*
+ * The column count is a class rather than a custom property.
+ *
+ * `repeat()` takes an integer literal — `repeat(var(--n), 1fr)` is invalid and
+ * silently drops the whole declaration, which is exactly the kind of failure
+ * that looks like a layout bug rather than a CSS error.
+ */
+$sm-wishlist-grid-max-columns: 6;
+
+@include bp(sm) {
+
+	@for $i from 1 through $sm-wishlist-grid-max-columns {
+
+		.sm-wishlist-grid--cols-#{$i} .sm-wishlist-grid__list {
+			grid-template-columns: repeat(min($i, 2), minmax(0, 1fr));
+		}
+	}
+}
+
+@include bp(md) {
+
+	@for $i from 1 through $sm-wishlist-grid-max-columns {
+
+		.sm-wishlist-grid--cols-#{$i} .sm-wishlist-grid__list {
+			grid-template-columns: repeat(min($i, 3), minmax(0, 1fr));
+		}
+	}
+}
+
+@include bp(lg) {
+
+	@for $i from 1 through $sm-wishlist-grid-max-columns {
+
+		.sm-wishlist-grid--cols-#{$i} .sm-wishlist-grid__list {
+			grid-template-columns: repeat(#{$i}, minmax(0, 1fr));
+		}
+	}
+}
+
+.sm-wishlist-grid__item {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	gap: 0.35rem;
+}
+
+.sm-wishlist-grid__link {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	color: inherit;
+	text-decoration: none;
+
+	&:hover .sm-wishlist-grid__name {
+		text-decoration: underline;
+	}
+}
+
+.sm-wishlist-grid__image {
+	width: 100%;
+	aspect-ratio: 1;
+	object-fit: cover;
+	border-radius: var(--wp--custom--radius--md, 8px);
+}
+
+.sm-wishlist-grid__name {
+	font-weight: 600;
+}
+
+.sm-wishlist-grid__price,
+.sm-wishlist-grid__stock {
+	margin: 0;
+}
+
+.sm-wishlist-grid__stock {
+	font-size: var(--wp--preset--font-size--sm);
+	opacity: 0.8;
+}
+
+.sm-wishlist-grid__remove {
+	position: absolute;
+	inset-block-start: 0.5rem;
+	inset-inline-end: 0.5rem;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border: 0;
+	border-radius: 50%;
+	background: var(--wp--preset--color--base);
+	color: inherit;
+	cursor: pointer;
+
+	@include tap-target;
+	@include focus-ring;
+
+	&:hover {
+		color: var(--wp--preset--color--error);
+	}
+}
+
+.sm-wishlist-grid__status:not(:empty) {
+	margin-block: var(--wp--preset--spacing--20, 0.75rem);
+	color: var(--wp--preset--color--error);
+}

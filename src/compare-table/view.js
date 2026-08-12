@@ -14,53 +14,9 @@
 
 import { store, getContext, getElement } from '@wordpress/interactivity';
 import { readList, writeList, onListChange } from '../_shared/product-list';
+import { formatPrice } from '../_shared/price';
 
 const LIST = 'compare';
-
-/**
- * Formats a Store API price object into a display string.
- *
- * The API returns minor units as a string ("1999") with the currency's own
- * separators and symbol placement alongside, because those vary by store and
- * by locale. Intl.NumberFormat cannot be used here: it would apply the
- * browser's idea of the currency's format rather than the shop's settings.
- *
- * @param {Object} prices Store API `prices` object.
- * @return {string} Formatted price, or an empty string when unavailable.
- */
-const formatPrice = ( prices ) => {
-	if ( ! prices || typeof prices.price !== 'string' ) {
-		return '';
-	}
-
-	const amount = Number( prices.price );
-
-	if ( ! Number.isFinite( amount ) ) {
-		return '';
-	}
-
-	const minorUnit = Number( prices.currency_minor_unit ?? 2 );
-	const value = amount / 10 ** minorUnit;
-	const [ whole, fraction = '' ] = value.toFixed( minorUnit ).split( '.' );
-
-	const grouped = whole.replace(
-		/\B(?=(\d{3})+(?!\d))/g,
-		prices.currency_thousand_separator ?? ','
-	);
-
-	const number =
-		minorUnit > 0
-			? `${ grouped }${
-					prices.currency_decimal_separator ?? '.'
-			  }${ fraction }`
-			: grouped;
-
-	// The prefix and suffix already carry the symbol, on whichever side the
-	// store puts it — adding `currency_symbol` as well produced "$$19.99".
-	return `${ prices.currency_prefix ?? '' }${ number }${
-		prices.currency_suffix ?? ''
-	}`;
-};
 
 const { state } = store( 'suitemart/compare', {
 	actions: {
