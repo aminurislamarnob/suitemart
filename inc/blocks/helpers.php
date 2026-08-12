@@ -493,3 +493,48 @@ function suitemart_gallery_image_data( int $attachment_id ): ?array {
 		'alt'    => (string) get_post_meta( $attachment_id, '_wp_attachment_image_alt', true ),
 	);
 }
+
+/**
+ * Renders a block image from either an attachment id or a bare URL.
+ *
+ * Blocks that take an image accept both: `mediaId` when it came from the media
+ * library, and `mediaUrl` when a pattern or an import supplied a plain address.
+ * Only the id path gets responsive sources, which is the reason to prefer it —
+ * the URL path exists so the block still renders rather than vanishing.
+ *
+ * @param int    $attachment_id Attachment id, or 0 to use the URL.
+ * @param string $url           Fallback image URL.
+ * @param string $alt           Alternative text.
+ * @param string $class_name    Class for the img element.
+ * @param string $size          Registered image size for the attachment path.
+ * @param bool   $eager         True to load eagerly, for images above the fold.
+ * @return string Image markup, or an empty string when there is no image.
+ */
+function suitemart_block_image( int $attachment_id, string $url, string $alt, string $class_name, string $size = 'large', bool $eager = false ): string {
+	$loading = $eager ? 'eager' : 'lazy';
+
+	if ( $attachment_id > 0 ) {
+		return (string) wp_get_attachment_image(
+			$attachment_id,
+			$size,
+			false,
+			array(
+				'class'   => $class_name,
+				'alt'     => $alt,
+				'loading' => $loading,
+			)
+		);
+	}
+
+	if ( '' === $url ) {
+		return '';
+	}
+
+	return sprintf(
+		'<img class="%s" src="%s" alt="%s" loading="%s" decoding="async" />',
+		esc_attr( $class_name ),
+		esc_url( $url ),
+		esc_attr( $alt ),
+		esc_attr( $loading )
+	);
+}

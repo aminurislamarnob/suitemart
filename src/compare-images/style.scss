@@ -1,0 +1,190 @@
+.sm-compare-images {
+	--sm-compare-position: 50%;
+	--sm-compare-handle: 2.5rem;
+	--sm-compare-line: 2px;
+}
+
+.sm-compare-images__frame {
+	position: relative;
+	display: block;
+	overflow: hidden;
+	border-radius: inherit;
+
+	/*
+	 * Forced left-to-right, like the hotspots frame and for the same reason: a
+	 * before-and-after wipe is a spatial fact about two photographs, and
+	 * mirroring it in Arabic or Hebrew would swap which image the handle is
+	 * revealing. The slider's own value still reads 0–100 either way.
+	 */
+	direction: ltr;
+}
+
+.sm-compare-images__image {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+/*
+ * The second image sits exactly on top of the first and is clipped to the wipe
+ * position. `clip-path` rather than a width: clipping leaves the image at its
+ * natural size, so the two halves line up pixel for pixel. Resizing the top
+ * image instead would squash it, which is the classic way this component goes
+ * wrong and is only obvious on a photograph with straight lines in it.
+ */
+.sm-compare-images__reveal {
+	position: absolute;
+	inset: 0;
+	clip-path: inset(0 calc(100% - var(--sm-compare-position)) 0 0);
+}
+
+.sm-compare-images--vertical .sm-compare-images__reveal {
+	clip-path: inset(0 0 calc(100% - var(--sm-compare-position)) 0);
+}
+
+/* Divider and handle */
+
+.sm-compare-images__divider {
+	position: absolute;
+	inset-block: 0;
+	inset-inline-start: var(--sm-compare-position);
+	width: var(--sm-compare-line);
+	margin-inline-start: calc(var(--sm-compare-line) / -2);
+	background: var(--wp--preset--color--base);
+	pointer-events: none;
+}
+
+.sm-compare-images--vertical .sm-compare-images__divider {
+	inset-block: var(--sm-compare-position) auto;
+	inset-inline: 0;
+	width: auto;
+	height: var(--sm-compare-line);
+	margin-block-start: calc(var(--sm-compare-line) / -2);
+	margin-inline-start: 0;
+}
+
+.sm-compare-images__handle {
+	position: absolute;
+	inset-block-start: 50%;
+	inset-inline-start: 50%;
+	display: grid;
+	width: var(--sm-compare-handle);
+	height: var(--sm-compare-handle);
+	border-radius: var(--wp--custom--radius--pill);
+	background: var(--wp--preset--color--base);
+	box-shadow: 0 2px 10px var(--wp--custom--color--scrim);
+	color: var(--wp--preset--color--contrast);
+	place-items: center;
+	translate: -50% -50%;
+}
+
+// Two chevrons pointing away from each other, drawn rather than fetched: an
+// icon here would be one more HTTP request for a mark that is two triangles.
+.sm-compare-images__handle::before,
+.sm-compare-images__handle::after {
+	position: absolute;
+	width: 0.45rem;
+	height: 0.45rem;
+	border-block-start: var(--sm-compare-line) solid currentcolor;
+	border-inline-start: var(--sm-compare-line) solid currentcolor;
+	content: "";
+}
+
+.sm-compare-images__handle::before {
+	rotate: -45deg;
+	translate: -35% 0;
+}
+
+.sm-compare-images__handle::after {
+	rotate: 135deg;
+	translate: 35% 0;
+}
+
+.sm-compare-images--vertical .sm-compare-images__handle::before {
+	rotate: 45deg;
+	translate: 0 -35%;
+}
+
+.sm-compare-images--vertical .sm-compare-images__handle::after {
+	rotate: -135deg;
+	translate: 0 35%;
+}
+
+/* The control */
+
+/*
+ * The range input covers the whole frame and is invisible: its own thumb is
+ * transparent, because a native thumb is inset from each end of the track by
+ * half its width and would slide out of step with the divider. The divider and
+ * the drawn handle above track the value exactly instead.
+ */
+.sm-compare-images__range {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	appearance: none;
+	background: transparent;
+	cursor: ew-resize;
+}
+
+.sm-compare-images--vertical .sm-compare-images__range {
+	writing-mode: vertical-lr;
+	cursor: ns-resize;
+}
+
+.sm-compare-images__range::-webkit-slider-thumb {
+	width: var(--sm-compare-handle);
+	height: var(--sm-compare-handle);
+	appearance: none;
+	background: transparent;
+}
+
+.sm-compare-images__range::-moz-range-thumb {
+	width: var(--sm-compare-handle);
+	height: var(--sm-compare-handle);
+	border: 0;
+	background: transparent;
+}
+
+// The focus ring belongs on the mark the eye is following, not on a rectangle
+// the size of the whole photograph.
+.sm-compare-images__range:focus {
+	outline: none;
+}
+
+.sm-compare-images__range:focus-visible ~ .sm-compare-images__divider
+	.sm-compare-images__handle {
+	outline: 2px solid var(--wp--preset--color--primary);
+	outline-offset: 3px;
+}
+
+/* Labels */
+
+.sm-compare-images__label {
+	position: absolute;
+	padding: 0.25em 0.6em;
+	border-radius: var(--wp--custom--radius--sm);
+	background: var(--wp--custom--color--scrim);
+	color: var(--wp--preset--color--base);
+	font-size: var(--wp--preset--font-size--sm);
+	line-height: 1.4;
+	pointer-events: none;
+}
+
+.sm-compare-images__label--before {
+	inset-block-end: var(--wp--preset--spacing--20);
+	inset-inline-start: var(--wp--preset--spacing--20);
+}
+
+.sm-compare-images__label--after {
+	inset-block-end: var(--wp--preset--spacing--20);
+	inset-inline-end: var(--wp--preset--spacing--20);
+}
+
+.sm-compare-images--vertical .sm-compare-images__label--before {
+	inset-block: var(--wp--preset--spacing--20) auto;
+}

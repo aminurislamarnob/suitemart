@@ -23,6 +23,7 @@ const WISHLIST_SLUG = 'suitemart-wishlist';
 const PRODUCT_BLOCKS_SLUG = 'suitemart-product-blocks';
 const VARIABLE_SLUG = 'suitemart-variable-blocks';
 const HOTSPOTS_SLUG = 'suitemart-hotspots';
+const COMPARE_IMAGES_SLUG = 'suitemart-compare-images';
 const FIXTURE = 'tests/e2e/fixtures/blocks-page.html';
 
 // Present on the fixture page and nowhere else, so finding it proves the page
@@ -180,6 +181,21 @@ module.exports = async ( config ) => {
 <!-- wp:paragraph --><p>Second panel, ${ markerStyle }.</p><!-- /wp:paragraph -->
 <!-- /wp:suitemart/hotspot -->
 <!-- /wp:suitemart/hotspots -->`
+			)
+			.join( '\n' )
+	);
+
+	// Both wipe directions, because the vertical one reaches the browser
+	// through different CSS entirely and would otherwise never be looked at.
+	const secondImage = importImage( 'tests/e2e/fixtures/product-image-2.png' );
+
+	process.env.SUITEMART_COMPARE_IMAGES_URL = ensurePage(
+		COMPARE_IMAGES_SLUG,
+		'Compare images',
+		[ 'horizontal', 'vertical' ]
+			.map(
+				( orientation ) =>
+					`<!-- wp:suitemart/compare-images {"beforeId":${ hotspotImage },"beforeAlt":"The room before","beforeLabel":"Before","afterId":${ secondImage },"afterAlt":"The room after","afterLabel":"After","orientation":"${ orientation }","startPosition":40} /-->`
 			)
 			.join( '\n' )
 	);
