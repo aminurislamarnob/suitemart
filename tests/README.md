@@ -111,6 +111,25 @@ That is exactly what the first CI run did.
 To change what the specs exercise, edit `tests/e2e/fixtures/blocks-page.html`;
 the setup pushes it to the page on the next run.
 
+### Demo products, for looking at things by hand
+
+The suites create the one product they need, which is enough to assert against
+and useless for judging whether a shop page actually looks right. For that:
+
+```bash
+npx wp-env run cli --env-cwd=wp-content/themes/suitemart \
+    wp eval-file tools/seed-demo-products.php
+```
+
+Twenty products across five categories, with photographs from Unsplash, sale
+prices on some, one low-stock and two out-of-stock, so the states the templates
+have to handle are all present. It matches on SKU, so running it again updates
+rather than duplicates.
+
+The photographs are development fixtures. They are downloaded into the wp-env
+uploads directory, never committed, and never shipped: the theme's own imagery
+has to be original (decision 10), and several of these show real products.
+
 ## Notes for anyone extending the suites
 
 - **PHPUnit is pinned to 9.6 on purpose.** PHPUnit 10+ requires PHP 8.2, and the
