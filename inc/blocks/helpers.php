@@ -538,3 +538,92 @@ function suitemart_block_image( int $attachment_id, string $url, string $alt, st
 		esc_attr( $loading )
 	);
 }
+
+/**
+ * Marks up image links inside a lightbox so PhotoSwipe can size them.
+ *
+ * PhotoSwipe needs each item's full-size dimensions before it opens, or it
+ * cannot size the viewer until the file arrives and the first frame jumps.
+ * WordPress already knows those dimensions; the work here is finding which
+ * attachment each link points at.
+ *
+ * Two ways, cheapest first. Core writes `wp-image-<id>` onto every image it
+ * inserts, so the id is usually sitting in the markup. When it is not — a
+ * hand-written link, or an image from an importer — the URL is looked up
+ * instead, which costs a query, so it is the fallback rather than the rule.
+ *
+ * @param string $html Inner blocks markup.
+ * @return array{html: string, count: int} The rewritten markup, and how many
+ *         links were prepared.
+ */
+function suitemart_lightbox_prepare( string $html ): array {
+	$processor = new WP_HTML_Tag_Processor( $html );
+
+	$count  = 0;
+	$index  = 0;
+	$anchor = null;
+
+	while ( $processor->next_tag() ) {
+		$tag = $processor->get_tag();
+
+		if ( 'A' === $tag ) {
+			$href = $processor->get_attribute( 'href' );
+
+			$anchor = null;
+
+			if ( is_string( $href ) && 1 === preg_match( '/\.(jpe?g|png|gif|webp|avif)(\?.*)?$/i', $href ) ) {
+				$anchor = 'sm-lightbox-a-' . $index;
+				$processor->set_bookmark( $anchor );
+			}
+
+			continue;
+		}
+
+		if ( 'IMG' !== $tag || null === $anchor ) {
+			continue;
+		}
+
+		$attachment_id = 0;
+		$class         = $processor->get_attribute( 'class' );
+
+		if ( is_string( $class ) && 1 === preg_match( '/wp-image-(\d+)/', $class, $matches ) ) {
+			$attachment_id = (int) $matches[1];
+		}
+
+		$here = 'sm-lightbox-img-' . $index;
+		$processor->set_bookmark( $here );
+
+		if ( 0 === $attachment_id ) {
+			$processor->seek( $anchor );
+			$link = $processor->get_attribute( 'href' );
+			$processor->seek( $here );
+
+			if ( is_string( $link ) ) {
+				$attachment_id = attachment_url_to_postid( $link );
+			}
+		}
+
+		$size = $attachment_id > 0 ? wp_get_attachment_image_src( $attachment_id, 'full' ) : false;
+
+		if ( is_array( $size ) && $size[1] > 0 && $size[2] > 0 ) {
+			$processor->seek( $anchor );
+			$processor->set_attribute( 'data-pswp-width', (string) $size[1] );
+			$processor->set_attribute( 'data-pswp-height', (string) $size[2] );
+			$processor->add_class( 'sm-lightbox__item' );
+			$processor->seek( $here );
+
+			++$count;
+		}
+
+		$processor->release_bookmark( $anchor );
+		$processor->release_bookmark( $here );
+
+		$anchor = null;
+		++$index;
+	}
+
+	return array(
+		'html'  => $processor->get_updated_html(),
+		'count' => $count,
+	);
+}

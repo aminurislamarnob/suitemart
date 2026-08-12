@@ -25,6 +25,7 @@ const VARIABLE_SLUG = 'suitemart-variable-blocks';
 const HOTSPOTS_SLUG = 'suitemart-hotspots';
 const COMPARE_IMAGES_SLUG = 'suitemart-compare-images';
 const VIEW_360_SLUG = 'suitemart-view-360';
+const LIGHTBOX_SLUG = 'suitemart-lightbox';
 const FIXTURE = 'tests/e2e/fixtures/blocks-page.html';
 
 // Present on the fixture page and nowhere else, so finding it proves the page
@@ -223,6 +224,43 @@ module.exports = async ( config ) => {
 	);
 
 	/*
+	 * A gallery linking to media files, which is the only shape the lightbox
+	 * acts on, plus a plain image that links nowhere. The second one is the
+	 * point: it proves the block leaves alone what it cannot enlarge instead of
+	 * marking every image in it as a gallery item.
+	 */
+	process.env.SUITEMART_LIGHTBOX_URL = ensurePage(
+		LIGHTBOX_SLUG,
+		'Lightbox',
+		`<!-- wp:suitemart/lightbox -->
+<!-- wp:gallery {"linkTo":"media"} -->
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped">
+<!-- wp:image {"id":${ hotspotImage },"linkDestination":"media"} -->
+<figure class="wp-block-image"><a href="${ imageUrl(
+			hotspotImage
+		) }"><img src="${ imageUrl(
+			hotspotImage
+		) }" alt="A room before" class="wp-image-${ hotspotImage }"/></a><figcaption class="wp-element-caption">The room in April</figcaption></figure>
+<!-- /wp:image -->
+<!-- wp:image {"id":${ secondImage },"linkDestination":"media"} -->
+<figure class="wp-block-image"><a href="${ imageUrl(
+			secondImage
+		) }"><img src="${ imageUrl(
+			secondImage
+		) }" alt="A room after" class="wp-image-${ secondImage }"/></a></figure>
+<!-- /wp:image -->
+</figure>
+<!-- /wp:gallery -->
+
+<!-- wp:image {"id":${ hotspotImage }} -->
+<figure class="wp-block-image"><img src="${ imageUrl(
+			hotspotImage
+		) }" alt="Not a link" class="wp-image-${ hotspotImage }"/></figure>
+<!-- /wp:image -->
+<!-- /wp:suitemart/lightbox -->`
+	);
+
+	/*
 	 * The gallery and the quick view button both read the product from `postId`
 	 * context, and neither belongs on the single-product template: WooCommerce's
 	 * own gallery block stays there until ours handles variation images, and a
@@ -328,6 +366,16 @@ function importImage( file ) {
 	}
 
 	return attachId;
+}
+
+/**
+ * Returns an attachment's full-size URL.
+ *
+ * @param {string} id Attachment id.
+ * @return {string} URL.
+ */
+function imageUrl( id ) {
+	return wp( [ 'post', 'get', id, '--field=guid' ] );
 }
 
 /**

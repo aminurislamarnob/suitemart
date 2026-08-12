@@ -31,6 +31,17 @@ module.exports = [
 				...blockEntries,
 				global: './src/global.scss',
 				editor: './src/editor.scss',
+				/*
+				 * PhotoSwipe's stylesheet, emitted beside the lightbox block and
+				 * listed as a second `style` in its block.json, so it loads only
+				 * on pages that use the block. Importing it from the block's own
+				 * style.scss would be the obvious route, but postcss-import only
+				 * looks in the importing file's directory and does not resolve
+				 * package names — the alternative is a relative path picking its
+				 * way out to node_modules, which breaks the moment the install
+				 * layout changes.
+				 */
+				'lightbox/photoswipe': 'photoswipe/photoswipe.css',
 			};
 		},
 		plugins: [

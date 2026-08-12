@@ -89,7 +89,9 @@ handling), `focus.js`, `off-canvas-lock.js`, `icons.js`, `Icon.js`.
 Useful PHP helpers in `inc/blocks/helpers.php`:
 `suitemart_get_icon( $name, $args )`, `suitemart_clamp_int( $value, $fallback,
 $min, $max )`, `suitemart_enum( $value, $allowed, $fallback )`,
-`suitemart_has_woocommerce()`, `suitemart_compare_limit()`.
+`suitemart_has_woocommerce()`, `suitemart_compare_limit()`,
+`suitemart_block_image( $id, $url, $alt, $class, $size, $eager )` for blocks
+that accept either an attachment id or a bare URL.
 
 ---
 
@@ -133,7 +135,40 @@ unresolved leaves a button with no accessible name. Every bound value must be
 seeded in PHP, via `wp_interactivity_state()` or
 `wp_interactivity_data_wp_context()`, *and* written as a literal fallback in the
 markup. Three separate blocks shipped with erased output before this was
-understood.
+understood. Measured, not guessed: an unresolved `state.x` on
+`data-wp-bind--aria-expanded` deletes an `aria-expanded="false"` written right
+beside it, and `!state.x` evaluates `!null`, so the element is served `hidden`
+for entirely the wrong reason.
+
+**When a binding depends on an element's position among its siblings, declare
+the derived state twice.** A getter like `state.isCurrentFrame` that compares
+this element's index to the active one cannot be seeded as a plain value,
+because the answer differs per element — which is why the trap above keeps
+catching people here. The way out is a PHP closure that calls
+`wp_interactivity_get_context()`: it runs once per element during directive
+processing, with that element's own context in scope, so the server resolves the
+binding exactly as the browser will. `src/view-360/` is the worked example, with
+the same comparison written in `render.php` and in `view.js`. Yes, it is
+duplicated logic; the alternative is a block that renders nothing until
+hydration.
+
+**Never write to the DOM imperatively inside a hydrated tree.** `view-360`
+originally moved an `is-current` class between frames from a `data-wp-watch`
+callback. It worked in isolation and skipped frames at random in a browser:
+Preact owns those attributes and restores what it last rendered on the next
+update. Bind the attribute instead. A `data-wp-init` callback adding a class the
+server never rendered (`is-enhanced`) is fine — the conflict is only over
+attributes the framework is already managing.
+
+**A `render.php` is `require`d inside an output buffer, so `return $content;`
+returns nothing.** The file's return value is discarded and the buffer is what
+reaches the page — which is empty, so the block silently disappears. `return
+'';` reads as if it works only because empty is what those blocks mean. To pass
+content through unchanged, `echo` it and then `return`.
+
+**A function declared in `render.php` fatals on the second instance.** The file
+is included once per rendered block, so the second one redeclares it. Shared
+render helpers belong in `inc/blocks/helpers.php`.
 
 **The server must never render visitor state.** Wishlist and comparison lists
 live in `localStorage`, deliberately: no per-visitor cookie means pages stay

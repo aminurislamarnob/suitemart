@@ -1,6 +1,6 @@
 # Handoff — state of the work
 
-Last updated: 2026-08-12, after auditing and repairing the delegated batch B.
+Last updated: 2026-08-12, after finishing P2 batch A.
 
 Read `AGENTS.md` first — it holds the standing rules. This file is a snapshot:
 what is built, what is verified, and what to pick up next. **Update it when you
@@ -16,44 +16,48 @@ The full plan lives in GitHub issue
 | Phase | State |
 |---|---|
 | **P1 — Foundation** | Complete, with one item outstanding (CSS budget, below) |
-| **P2 batch A — content blocks** | 13 of 18 |
-| **P2 batch B — WooCommerce gaps** | All 15 built; audited and repaired ← **you are here** |
-| **P2 batch C — site features** | Not started (6 blocks) |
+| **P2 batch A — content blocks** | All 18 built |
+| **P2 batch B — WooCommerce gaps** | All 15 built; audited and repaired |
+| **P2 batch C — site features** | Not started (6 blocks) ← **you are here** |
 | **P3 — Design breadth** | 1 of ~15 style variations, 15 of ~100 patterns |
 | **P4 — Integrations** | Not started (27) |
 | **P5 — Hardening** | Not started |
 
-**Green:** 186 PHPUnit tests passing / 1 skipped (the expected inverse guard),
-78 Playwright tests passing / 1 skipped, phpcs clean, PHPStan level 5 clean,
-ESLint and Stylelint clean — and CI now genuinely runs the commerce suite
-rather than skipping it.
+**Green:** 230 PHPUnit tests passing / 1 skipped (the expected inverse guard),
+106 Playwright tests passing / 1 skipped, phpcs clean, PHPStan level 5 clean,
+ESLint and Stylelint clean — and CI genuinely runs the commerce suite rather
+than skipping it.
 
-41 blocks exist under `src/`. 18 templates, 6 parts, 20 patterns, 1 style
+46 blocks exist under `src/`. 18 templates, 6 parts, 24 patterns, 1 style
 variation.
 
 ---
 
-## Pick up here: P2 batch A, then batch C
+## Pick up here: P2 batch C
 
-All 15 batch B blocks are built. Twelve of them were written by an outside agent
-and audited afterwards; that audit found twenty defects, six of them visible to
-an end user, on a tree where all seven verification commands passed. They are
-fixed, and the gaps that let them through are now covered by
-`tests/phpunit/test-design-tokens.php`, `tests/phpunit/test-block-output.php`
-and an axe pass over the shop grid. **The new traps in `AGENTS.md` §5 are the
-condensed version — read them before writing another block.**
+Batches A and B are complete. Batch B's twelve outside-written blocks were
+audited and repaired; that audit found twenty defects, six visible to an end
+user, on a tree where all seven verification commands passed. The gaps that let
+them through are now covered by `tests/phpunit/test-design-tokens.php`,
+`tests/phpunit/test-block-output.php` and an axe pass over the shop grid. **The
+traps in `AGENTS.md` §5 are the condensed version — read them before writing
+another block.**
 
-**Still open in batch A:** `hotspots` + `hotspot`, `compare-images`, `view-360`,
-and `lightbox` (PhotoSwipe is already installed, MIT-licensed, not yet imported).
+**Batch C, still to build (6):** popup, floating-block, portfolio-grid (CSS grid
++ Interactivity filtering, no Isotope), post-carousel, back-to-top,
+cookie-notice.
 
 Build one per commit, each with its PHPUnit render test and at least one pattern,
 each verified against the full command list in `AGENTS.md` §6.
 
-### Two notes on batch B blocks
+### Three notes on blocks already built
 
-`suitemart/product-gallery` now follows the selected variation and holds
-`templates/single-product.html`. It still has no zoom or lightbox — that is
-batch A's `lightbox` block (PhotoSwipe), not gallery work.
+`suitemart/lightbox` (batch A) is the theme's PhotoSwipe integration, and the
+answer to product-gallery zoom is to reuse its store rather than to write a
+second one. That wiring is **not done**: the gallery has no zoom yet.
+
+`suitemart/product-gallery` follows the selected variation and holds
+`templates/single-product.html`.
 
 `suitemart/visitor-counter` **ships as it is, by the owner's decision on
 2026-08-12.** It invents its number unless a real source is connected through
@@ -67,7 +71,8 @@ that lands on the merchant using the theme.
 Do not re-open this, and do not quietly soften it either. The containment it has
 is deliberate and is the thing to preserve: it appears in **no template**, only
 in `patterns/commerce-visitor-count.php`, whose description states what the
-block does. Leave that pattern the only route in.
+block does. Leave that pattern the only route in. Worth adding to the readme at
+P5: what the block does, and how to wire up a real source.
 
 ### The pattern to copy
 

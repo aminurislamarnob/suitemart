@@ -1,0 +1,36 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "suitemart/lightbox",
+	"title": "Lightbox",
+	"category": "suitemart",
+	"icon": "editor-expand",
+	"description": "Wraps images so that opening one opens them all in a full-screen viewer, with arrows between them.",
+	"keywords": [ "zoom", "gallery", "full screen", "photoswipe", "enlarge" ],
+	"textdomain": "suitemart",
+	"attributes": {
+		"showCaptions": {
+			"type": "boolean",
+			"default": true
+		},
+		"loop": {
+			"type": "boolean",
+			"default": true
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"align": [ "wide", "full" ],
+		"html": false,
+		"interactivity": true,
+		"spacing": {
+			"margin": true,
+			"padding": true,
+			"blockGap": true
+		}
+	},
+	"render": "file:./render.php",
+	"editorScript": "file:./index.js",
+	"style": [ "file:./photoswipe.css", "file:./style-index.css" ],
+	"viewScriptModule": "file:./view.js"
+}
