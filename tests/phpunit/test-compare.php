@@ -142,4 +142,47 @@ class Test_Compare extends WP_UnitTestCase {
 
 		$this->assertSame( 4, suitemart_compare_limit() );
 	}
+
+	/**
+	 * The table must ship no visitor data, because a cache will keep it.
+	 */
+	public function test_the_table_renders_no_products(): void {
+		if ( ! WP_Block_Type_Registry::get_instance()->is_registered( 'suitemart/compare-table' ) ) {
+			$this->markTestSkipped( 'suitemart/compare-table is not registered here.' );
+		}
+
+		$product = $this->create_product();
+
+		$html = render_block(
+			array(
+				'blockName'    => 'suitemart/compare-table',
+				'attrs'        => array(),
+				'innerBlocks'  => array(),
+				'innerHTML'    => '',
+				'innerContent' => array(),
+			)
+		);
+
+		$this->assertStringNotContainsString(
+			(string) $product,
+			$html,
+			'The table rendered product data the server has no way of knowing the visitor asked for.'
+		);
+
+		// The empty state is real markup rather than a binding, so it is there
+		// for a reader whose JavaScript never arrives.
+		$this->assertStringContainsString(
+			'sm-compare-table__empty',
+			$html,
+			'Without JavaScript the block renders nothing at all, not even an explanation.'
+		);
+
+		// The table itself starts hidden; showing an empty table would read as
+		// "your comparison is empty" before the list has even been read.
+		$this->assertMatchesRegularExpression(
+			'/sm-compare-table__scroll[^>]*hidden/',
+			$html,
+			'An empty table is served before the browser has read the list.'
+		);
+	}
 }

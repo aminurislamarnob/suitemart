@@ -18,6 +18,7 @@ const { join } = require( 'node:path' );
 
 const SLUG = 'suitemart-block-test';
 const PRODUCT_SLUG = 'suitemart-test-product';
+const COMPARE_SLUG = 'suitemart-compare';
 const FIXTURE = 'tests/e2e/fixtures/blocks-page.html';
 
 // Present on the fixture page and nowhere else, so finding it proves the page
@@ -140,7 +141,53 @@ module.exports = async ( config ) => {
 	process.env.SUITEMART_FIXTURE_URL = path;
 
 	process.env.SUITEMART_PRODUCT_URL = ensureProduct();
+	process.env.SUITEMART_COMPARE_URL = ensureComparePage();
 };
+
+/**
+ * Creates the page holding the comparison table, and returns its path.
+ *
+ * The table has no home in the block fixture page: it belongs on a page of its
+ * own, the way a shop would place it, and its whole behaviour is what happens
+ * when the visitor's stored list changes underneath it.
+ *
+ * @return {string} Path to the page, including any query string.
+ */
+function ensureComparePage() {
+	const content = '<!-- wp:suitemart/compare-table {"showSku":true} /-->';
+
+	const existing = wp( [
+		'post',
+		'list',
+		'--post_type=page',
+		`--name=${ COMPARE_SLUG }`,
+		'--field=ID',
+	] );
+
+	const id = /^\d+$/.test( existing )
+		? ( wp( [ 'post', 'update', existing, `--post_content=${ content }` ] ),
+		  existing )
+		: wp( [
+				'post',
+				'create',
+				'--post_type=page',
+				'--post_title=Compare',
+				`--post_name=${ COMPARE_SLUG }`,
+				'--post_status=publish',
+				`--post_content=${ content }`,
+				'--porcelain',
+		  ] );
+
+	if ( ! /^\d+$/.test( id ) ) {
+		throw new Error(
+			`Could not create the compare page. WP-CLI returned: ${ id }`
+		);
+	}
+
+	const parsed = new URL( wp( [ 'post', 'get', id, '--field=url' ] ) );
+
+	return `${ parsed.pathname }${ parsed.search }`;
+}
 
 /**
  * Creates a published product for the commerce specs, and returns its path.

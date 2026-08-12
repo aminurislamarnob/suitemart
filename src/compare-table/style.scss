@@ -1,0 +1,66 @@
+@use "../_shared/mixins" as *;
+
+.sm-compare-table {
+
+	table {
+		width: 100%;
+		border-collapse: collapse;
+		text-align: start;
+	}
+
+	th,
+	td {
+		padding: var(--wp--preset--spacing--20, 0.75rem);
+		border-bottom: 1px solid
+			color-mix(in srgb, currentcolor 12%, transparent);
+		text-align: start;
+		vertical-align: middle;
+	}
+
+	thead th {
+		font-size: var(--wp--preset--font-size--sm);
+		font-weight: 600;
+		white-space: nowrap;
+	}
+}
+
+// The table is the one place a horizontal scroll is legitimate: it belongs to
+// the table, not the page, and the e2e suite asserts the page itself never
+// scrolls sideways.
+.sm-compare-table__scroll {
+	overflow-x: auto;
+}
+
+.sm-compare-table__image img {
+	display: block;
+	width: 64px;
+	height: auto;
+	border-radius: var(--wp--custom--radius--sm, 4px);
+}
+
+.sm-compare-table__empty,
+.sm-compare-table__status:empty {
+	margin: 0;
+}
+
+.sm-compare-table__status:not(:empty) {
+	margin-block: var(--wp--preset--spacing--20, 0.75rem);
+	color: var(--wp--preset--color--error);
+}
+
+.sm-compare-table__remove {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border: 0;
+	background: none;
+	color: inherit;
+	cursor: pointer;
+
+	@include tap-target;
+	@include focus-ring;
+
+	&:hover {
+		color: var(--wp--preset--color--error);
+	}
+}
