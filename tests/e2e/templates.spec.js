@@ -97,4 +97,21 @@ test.describe( 'Templates render', () => {
 
 		expect( violations ).toEqual( [] );
 	} );
+
+	// The shop grid is the page that repeats a block, so it is where a block
+	// that hardcodes a DOM id or forgets a label on an icon-only control shows
+	// up — neither of which a single-instance fixture can catch. A size guide
+	// shipped with a hardcoded id and put four identical ones on a grid like
+	// this one.
+	test( 'the shop grid has no accessibility violations', async ( {
+		page,
+	} ) => {
+		await page.goto( '/?post_type=product' );
+
+		const { violations } = await new AxeBuilder( { page } )
+			.withTags( [ 'wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa' ] )
+			.analyze();
+
+		expect( violations ).toEqual( [] );
+	} );
 } );
