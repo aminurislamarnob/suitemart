@@ -80,7 +80,14 @@ jobs:
 
       - name: Start WordPress
         env:
-          WP_ENV_CORE: ${{ matrix.wordpress == 'nightly' && 'WordPress/WordPress#master' || null }}
+          # The stable leg installs the release zip rather than letting wp-env
+          # resolve a version and clone that git tag. The tag is published some
+          # hours after the release the API already reports as latest, and in
+          # that window `core: null` fails with "couldn't find remote ref
+          # 7.0.4" — a red build caused by nothing in this repository, which
+          # cost one investigation already. The zip is also what a real
+          # installation gets.
+          WP_ENV_CORE: ${{ matrix.wordpress == 'nightly' && 'WordPress/WordPress#master' || 'https://wordpress.org/latest.zip' }}
         run: npx wp-env start --update
 
       - name: Install Composer dependencies inside the container
