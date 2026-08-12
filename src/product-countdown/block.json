@@ -1,0 +1,31 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "suitemart/product-countdown",
+	"title": "Product Sale Countdown",
+	"category": "suitemart-commerce",
+	"icon": "clock",
+	"description": "Displays a countdown to the end of the product's sale.",
+	"keywords": [ "product", "sale", "countdown", "timer" ],
+	"textdomain": "suitemart",
+	"usesContext": [ "postId" ],
+	"attributes": {
+		"layout": {
+			"type": "string",
+			"default": "inline"
+		},
+		"units": {
+			"type": "array",
+			"default": [ "days", "hours", "minutes", "seconds" ]
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"html": false,
+		"spacing": {
+			"margin": true
+		}
+	},
+	"render": "file:./render.php",
+	"editorScript": "file:./index.js"
+}
