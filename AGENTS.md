@@ -1,0 +1,230 @@
+# Working on Suitemart
+
+Read this before writing any code. It is the standing contract for this
+repository — conventions, hard rules, and the traps that have already cost real
+debugging time. For *where the work currently stands and what to do next*, read
+`docs/HANDOFF.md`.
+
+Suitemart is a commercial multipurpose full-site-editing WordPress block theme
+for WooCommerce. It targets the *capability surface* of the Woodmart theme, built
+FSE-native rather than ported.
+
+---
+
+## 1. The one rule that is not negotiable
+
+**Woodmart is a specification reference only. Never copy anything from it.**
+
+A copy of Woodmart may be present at `../woodmart` and
+`../../plugins/woodmart-core`. You may read it to understand *what a feature
+does*. You may not copy its code, CSS, class names, markup structure, JavaScript,
+icon fonts, demo images, or compiled assets, and you may not reproduce its visual
+identity.
+
+Why it matters: Woodmart's PHP is GPLv3, but its `woodmart-font*.woff2` icon
+fonts, demo photography, and compiled CSS/JS fall under ThemeForest's split
+licence, and its look is trade dress. Suitemart is sold commercially. Every line
+of code, every stylesheet, every icon and every image here must be original or
+separately and compatibly licensed.
+
+Icons come from **Lucide** (MIT), via `npm run build:icons`. Fonts are
+self-hosted OFL. Demo photography is Unsplash, development-only, never committed.
+
+---
+
+## 2. Architectural decisions already made
+
+These were decided with the theme's owner and are **not open for
+re-litigation**. If you believe one is wrong, say so and wait — do not quietly
+work around it.
+
+| # | Decision |
+|---|---|
+| 1 | Parity of *outcomes* with Woodmart, using FSE-native mechanisms |
+| 3 | Everything ships in the theme — one repo, one zip. No companion plugin |
+| 5 | Cart, checkout and my-account use **WooCommerce's own blocks**, styled. Never replaced |
+| 6 | Styling is `block.json` `supports` + `theme.json`. **No custom CSS generation engine** |
+| 7 | Dynamic `render.php` by default. Static `save` only for stable wrappers |
+| 8 | Front-end JS is the **Interactivity API** only. No jQuery. Vendor libs limited to Swiper and PhotoSwipe |
+| 10 | Woodmart is reference only (see above) |
+| 12 | Options panel is ~40 behavioural flags, not a visual settings panel |
+| 14 | Own `suitemart/navigation` family — core Navigation cannot host arbitrary submenu content |
+| 15 | Use Woo's product blocks inside Suitemart templates; build custom blocks only for genuine gaps |
+| 16 | Per-block `style` + one small global sheet. Budget **≤60KB CSS per page** |
+| 17 | Plain JavaScript + Sass. **No TypeScript** |
+| 18 | Inline SVG sprite from Lucide (MIT), coloured with `currentColor` |
+| 19 | Floors: WP 6.7+, PHP 8.1+, WooCommerce 9.0+ |
+| 21 | WCAG 2.1 AA, full RTL, translation-ready |
+| 22 | No licence checking, no auto-updater |
+| 23 | No page-builder support. FSE only |
+
+**Out of scope, do not build:** licence validation, auto-updates, white-label,
+setup wizard, Elementor/WPBakery anything, a custom CSS engine, a custom
+cart/checkout, jQuery, TypeScript.
+
+---
+
+## 3. Conventions
+
+| Concern | Rule |
+|---|---|
+| Block names | `suitemart/<kebab-case>` |
+| Text domain | `suitemart` — on every `__()`, `_x()`, `esc_html__()` |
+| PHP functions | prefixed `suitemart_`; constants `SUITEMART_*` |
+| PHP files | `declare( strict_types=1 );` after the docblock, then `defined( 'ABSPATH' ) || exit;` |
+| PHP variables in `render.php` | prefix locals `$sm_` — `render.php` runs in a shared scope and phpcs enforces this |
+| CSS classes | `.sm-<block>` root, `.sm-<block>__<element>`, `.is-*` / `.has-*` for state |
+| CSS values | never a hard-coded colour, size or radius — always a preset (`var(--wp--preset--*)` / `var(--wp--custom--*)`). Stylelint bans hex colours in `style.scss` |
+| Sass | **logical properties only** (`margin-inline-start`, `inset-inline-end`, `padding-block`). This *is* the RTL strategy — there is no RTL stylesheet |
+| Breakpoints | 576 / 768 / 1024 / 1280, mobile-first: `@use "../_shared/breakpoints" as *;` then `@include bp(md)` |
+| Interactivity stores | one namespace per feature: `suitemart/<feature>` |
+| Escaping | escape **all** output in `render.php` |
+| Accessibility | keyboard-operable, visible `:focus-visible`, WAI-ARIA APG patterns, `prefers-reduced-motion` disables animation |
+
+Shared code lives in `src/_shared/`: `_breakpoints.scss`, `_mixins.scss`,
+`price.js` (Store API money formatting), `product-list.js` (localStorage list
+handling), `focus.js`, `off-canvas-lock.js`, `icons.js`, `Icon.js`.
+
+Useful PHP helpers in `inc/blocks/helpers.php`:
+`suitemart_get_icon( $name, $args )`, `suitemart_clamp_int( $value, $fallback,
+$min, $max )`, `suitemart_enum( $value, $allowed, $fallback )`,
+`suitemart_has_woocommerce()`, `suitemart_compare_limit()`.
+
+---
+
+## 4. Anatomy of a block
+
+One directory per block under `src/`. Adding the directory is all it takes —
+`inc/blocks/register.php` discovers everything in `build/` automatically, and
+nothing is listed by hand.
+
+```
+src/<block-name>/
+├── block.json    always — apiVersion 3, the single source of truth
+├── index.js      always — registerBlockType( metadata.name, { edit } ), no save
+├── edit.js       always — useBlockProps() + InspectorControls
+├── render.php    dynamic blocks — receives $attributes, $content, $block
+├── style.scss    front-end CSS (referenced as "file:./style-index.css")
+├── editor.scss   editor-only CSS
+└── view.js       interactive blocks — an Interactivity API store module
+```
+
+**`src/compare-button/` is the canonical example.** Copy its shape.
+
+A commerce block must also be listed in `suitemart_woocommerce_block_slugs()` in
+`inc/blocks/register.php`, so it is skipped when WooCommerce is absent rather
+than fataling inside `render.php`.
+
+Every block ships in the same commit as **a PHPUnit render test** and **at least
+one pattern that uses it**.
+
+---
+
+## 5. Traps that have already caused bugs here
+
+These are not hypothetical. Each one cost debugging time in this repository.
+
+**Interactivity directives are evaluated on the server too.** This is the single
+biggest source of bugs in this codebase. An expression the server cannot resolve
+does not leave the previous value in place — it **erases the element's text or
+strips the attribute entirely**. A `data-wp-bind--aria-label` whose expression is
+unresolved leaves a button with no accessible name. Every bound value must be
+seeded in PHP, via `wp_interactivity_state()` or
+`wp_interactivity_data_wp_context()`, *and* written as a literal fallback in the
+markup. Three separate blocks shipped with erased output before this was
+understood.
+
+**The server must never render visitor state.** Wishlist and comparison lists
+live in `localStorage`, deliberately: no per-visitor cookie means pages stay
+fully cacheable, which is what lets the P4 caching integrations work. So the
+server renders every wishlist button as `aria-pressed="false"` and lets the
+browser correct it. Rendering a saved state would show one visitor's wishlist to
+everyone behind a full-page cache. There are tests asserting the served HTML
+contains no product ids and that no cookie is set — do not "fix" them.
+
+**`repeat()` in CSS grid needs an integer literal.** `repeat( var( --n ), 1fr )`
+is invalid and silently drops the entire declaration, which reads as a layout
+bug rather than the CSS error it is. Generate classes instead — see
+`sm-wishlist-grid--cols-N`.
+
+**The Store API route travels in a query parameter under plain permalinks.**
+`?rest_route=/wc/store/v1/products`, url-encoded. So `/wp-json/` paths 404 and
+Playwright path globs never match. Always build URLs with `rest_url()`, and
+match routes in tests with a predicate:
+
+```js
+await page.route(
+    ( url ) => decodeURIComponent( url.href ).includes( 'wc/store/v1/products' ),
+    ( route ) => route.fulfill( { status: 500 } )
+);
+```
+
+**Store API prices are minor units as strings.** The response carries
+`currency_minor_unit`, `currency_prefix`, `currency_suffix`, `currency_symbol`
+and the separators. Use `formatPrice()` from `src/_shared/price.js`. Do **not**
+use `Intl.NumberFormat` — it applies the browser's idea of the currency rather
+than the shop's settings. Note the prefix already contains the symbol;
+concatenating both produced `$$19.99`.
+
+**Report storage failures honestly.** With site data blocked, a `localStorage`
+write fails silently. `toggleInList()` returns a `stored` flag for exactly this
+reason: a caller that assumes success shows a filled heart for a wishlist that
+will be empty on the next page load. Do not drop the flag.
+
+**Avoid `GLOB_BRACE`** — undefined on the musl libc the Alpine container uses.
+Use two `glob()` calls.
+
+**`wp eval-file` runs through `eval()`**, where `declare( strict_types=1 )` is a
+parse error. `tools/seed-demo-products.php` is the one file without it, and says
+so in a comment.
+
+**Images must be constrained globally.** `src/global.scss` caps `img` at
+`max-width: 100%`. Without it, WooCommerce's full-size gallery image overflowed
+its column, sat invisibly on top of the summary column, and swallowed every
+click meant for add-to-cart. The page looked fine and simply did not respond.
+
+---
+
+## 6. Environment and verification
+
+```bash
+npm install && composer install
+npm run build
+npm run env:start
+```
+
+wp-env installs themes but does **not** reliably activate one;
+`tests/e2e/global-setup.js` activates Suitemart itself for this reason. If
+`wp-env start` exits 0 with only the MySQL container (seen with OrbStack), the
+manual recovery steps are in `tests/README.md`.
+
+Seed a browsable catalogue — 20 products, five categories, sale prices,
+low-stock and out-of-stock states:
+
+```bash
+npx wp-env run cli --env-cwd=wp-content/themes/suitemart \
+    wp eval-file tools/seed-demo-products.php
+```
+
+**Every one of these must pass before a commit.** CI runs them across WP stable
+and WP nightly and is currently green — keep it that way.
+
+```bash
+npm run build          # clean
+npm run lint:js
+npm run lint:css
+npm run lint:php       # phpcs, WordPress-Coding-Standards
+npm run analyze:php    # phpstan level 5
+npm run test:php       # PHPUnit
+npm run test:e2e       # Playwright + axe
+```
+
+Two things about the test suites that are easy to get wrong:
+
+- The PHPUnit bootstrap loads WooCommerce explicitly. The WP test library loads
+  no plugins, so without it every commerce test *skips* — and a run that skips
+  its entire commerce surface reports green while testing nothing. If you see
+  skips, that is a failure, not a pass.
+- Never hardcode a product or page id in an e2e spec. Read the product id off
+  the block's `dataset.wpContext`; the fixture page URLs come from environment
+  variables exported by `global-setup.js`.
