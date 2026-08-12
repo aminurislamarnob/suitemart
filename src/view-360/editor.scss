@@ -1,0 +1,6 @@
+// The editor shows the first frame and the controls, but nothing spins: the
+// view module does not run here, and a preview that half-works is harder to
+// read than one that plainly shows the starting state.
+.sm-view-360__frames {
+	cursor: default;
+}

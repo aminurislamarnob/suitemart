@@ -1,0 +1,53 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "suitemart/view-360",
+	"title": "360° View",
+	"category": "suitemart",
+	"icon": "image-rotate",
+	"description": "A sequence of photographs taken all the way around an object, spun by dragging across it.",
+	"keywords": [ "360", "spin", "rotate", "turntable", "product" ],
+	"textdomain": "suitemart",
+	"attributes": {
+		"frames": {
+			"type": "array",
+			"default": [],
+			"items": {
+				"type": "number"
+			}
+		},
+		"label": {
+			"type": "string",
+			"default": ""
+		},
+		"reverse": {
+			"type": "boolean",
+			"default": false
+		},
+		"autoRotate": {
+			"type": "boolean",
+			"default": false
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"align": [ "wide" ],
+		"html": false,
+		"interactivity": true,
+		"spacing": {
+			"margin": true,
+			"blockGap": true
+		},
+		"__experimentalBorder": {
+			"color": true,
+			"radius": true,
+			"style": true,
+			"width": true
+		}
+	},
+	"render": "file:./render.php",
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css",
+	"editorStyle": "file:./index.css",
+	"viewScriptModule": "file:./view.js"
+}

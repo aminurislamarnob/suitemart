@@ -24,6 +24,7 @@ const PRODUCT_BLOCKS_SLUG = 'suitemart-product-blocks';
 const VARIABLE_SLUG = 'suitemart-variable-blocks';
 const HOTSPOTS_SLUG = 'suitemart-hotspots';
 const COMPARE_IMAGES_SLUG = 'suitemart-compare-images';
+const VIEW_360_SLUG = 'suitemart-view-360';
 const FIXTURE = 'tests/e2e/fixtures/blocks-page.html';
 
 // Present on the fixture page and nowhere else, so finding it proves the page
@@ -198,6 +199,27 @@ module.exports = async ( config ) => {
 					`<!-- wp:suitemart/compare-images {"beforeId":${ hotspotImage },"beforeAlt":"The room before","beforeLabel":"Before","afterId":${ secondImage },"afterAlt":"The room after","afterLabel":"After","orientation":"${ orientation }","startPosition":40} /-->`
 			)
 			.join( '\n' )
+	);
+
+	/*
+	 * Four frames from two committed files. What the frames look like does not
+	 * matter to any assertion here — which one is showing does — and importing
+	 * the same file twice is the cheapest way to get four distinct attachments
+	 * without adding photographs to the repository.
+	 */
+	const spinFrames = [
+		hotspotImage,
+		secondImage,
+		importImage( 'tests/e2e/fixtures/product-image-1.png' ),
+		importImage( 'tests/e2e/fixtures/product-image-2.png' ),
+	];
+
+	process.env.SUITEMART_VIEW_360_URL = ensurePage(
+		VIEW_360_SLUG,
+		'360 view',
+		`<!-- wp:suitemart/view-360 {"frames":[${ spinFrames.join(
+			','
+		) }],"label":"A walnut chair, seen from every side"} /-->`
 	);
 
 	/*

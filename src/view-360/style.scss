@@ -1,0 +1,105 @@
+.sm-view-360 {
+	display: grid;
+	gap: var(--wp--preset--spacing--20);
+}
+
+.sm-view-360__frames {
+	position: relative;
+	overflow: hidden;
+	border-radius: inherit;
+
+	// The rotation is a horizontal gesture, so the browser must not claim the
+	// same drag for panning the page. Without this the viewer is unusable on a
+	// touchscreen — the page scrolls sideways and the object never turns.
+	touch-action: pan-y;
+	user-select: none;
+}
+
+.sm-view-360.is-enhanced .sm-view-360__frames {
+	cursor: grab;
+}
+
+.sm-view-360.is-enhanced .sm-view-360__frames:active {
+	cursor: grabbing;
+}
+
+/*
+ * Every frame is in the flow but only one is displayed, which keeps the box the
+ * size of a single frame. Stacking them absolutely would collapse the height
+ * and need an aspect ratio guessed in advance.
+ *
+ * The `[hidden]` rule is not redundant: `display: block` on the element itself
+ * beats the user agent's `[hidden] { display: none }`, so without it every
+ * frame would show at once.
+ */
+.sm-view-360__frame {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+.sm-view-360__frame[hidden] {
+	display: none;
+}
+
+.sm-view-360__hint {
+	position: absolute;
+	inset-block-end: var(--wp--preset--spacing--20);
+	inset-inline-start: 50%;
+	display: inline-flex;
+	align-items: center;
+	padding: 0.3em 0.75em;
+	border-radius: var(--wp--custom--radius--pill);
+	background: var(--wp--custom--color--scrim);
+	color: var(--wp--preset--color--base);
+	font-size: var(--wp--preset--font-size--sm);
+	gap: 0.4em;
+	line-height: 1;
+	pointer-events: none;
+	transition: opacity var(--wp--custom--transition--base);
+	translate: -50% 0;
+}
+
+// The hint is advice for a mouse or a finger, and there is nothing to hint at
+// until the drag handler exists.
+.sm-view-360:not(.is-enhanced) .sm-view-360__hint,
+.sm-view-360__frames:active .sm-view-360__hint {
+	opacity: 0;
+}
+
+.sm-view-360__controls {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--wp--preset--spacing--20);
+}
+
+.sm-view-360__button {
+	display: inline-grid;
+	width: 2.5rem;
+	height: 2.5rem;
+	border: 1px solid var(--wp--preset--color--neutral-300);
+	border-radius: var(--wp--custom--radius--pill);
+	background: var(--wp--preset--color--base);
+	color: var(--wp--preset--color--contrast);
+	cursor: pointer;
+	place-items: center;
+	transition: background var(--wp--custom--transition--fast);
+}
+
+.sm-view-360__button:hover {
+	background: var(--wp--preset--color--neutral-100);
+}
+
+.sm-view-360__button:focus-visible {
+	outline: 2px solid var(--wp--preset--color--primary);
+	outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+	.sm-view-360__hint,
+	.sm-view-360__button {
+		transition: none;
+	}
+}
