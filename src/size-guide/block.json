@@ -1,0 +1,41 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "suitemart/size-guide",
+	"title": "Size Guide Modal",
+	"category": "suitemart-commerce",
+	"icon": "feedback",
+	"description": "A modal dialog that holds the product size guide. Opened by the Size Guide Button.",
+	"keywords": [ "size", "guide", "modal", "dialog" ],
+	"textdomain": "suitemart",
+	"attributes": {
+		"title": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"html": false,
+		"interactivity": true,
+		"color": {
+			"text": true,
+			"background": true
+		},
+		"spacing": {
+			"padding": true,
+			"blockGap": true
+		},
+		"layout": {
+			"allowSwitching": true,
+			"allowInheriting": false,
+			"default": {
+				"type": "constrained"
+			}
+		}
+	},
+	"render": "file:./render.php",
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css",
+	"viewScriptModule": "file:./view.js"
+}

@@ -51,6 +51,14 @@ if ( ! suitemart_has_woocommerce() ) {
 
 <!-- wp:suitemart/visitor-counter /-->
 
+<!-- wp:suitemart/size-guide-button /-->
+
+<!-- wp:suitemart/size-guide -->
+<!-- wp:paragraph -->
+<p>This is a sample size guide.</p>
+<!-- /wp:paragraph -->
+<!-- /wp:suitemart/size-guide -->
+
 <!-- wp:woocommerce/product-button {"fontSize":"sm"} /-->
 <!-- /wp:woocommerce/product-template -->
 

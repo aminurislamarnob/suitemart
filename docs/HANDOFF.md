@@ -46,7 +46,7 @@ directory under `src/` and registration is automatic.
 | ~~`estimated-delivery`~~ | Done |
 | ~~`product-countdown`~~ | Done |
 | ~~`visitor-counter`~~ | Done |
-| `size-guide` + `size-guide-button` | Modal pair. Reuse the off-canvas focus handling in `src/_shared/focus.js` |
+| ~~`size-guide` + `size-guide-button`~~ | Done |
 | `quick-view-button` | Modal rendering a product from the Store API. **The most substantial one** — do it when you have a clear run |
 | `fbt-products` | "Frequently bought together". Needs a cart-add for multiple products |
 | `product-gallery` | Thumbnails / vertical / grid variants. Largest surface; leave for last |

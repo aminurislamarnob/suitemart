@@ -1,0 +1,12 @@
+.sm-size-guide--editor {
+	position: relative;
+	visibility: visible;
+	opacity: 1;
+	padding: 0;
+	z-index: auto;
+
+	.sm-size-guide__dialog {
+		transform: none;
+		box-shadow: inset 0 0 0 1px var(--wp--preset--color--border);
+	}
+}
