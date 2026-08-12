@@ -1,0 +1,43 @@
+@use "../_shared/mixins" as *;
+
+.sm-compare-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5em;
+	border: 1px solid color-mix(in srgb, currentcolor 20%, transparent);
+	background: none;
+	color: inherit;
+	font: inherit;
+	cursor: pointer;
+
+	@include tap-target;
+	@include focus-ring;
+
+	@media (prefers-reduced-motion: no-preference) {
+		transition: color var(--wp--custom--transition--fast, 0.15s ease);
+	}
+}
+
+.sm-compare-button--icon {
+	padding: 0.5em;
+	border-radius: 50%;
+}
+
+.sm-compare-button--icon-label {
+	padding-block: 0.6em;
+	padding-inline: 1em;
+	border-radius: var(--wp--custom--radius--pill, 999px);
+}
+
+.sm-compare-button__icon {
+	display: flex;
+}
+
+// Added state. Colour alone would not distinguish it for anyone who cannot see
+// the difference, which is why `aria-pressed` carries the state and the label
+// changes too.
+.sm-compare-button.is-added,
+.sm-compare-button:hover {
+	color: var(--wp--preset--color--primary);
+}

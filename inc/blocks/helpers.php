@@ -405,3 +405,26 @@ function suitemart_clamp_int( mixed $value, int $fallback, int $min, int $max ):
 function suitemart_enum( mixed $value, array $allowed, string $fallback ): string {
 	return is_string( $value ) && in_array( $value, $allowed, true ) ? $value : $fallback;
 }
+
+/**
+ * How many products may be compared at once.
+ *
+ * A comparison table is read across, so the ceiling is a legibility limit
+ * rather than a technical one: past four columns the table stops fitting on a
+ * laptop and the rows it exists to compare no longer line up on screen.
+ *
+ * Both the button and the table read this, and the browser is given the same
+ * number through the Interactivity store, so there is one value to change.
+ *
+ * @return int Between 2 and 6.
+ */
+function suitemart_compare_limit(): int {
+	/**
+	 * Filters the maximum number of products in the comparison list.
+	 *
+	 * @param int $limit Default 4.
+	 */
+	$limit = apply_filters( 'suitemart_compare_limit', 4 );
+
+	return suitemart_clamp_int( $limit, 4, 2, 6 );
+}
