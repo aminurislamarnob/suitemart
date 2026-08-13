@@ -28,6 +28,16 @@
 .sm-share__link {
 	display: inline-flex;
 	align-items: center;
+
+	/*
+	 * The copy control is a `<button>` and the rest are `<a>`, and the two
+	 * disagree about `box-sizing` by UA default: border-box for the button,
+	 * content-box for the links. A shared `min-width` then means two different
+	 * widths — 40px against 59px — so the row read as four circles followed by
+	 * a smaller odd one out. State it here rather than relying on a global
+	 * reset the theme does not have.
+	 */
+	box-sizing: border-box;
 	gap: 0.5em;
 	border: 1px solid color-mix(in srgb, currentcolor 20%, transparent);
 	background: none;
@@ -70,8 +80,10 @@
 	justify-content: center;
 
 	// A square target whose size follows the icon, with a floor that keeps it
-	// comfortably tappable.
-	@include tap-target(2.5rem);
+	// comfortably tappable. 44px, not 40: with border-box settled above, the
+	// floor is now the actual rendered size rather than a number the padding
+	// grows past, and 44 is what WCAG 2.2's 2.5.8 asks of a pointer target.
+	@include tap-target(2.75rem);
 
 	padding: 0.5em;
 }

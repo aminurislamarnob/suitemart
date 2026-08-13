@@ -7,6 +7,21 @@
 	align-items: flex-start;
 	pointer-events: none; // Let clicks pass through to the product image underneath.
 
+	/*
+	 * That `pointer-events` line is the tell: this was drawn as an overlay. But
+	 * a product card is assembled by `woocommerce/product-template`, nothing can
+	 * be nested inside `woocommerce/product-image`, and so from a pattern the
+	 * labels can only ever be the image's sibling. Left in flow they push the
+	 * image down by however many labels a product happens to have, and a row of
+	 * four cards ends up with four different image tops — which is exactly how
+	 * this was found.
+	 *
+	 * Coming out of flow needs a positioned ancestor. Woo's card is the only one
+	 * available, `:has()` supplies it without touching Woo's markup, and the
+	 * rule costs nothing on a page with no labels on it. Scoped to the card on
+	 * purpose: in a single-product summary the labels belong in flow, above the
+	 * title, and there they stay.
+	 */
 	&__label {
 		display: inline-flex;
 		align-items: center;
@@ -33,4 +48,15 @@
 			background-color: var(--wp--preset--color--contrast);
 		}
 	}
+}
+
+.wc-block-product:has(> .sm-product-labels) {
+	position: relative;
+}
+
+.wc-block-product > .sm-product-labels {
+	position: absolute;
+	z-index: 1;
+	inset-block-start: var(--wp--preset--spacing--20);
+	inset-inline-start: var(--wp--preset--spacing--20);
 }

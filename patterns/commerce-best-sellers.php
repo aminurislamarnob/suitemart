@@ -1,0 +1,65 @@
+<?php
+/**
+ * Title: Best sellers
+ * Slug: suitemart/commerce-best-sellers
+ * Categories: suitemart/commerce, woocommerce
+ * Description: The products that sell most, with the number sold on each card.
+ * Keywords: best sellers, popular, top, products, sold
+ * Viewport Width: 1400
+ *
+ * @package Suitemart
+ */
+
+declare( strict_types=1 );
+
+defined( 'ABSPATH' ) || exit;
+
+if ( ! suitemart_has_woocommerce() ) {
+	return;
+}
+
+?>
+<?php
+/*
+ * A tinted group needs horizontal padding as well as vertical: without it the
+ * panel is exactly the content width, and the heading and its link sit hard
+ * against the edge of the colour.
+ */
+?>
+<!-- wp:group {"align":"wide","style":{"spacing":{"padding":{"top":"var:preset|spacing|70","bottom":"var:preset|spacing|70","left":"var:preset|spacing|50","right":"var:preset|spacing|50"},"blockGap":"var:preset|spacing|50"},"border":{"radius":"var:custom|radius|lg"}},"backgroundColor":"neutral-100","layout":{"type":"constrained","wideSize":"1280px"}} -->
+<div class="wp-block-group alignwide has-neutral-100-background-color has-background" style="border-radius:var(--wp--custom--radius--lg);padding-top:var(--wp--preset--spacing--70);padding-right:var(--wp--preset--spacing--50);padding-bottom:var(--wp--preset--spacing--70);padding-left:var(--wp--preset--spacing--50)"><!-- wp:group {"layout":{"type":"flex","flexWrap":"wrap","justifyContent":"space-between","verticalAlignment":"bottom"}} -->
+<div class="wp-block-group"><!-- wp:heading {"level":2,"fontSize":"2xl"} -->
+<h2 class="wp-block-heading has-2-xl-font-size"><?php echo esc_html_x( 'What everyone is buying', 'Pattern heading', 'suitemart' ); ?></h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p><a href="/shop"><?php echo esc_html_x( 'Browse the shop', 'Pattern link text', 'suitemart' ); ?></a></p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->
+
+<!-- wp:woocommerce/product-collection {"queryId":33,"query":{"perPage":4,"pages":1,"offset":0,"postType":"product","order":"desc","orderBy":"popularity","inherit":false},"displayLayout":{"type":"flex","columns":4},"collection":"woocommerce/product-collection/best-sellers"} -->
+<div class="wp-block-woocommerce-product-collection"><!-- wp:woocommerce/product-template -->
+<!-- wp:woocommerce/product-image {"imageSizing":"thumbnail","style":{"border":{"radius":"8px"}}} /-->
+
+<!-- wp:post-title {"level":3,"isLink":true,"fontSize":"md","__woocommerceNamespace":"woocommerce/product-collection/product-title"} /-->
+
+<!-- wp:woocommerce/product-price /-->
+
+<?php
+/*
+ * The sold counter reads Woo's own `total_sales`, which is the same figure the
+ * collection is ordered by — so the card explains its own position in the grid.
+ */
+?>
+<!-- wp:suitemart/sold-counter /-->
+
+<!-- wp:woocommerce/product-button {"fontSize":"sm"} /-->
+<!-- /wp:woocommerce/product-template -->
+
+<!-- wp:woocommerce/product-collection-no-results -->
+<!-- wp:paragraph -->
+<p><?php echo esc_html_x( 'No sales recorded yet.', 'Pattern empty state', 'suitemart' ); ?></p>
+<!-- /wp:paragraph -->
+<!-- /wp:woocommerce/product-collection-no-results --></div>
+<!-- /wp:woocommerce/product-collection --></div>
+<!-- /wp:group -->

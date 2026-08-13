@@ -1,7 +1,6 @@
 # Handoff — state of the work
 
-Last updated: 2026-08-13, after P3's style variations and the header,
-hero and footer patterns.
+Last updated: 2026-08-13, after P3's commerce section patterns.
 
 Read `AGENTS.md` first — it holds the standing rules. This file is a snapshot:
 what is built, what is verified, and what to pick up next. **Update it when you
@@ -20,17 +19,18 @@ The full plan lives in GitHub issue
 | **P2 batch A — content blocks** | All 18 built |
 | **P2 batch B — WooCommerce gaps** | All 15 built; audited and repaired |
 | **P2 batch C — site features** | All 6 built |
-| **P3 — Design breadth** | All 15 style variations built; 47 of ~100 patterns ← **you are here** |
+| **P3 — Design breadth** | All 15 style variations built; 64 of ~100 patterns ← **you are here** |
 | **P4 — Integrations** | Not started (27) |
 | **P5 — Hardening** | Not started |
 
-**Green:** 456 PHPUnit tests passing / 1 skipped (the expected inverse guard),
+**Green:** 458 PHPUnit tests passing / 1 skipped (the expected inverse guard),
 144 Playwright tests passing / 1 skipped, phpcs clean, PHPStan level 5 clean,
 ESLint and Stylelint clean — and CI genuinely runs the commerce suite rather
 than skipping it.
 
-52 blocks exist under `src/`. 18 templates, 6 parts, 47 patterns, 15 style
-variations.
+52 blocks exist under `src/`. 18 templates, 6 parts, 64 patterns, 15 style
+variations — and **every block now appears in at least one pattern**, which
+`tests/phpunit/test-pattern-coverage.php` holds.
 
 ---
 
@@ -48,12 +48,11 @@ All three P2 batches are done: 18 content blocks, 15 WooCommerce blocks, and
 batch C's six site features — back-to-top, cookie-notice, floating-block, popup,
 post-carousel, portfolio-grid.
 
-**Next is the rest of P3**: the ~50 patterns still to write. The thin
-categories are now covered — six headers, six heroes and six footers — so the
-remaining work is commerce sections (~20, exercising the batch B blocks that
-have one pattern each or none), the content and CTA fill-out (~25), and then
-the 10 full-page starters, which should be assembled from the section patterns
-rather than written from scratch. Keep building one thing per commit, each with its PHPUnit test and at
+**Next is the rest of P3**: roughly 35 patterns still to write. Headers, heroes,
+footers and commerce sections are all covered now, so what remains is the
+content and CTA fill-out (~25) and then the 10 full-page starters, which should
+be assembled from the section patterns rather than written from scratch. Keep
+building one thing per commit, each with its PHPUnit test and at
 least one pattern, each verified against the full command list in `AGENTS.md`
 §6 — and each checked in a real browser before its Playwright spec is written.
 Every bug this session that mattered was invisible to PHP.
@@ -112,6 +111,37 @@ Two things learned writing them, both worth repeating in the rest of P3:
   `header-announcement` and `hero-offer-countdown` compute one with
   `wp_date( …, strtotime( '+7 days' ) )`, which is evaluated when the pattern is
   inserted and stored as an ordinary value from then on.
+
+### The commerce section patterns
+
+Twenty-two `commerce-*` patterns, sixteen of them new. Most are a
+`woocommerce/product-collection` with a `collection` attribute —
+`new-arrivals`, `best-sellers`, `on-sale`, `top-rated`, `related` — rather than
+a hand-maintained query, so the section keeps meaning what its heading says as
+the catalogue changes. All but `checkout-trust` open with the WooCommerce guard.
+
+The slice existed to close a specific gap: **five blocks had reached `main` with
+no pattern at all** — `wishlist-button`, `wishlist-grid`, `compare-button`,
+`compare-table`, `back-to-top`. Four of those are two whole features a buyer
+would have had to already know about to find. `test-pattern-coverage.php` now
+fails the build if any block loses its last pattern, and also checks that every
+`suitemart/*` category a pattern names is one `inc/patterns.php` registers.
+
+Three things worth carrying forward:
+
+- **`woocommerce/product-filter-removable-chips` cannot go in a pattern.** Its
+  render reads a `$classes` it only assigns when the saved inner markup carries
+  `wc-block-product-filter-removable-chips`, so hand-written markup raises
+  "Undefined variable $classes" from WooCommerce itself and takes the whole page
+  with it. `commerce-shop-filters` leaves it out and says why. Add it from the
+  editor, where Woo writes its own markup.
+- **Woo's filters render almost nothing on this demo catalogue**, and that is
+  correct: `product-filter-active` and `-rating` mark themselves hidden with no
+  active filters and no reviews. The shop archive's sidebar looks empty as a
+  result. It is not broken — check before "fixing" it.
+- **A tinted or bordered group needs horizontal padding**, not just vertical.
+  Three patterns shipped with content sitting hard against the edge of their own
+  panel, because a wide group's background is exactly the content width.
 
 ### Notes on blocks already built
 

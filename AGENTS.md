@@ -309,6 +309,35 @@ only became obvious under a dark style variation. `tests/phpunit/test-block-asse
 now checks both directions: every `file:` reference resolves, and every sheet in
 `src/` is declared.
 
+**`<a>` and `<button>` disagree about `box-sizing`, and a shared `min-width`
+then means two sizes.** The theme has no global border-box reset, so a link
+computes as `content-box` and a button as `border-box`. `.sm-share__link` set
+`min-width: 40px` on both: the four share links rendered at 59px and the copy
+button at 40, so the row read as four circles with a smaller odd one out. Any
+rule sizing a mixed set of links and buttons has to state `box-sizing` itself.
+
+**A block that was drawn as an overlay cannot nest inside a Woo block.** A
+product card is assembled by `woocommerce/product-template`, and nothing can go
+*inside* `woocommerce/product-image` — so `suitemart/product-labels` could only
+ever be its sibling. In flow it pushed the image down by however many labels a
+product had, and a row of four cards ended up with four different image tops.
+The fix is the block positioning itself against Woo's card through `:has()`,
+scoped to the card so the same block still sits in flow in a product summary.
+Same technique as the pinned-block collisions above, same reason: the rule lives
+in the yielding block's own sheet and costs nothing elsewhere.
+
+**`woocommerce/product-image` draws its own sale badge.** Pair it with
+`suitemart/product-labels`, which draws one too, and the card shows SALE twice —
+once per corner. Four patterns shipped like that. Set `"showSaleBadge":false` on
+the image wherever our labels are present.
+
+**The pattern list is cached, so a new pattern file does not exist yet.**
+`WP_Theme::get_block_patterns()` caches the header scan, and it survives
+`wp cache flush` and `wp transient delete --all`. A newly written pattern is
+absent from `WP_Block_Patterns_Registry` until `wp_clean_themes_cache()` runs —
+which reads as "my pattern is broken" when nothing is wrong with it. PHPUnit
+never sees this because the pattern tests glob the directory directly.
+
 **Images must be constrained globally.** `src/global.scss` caps `img` at
 `max-width: 100%`. Without it, WooCommerce's full-size gallery image overflowed
 its column, sat invisibly on top of the summary column, and swallowed every
