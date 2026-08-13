@@ -338,6 +338,45 @@ absent from `WP_Block_Patterns_Registry` until `wp_clean_themes_cache()` runs �
 which reads as "my pattern is broken" when nothing is wrong with it. PHPUnit
 never sees this because the pattern tests glob the directory directly.
 
+**A per-side border with a block-wide `borderColor` draws all four sides.**
+`"borderColor":"neutral-200"` puts `has-border-color` on the element, and core's
+rule for that class is `border-style: solid` — on every side. Set only
+`"border":{"top":{"width":"1px"}}` beside it and the other three widths fall
+back to `medium`, so a hairline rule renders as a 3px box. Six patterns shipped
+like that. Put the colour inside the side instead —
+`{"top":{"color":"var:preset|color|neutral-200","width":"1px","style":"solid"}}`
+— and state `style` explicitly, because without `has-border-color` there is no
+`border-style` and a coloured side of a given width draws nothing at all.
+`tests/phpunit/test-pattern-coverage.php` holds this.
+
+**`post-content` must be `align: full` or no pattern can bleed.** Every template
+nests `post-content` inside a constrained `main`, and core's constrained layout
+gives an `alignfull` child `max-width: none` — which means the width of its
+parent, not of the viewport. So a full-bleed hero placed in *page content* was
+capped at the 720px content column while the identical markup in a template part
+spanned the screen. `align: full` on the `post-content` block itself fixes it and
+changes nothing else: the block still lays its own unaligned children out at
+`contentSize`.
+
+**A fixed-position block inherits the width its parent hands out.** Same
+mechanism, worse symptom: `suitemart/off-canvas` is `position: fixed; inset: 0`,
+but as an unaligned child of a constrained layout it also gets
+`max-width: <content size>` and `margin-inline: auto`, which shrink the overlay
+to the content column and centre it there — scrim over a stripe down the middle
+of the page, panel floating in it instead of against the edge of the screen. Its
+own children need the same override, because the block wrapper is a constrained
+layout too. And the override has to double its class: core's rule scores the same
+0,1,0 (the `:where(:not(.alignfull)…)` half is free) and `global-styles` prints
+after the block sheet, so a single class loses the tie on source order. This is
+invisible in a header or footer part, where the parent is full width anyway.
+
+**A class nobody registers styles nothing — including core's.** Already true of
+`is-style-none`; it caught `is-style-plain` on `core/quote` too. Core registers
+that variation in JavaScript, so it exists in the editor's style picker and has
+no front-end CSS to cancel the `border-left` and `padding-left` that core's theme
+stylesheet puts on every blockquote. Check the rendered element, not the
+inserter.
+
 **Images must be constrained globally.** `src/global.scss` caps `img` at
 `max-width: 100%`. Without it, WooCommerce's full-size gallery image overflowed
 its column, sat invisibly on top of the summary column, and swallowed every

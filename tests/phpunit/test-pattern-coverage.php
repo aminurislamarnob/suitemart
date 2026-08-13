@@ -124,4 +124,41 @@ class Test_Pattern_Coverage extends WP_UnitTestCase {
 			"These patterns name a category nothing registers, so they land uncategorised:\n" . implode( "\n", $unknown )
 		);
 	}
+
+	/**
+	 * A single-side border must carry its colour on that side.
+	 *
+	 * `"borderColor":"neutral-200"` puts `has-border-color` on the element, and
+	 * core's rule for that class is `border-style: solid` — on all four sides.
+	 * Pair it with `"border":{"top":{"width":"1px"}}` and only the top width is
+	 * set; the other three fall back to `medium`, so a design asking for one hair
+	 * rule renders a 3px box. It is invisible in the markup, invisible to phpcs,
+	 * and six patterns shipped with it.
+	 *
+	 * The form that works puts colour, width and style inside the side:
+	 * `"border":{"top":{"color":"var:preset|color|neutral-200","width":"1px","style":"solid"}}`.
+	 */
+	public function test_side_borders_do_not_use_a_block_wide_border_colour(): void {
+		$offenders = array();
+
+		foreach ( (array) glob( SUITEMART_DIR . '/patterns/*.php' ) as $path ) {
+			$source = (string) file_get_contents( (string) $path );
+
+			/*
+			 * Matched on the serialised attributes rather than the rendered
+			 * class, because the attributes are what an editor round-trip keeps.
+			 * A `"border"` object naming a side, followed by `"borderColor"`
+			 * before the next block comment, is the broken combination.
+			 */
+			if ( preg_match( '#"border":\{"(?:top|right|bottom|left)"[^\n]*?"borderColor":#', $source ) ) {
+				$offenders[] = basename( (string) $path );
+			}
+		}
+
+		$this->assertSame(
+			array(),
+			$offenders,
+			"These patterns set a per-side border width alongside a block-wide borderColor, which draws all four sides:\n" . implode( "\n", $offenders )
+		);
+	}
 }

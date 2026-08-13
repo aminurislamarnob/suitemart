@@ -1,6 +1,6 @@
 # Handoff — state of the work
 
-Last updated: 2026-08-13, after P3's commerce section patterns.
+Last updated: 2026-08-13, after P3's content and CTA patterns.
 
 Read `AGENTS.md` first — it holds the standing rules. This file is a snapshot:
 what is built, what is verified, and what to pick up next. **Update it when you
@@ -19,16 +19,16 @@ The full plan lives in GitHub issue
 | **P2 batch A — content blocks** | All 18 built |
 | **P2 batch B — WooCommerce gaps** | All 15 built; audited and repaired |
 | **P2 batch C — site features** | All 6 built |
-| **P3 — Design breadth** | All 15 style variations built; 64 of ~100 patterns ← **you are here** |
+| **P3 — Design breadth** | All 15 style variations built; 89 of ~100 patterns ← **you are here** |
 | **P4 — Integrations** | Not started (27) |
 | **P5 — Hardening** | Not started |
 
-**Green:** 458 PHPUnit tests passing / 1 skipped (the expected inverse guard),
+**Green:** 459 PHPUnit tests passing / 1 skipped (the expected inverse guard),
 144 Playwright tests passing / 1 skipped, phpcs clean, PHPStan level 5 clean,
 ESLint and Stylelint clean — and CI genuinely runs the commerce suite rather
 than skipping it.
 
-52 blocks exist under `src/`. 18 templates, 6 parts, 64 patterns, 15 style
+52 blocks exist under `src/`. 18 templates, 6 parts, 89 patterns, 15 style
 variations — and **every block now appears in at least one pattern**, which
 `tests/phpunit/test-pattern-coverage.php` holds.
 
@@ -48,14 +48,16 @@ All three P2 batches are done: 18 content blocks, 15 WooCommerce blocks, and
 batch C's six site features — back-to-top, cookie-notice, floating-block, popup,
 post-carousel, portfolio-grid.
 
-**Next is the rest of P3**: roughly 35 patterns still to write. Headers, heroes,
-footers and commerce sections are all covered now, so what remains is the
-content and CTA fill-out (~25) and then the 10 full-page starters, which should
-be assembled from the section patterns rather than written from scratch. Keep
-building one thing per commit, each with its PHPUnit test and at
-least one pattern, each verified against the full command list in `AGENTS.md`
-§6 — and each checked in a real browser before its Playwright spec is written.
-Every bug this session that mattered was invisible to PHP.
+**Next is the rest of P3**: the 10 full-page starter patterns. Every section
+category is now filled — headers, heroes, commerce, content, CTA, footers — so
+the starters should be **assembled from the section patterns rather than written
+from scratch**: paste the section markup in, adjust the copy so a page reads as
+one voice, and delete what does not earn its place. A starter that duplicates a
+section's markup rather than reusing it is a second copy to keep in step. Keep
+building one thing per commit, each with its PHPUnit test and at least one
+pattern, each verified against the full command list in `AGENTS.md` §6 — and
+each checked in a real browser before its Playwright spec is written. Every bug
+this session that mattered was invisible to PHP.
 
 ### The style variations
 
@@ -142,6 +144,43 @@ Three things worth carrying forward:
 - **A tinted or bordered group needs horizontal padding**, not just vertical.
   Three patterns shipped with content sitting hard against the edge of their own
   panel, because a wide group's background is exactly the content width.
+
+### The content and CTA patterns
+
+Sixteen `content-*` and nine `cta-*`, bringing the library to 89. They lean on
+core where core is enough — `core/details` for the FAQ so the browser owns the
+open state and find-in-page reaches closed answers, `core/table` with real
+`<th scope>` for the comparison table, two `core/query` blocks with
+`inherit: false` for the blog sections so a "latest three" band says the same
+thing wherever it is dropped.
+
+Four defects came out of building them, and **three were in code that had
+already shipped**:
+
+- **`post-content` was not `align: full`,** so no pattern placed in page content
+  could bleed to the edge of the screen — a full-width hero was capped at the
+  720px column while the same markup in a header part spanned the viewport. Five
+  templates fixed.
+- **`suitemart/off-canvas` inherited its parent's width.** Fixed positioning does
+  not exempt a block from the constrained layout's `max-width` and auto margins,
+  so the drawer's scrim covered a stripe down the middle of the page and the
+  panel floated in it. Only visible outside a header part, which is the only
+  place it had ever been used.
+- **Six patterns drew a four-sided box where they asked for one rule.** A
+  per-side border width beside a block-wide `borderColor`; the colour brings
+  `border-style: solid` on all four sides and the unset widths default to
+  `medium`. `test-pattern-coverage.php` now fails the build on that combination.
+- **`is-style-plain` on `core/quote` styles nothing** — core registers it in
+  JavaScript only. Same trap as `is-style-none`, second time. The press quote is
+  a `core/pullquote` now.
+
+All four are written up in `AGENTS.md` §5.
+
+Two smaller things worth carrying: an info box's `title` renders as a *heading*,
+so a list of six of them puts six entries in the document outline — use
+`description` for anything that is not really a heading. And the off-canvas panel
+stacks its children with no block gap, so a run of blocks inside it needs a group
+of its own to separate them.
 
 ### Notes on blocks already built
 

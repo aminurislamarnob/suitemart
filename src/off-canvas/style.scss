@@ -6,6 +6,35 @@
 	z-index: var(--wp--custom--z--drawer);
 	inset: 0;
 
+	// The overlay covers the viewport, so it must not inherit the width its
+	// parent hands out. A constrained layout gives every unaligned child
+	// `max-width: <content size>` and `margin-inline: auto`, and on a fixed
+	// element pinned to all four edges those two together shrink the overlay to
+	// the content column and centre it there — the scrim then covers a 720px
+	// stripe of the page and the panel sits in the middle of it rather than
+	// against the edge of the screen. Placed in a header part the parent
+	// happens to be full width, so this only shows up once the block is used
+	// somewhere else.
+	//
+	// The class is doubled because core's rule scores the same 0,1,0 — its
+	// `:where(:not(.alignfull)…)` half is free — and `global-styles` is printed
+	// after this sheet, so a single class loses the tie on source order.
+	//
+	// The children need the same treatment: the block's own wrapper is a
+	// constrained layout too, so the scrim and the panel are handed that
+	// content-width cap and the auto margins in turn — which is what left the
+	// scrim covering a stripe down the middle of the page even once the overlay
+	// itself spanned the viewport.
+	&#{&} {
+		max-width: none;
+		margin: 0;
+
+		> * {
+			max-width: none;
+			margin: 0;
+		}
+	}
+
 	// The whole overlay is inert until opened. `visibility` rather than
 	// `display` so the panel can transition.
 	//
