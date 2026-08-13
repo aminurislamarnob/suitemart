@@ -18,17 +18,17 @@ The full plan lives in GitHub issue
 | **P1 — Foundation** | Complete, with one item outstanding (CSS budget, below) |
 | **P2 batch A — content blocks** | All 18 built |
 | **P2 batch B — WooCommerce gaps** | All 15 built; audited and repaired |
-| **P2 batch C — site features** | Not started (6 blocks) ← **you are here** |
+| **P2 batch C — site features** | 2 of 6 built ← **you are here** |
 | **P3 — Design breadth** | 1 of ~15 style variations, 15 of ~100 patterns |
 | **P4 — Integrations** | Not started (27) |
 | **P5 — Hardening** | Not started |
 
-**Green:** 230 PHPUnit tests passing / 1 skipped (the expected inverse guard),
-106 Playwright tests passing / 1 skipped, phpcs clean, PHPStan level 5 clean,
+**Green:** 247 PHPUnit tests passing / 1 skipped (the expected inverse guard),
+121 Playwright tests passing / 1 skipped, phpcs clean, PHPStan level 5 clean,
 ESLint and Stylelint clean — and CI genuinely runs the commerce suite rather
 than skipping it.
 
-46 blocks exist under `src/`. 18 templates, 6 parts, 24 patterns, 1 style
+48 blocks exist under `src/`. 18 templates, 6 parts, 25 patterns, 1 style
 variation.
 
 ---
@@ -43,9 +43,9 @@ them through are now covered by `tests/phpunit/test-design-tokens.php`,
 traps in `AGENTS.md` §5 are the condensed version — read them before writing
 another block.**
 
-**Batch C, still to build (6):** popup, floating-block, portfolio-grid (CSS grid
-+ Interactivity filtering, no Isotope), post-carousel, back-to-top,
-cookie-notice.
+**Batch C, built (2):** back-to-top, cookie-notice.
+**Batch C, still to build (4):** popup, floating-block, portfolio-grid (CSS grid
++ Interactivity filtering, no Isotope), post-carousel.
 
 Build one per commit, each with its PHPUnit render test and at least one pattern,
 each verified against the full command list in `AGENTS.md` §6.
@@ -73,6 +73,16 @@ is deliberate and is the thing to preserve: it appears in **no template**, only
 in `patterns/commerce-visitor-count.php`, whose description states what the
 block does. Leave that pattern the only route in. Worth adding to the readme at
 P5: what the block does, and how to wire up a real source.
+
+`suitemart/cookie-notice` records a choice and announces it — through the
+`suitemart-cookie-consent` event and `data-sm-consent` on `<html>` — and blocks
+nothing itself, because a theme block cannot. That limit is stated in the block
+description, the inspector, the render docblock and the pattern description, and
+all four should stay: a banner that lets a merchant believe they are compliant
+when nothing behind it is wired up is worse than no banner. Accept and Decline
+are drawn identically on purpose, and `tests/e2e/cookie-notice.spec.js` measures
+it rather than trusting the class list. Like the visitor counter, it is in no
+template; `patterns/cta-cookie-notice.php` is its only route in.
 
 ### The pattern to copy
 

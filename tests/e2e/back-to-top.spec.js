@@ -13,7 +13,8 @@
 
 const { test, expect } = require( '@playwright/test' );
 
-const PAGE = process.env.SUITEMART_FIXTURE_URL || '/?pagename=suitemart-block-test';
+const PAGE =
+	process.env.SUITEMART_FIXTURE_URL || '/?pagename=suitemart-block-test';
 
 const BLOCK = '.sm-back-to-top';
 const BUTTON = '.sm-back-to-top__button';
@@ -29,12 +30,21 @@ const BUTTON = '.sm-back-to-top__button';
  * @param {number}                          top  Offset in pixels.
  */
 const scrollTo = async ( page, top ) => {
-	await page.evaluate(
-		( to ) => window.scrollTo( { top: to, behavior: 'instant' } ),
-		top
-	);
+	/*
+	 * The scroll is re-issued on every poll rather than sent once and waited
+	 * on. Sent once, this went flaky: a scroll that lands before the page has
+	 * grown to its full height is clamped to whatever the document was worth at
+	 * the time, and no amount of waiting afterwards moves it.
+	 */
+	await expect
+		.poll( () =>
+			page.evaluate( ( to ) => {
+				window.scrollTo( { top: to, behavior: 'instant' } );
 
-	await expect.poll( () => page.evaluate( () => window.scrollY ) ).toBe( top );
+				return window.scrollY;
+			}, top )
+		)
+		.toBe( top );
 };
 
 test.describe( 'Back to top', () => {
@@ -84,9 +94,9 @@ test.describe( 'Back to top', () => {
 
 		await page.locator( BUTTON ).click();
 
-		await expect.poll( () => page.evaluate( () => window.scrollY ) ).toBe(
-			0
-		);
+		await expect
+			.poll( () => page.evaluate( () => window.scrollY ) )
+			.toBe( 0 );
 	} );
 
 	test( 'takes focus back to the top of the content', async ( { page } ) => {
@@ -95,9 +105,9 @@ test.describe( 'Back to top', () => {
 		await page.locator( BUTTON ).focus();
 		await page.keyboard.press( 'Enter' );
 
-		await expect.poll( () => page.evaluate( () => window.scrollY ) ).toBe(
-			0
-		);
+		await expect
+			.poll( () => page.evaluate( () => window.scrollY ) )
+			.toBe( 0 );
 
 		/*
 		 * The point of the whole block for a keyboard user. Without moving

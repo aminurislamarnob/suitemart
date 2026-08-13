@@ -1,0 +1,10 @@
+/*
+ * Fixed to the editor's own viewport, the notice would float over the block
+ * list and cover whatever was being edited. In here it sits in the flow. The
+ * front-end rule it overrides is a single class, so this one is scoped to the
+ * editor canvas rather than relying on stylesheet order to win.
+ */
+.editor-styles-wrapper .sm-cookie-notice {
+	position: static;
+	max-width: none;
+}

@@ -26,6 +26,7 @@ const HOTSPOTS_SLUG = 'suitemart-hotspots';
 const COMPARE_IMAGES_SLUG = 'suitemart-compare-images';
 const VIEW_360_SLUG = 'suitemart-view-360';
 const LIGHTBOX_SLUG = 'suitemart-lightbox';
+const COOKIE_NOTICE_SLUG = 'suitemart-cookie-notice';
 const FIXTURE = 'tests/e2e/fixtures/blocks-page.html';
 
 // Present on the fixture page and nowhere else, so finding it proves the page
@@ -157,6 +158,22 @@ module.exports = async ( config ) => {
 		WISHLIST_SLUG,
 		'Wishlist',
 		'<!-- wp:suitemart/wishlist-grid /-->'
+	);
+
+	/*
+	 * The cookie notice needs a page of its own rather than a template, because
+	 * the spec has to load it twice — once with nothing stored, once after a
+	 * choice — and any other fixture page would then carry a dismissed banner
+	 * into unrelated tests.
+	 */
+	process.env.SUITEMART_COOKIE_NOTICE_URL = ensurePage(
+		COOKIE_NOTICE_SLUG,
+		'Cookie notice',
+		`<!-- wp:suitemart/cookie-notice -->
+<!-- wp:paragraph -->
+<p>We use cookies to run the shop.</p>
+<!-- /wp:paragraph -->
+<!-- /wp:suitemart/cookie-notice -->`
 	);
 
 	/*

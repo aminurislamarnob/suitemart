@@ -272,6 +272,14 @@ example. Related: `WC_Product_Variation::get_image_id()` falls back to the
 parent's image, so ask for `get_image_id( 'edit' )` when you need to know
 whether the variation has one of its own.
 
+**A fixed-position block still gets the constrained layout's `max-width`.**
+Every direct child of the content area is capped at `contentSize` and centred
+with auto margins, and `position: fixed` does not exempt it: the cookie notice
+rendered as a 720px bar hovering in the middle of the viewport with 516px of
+margin on each side. Reset `max-width` and `margin` in the block's own sheet,
+and double the class (`.sm-x.sm-x`) — the layout rule's specificity is a single
+class too, so which stylesheet loads last would otherwise decide it.
+
 **Images must be constrained globally.** `src/global.scss` caps `img` at
 `max-width: 100%`. Without it, WooCommerce's full-size gallery image overflowed
 its column, sat invisibly on top of the summary column, and swallowed every

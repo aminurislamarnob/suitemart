@@ -1,0 +1,58 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "suitemart/cookie-notice",
+	"title": "Cookie Notice",
+	"category": "suitemart",
+	"icon": "privacy",
+	"description": "A notice that records whether the visitor accepted or declined, and announces the choice for a consent manager to act on. It does not block anything by itself.",
+	"keywords": [ "consent", "gdpr", "privacy", "banner" ],
+	"textdomain": "suitemart",
+	"attributes": {
+		"acceptLabel": {
+			"type": "string",
+			"default": ""
+		},
+		"declineLabel": {
+			"type": "string",
+			"default": ""
+		},
+		"regionLabel": {
+			"type": "string",
+			"default": ""
+		},
+		"position": {
+			"type": "string",
+			"enum": [ "bottom", "bottom-start", "bottom-end" ],
+			"default": "bottom"
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"html": false,
+		"interactivity": true,
+		"multiple": false,
+		"color": {
+			"text": true,
+			"background": true
+		},
+		"typography": {
+			"fontSize": true
+		},
+		"spacing": {
+			"padding": true,
+			"blockGap": true
+		},
+		"__experimentalBorder": {
+			"color": true,
+			"radius": true,
+			"style": true,
+			"width": true
+		}
+	},
+	"render": "file:./render.php",
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css",
+	"editorStyle": "file:./index.css",
+	"viewScriptModule": "file:./view.js"
+}
