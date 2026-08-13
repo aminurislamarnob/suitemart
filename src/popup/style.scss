@@ -1,0 +1,77 @@
+/*
+ * The dialog is painted in the top layer by showModal(), so it is positioned
+ * against the viewport by the browser and needs none of the fixed-position
+ * plumbing the other pinned blocks carry. What it does need is the constrained
+ * layout's cap taken off it — that rule applies to any direct child of the
+ * content area, dialog or not. Doubled class, since the two rules have the same
+ * specificity and stylesheet order would otherwise decide it.
+ */
+.sm-popup.sm-popup {
+	width: min(var(--sm-popup-max-width, 520px), calc(100vw - 2rem));
+	max-width: none;
+	max-height: calc(100vh - 2rem);
+	margin: auto;
+}
+
+.sm-popup {
+	position: relative;
+	padding: var(--wp--preset--spacing--50);
+	border: 0;
+	border-radius: var(--wp--custom--radius--lg);
+	background: var(--wp--preset--color--base);
+	box-shadow: 0 12px 48px var(--wp--custom--color--scrim);
+	color: var(--wp--preset--color--contrast);
+	overflow-y: auto;
+}
+
+// A closed dialog is display: none by the browser's own rule; nothing here may
+// override it, so every rule above is written for the open state.
+// `scrim`, the same 45% the off-canvas drawer dims the page with, and not
+// `overlay`, which is the 8% tint used for hover states and reads as nothing
+// behind a modal.
+.sm-popup::backdrop {
+	background: var(--wp--custom--color--scrim);
+}
+
+.sm-popup__content {
+
+	> :first-child {
+		margin-block-start: 0;
+	}
+
+	> :last-child {
+		margin-block-end: 0;
+	}
+}
+
+.sm-popup__close {
+	position: absolute;
+	inset-block-start: var(--wp--preset--spacing--20);
+	inset-inline-end: var(--wp--preset--spacing--20);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.25rem;
+	height: 2.25rem;
+	padding: 0;
+	border: 0;
+	border-radius: var(--wp--custom--radius--pill);
+	background: transparent;
+	color: inherit;
+	cursor: pointer;
+
+	&:hover {
+		background: var(--wp--preset--color--neutral-100);
+	}
+
+	&:focus-visible {
+		outline: 2px solid var(--wp--preset--color--primary);
+		outline-offset: 2px;
+	}
+}
+
+// The mount is a positioning-free wrapper that exists only to hold the dialog
+// and the directives. It must take up no room in the flow.
+.sm-popup__mount {
+	display: contents;
+}

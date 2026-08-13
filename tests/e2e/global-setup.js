@@ -28,6 +28,7 @@ const VIEW_360_SLUG = 'suitemart-view-360';
 const LIGHTBOX_SLUG = 'suitemart-lightbox';
 const COOKIE_NOTICE_SLUG = 'suitemart-cookie-notice';
 const FLOATING_SLUG = 'suitemart-floating-block';
+const POPUP_SLUG = 'suitemart-popup';
 const FIXTURE = 'tests/e2e/fixtures/blocks-page.html';
 
 // Present on the fixture page and nowhere else, so finding it proves the page
@@ -197,6 +198,27 @@ module.exports = async ( config ) => {
 <!-- wp:suitemart/floating-block {"position":"top-end","dismissible":false} -->
 <!-- wp:paragraph --><p>Always here.</p><!-- /wp:paragraph -->
 <!-- /wp:suitemart/floating-block -->`
+	);
+
+	/*
+	 * Two popups on one page: one on a short delay, one waiting for a scroll.
+	 * The second is what proves a trigger belongs to its own instance rather
+	 * than to the store they share.
+	 */
+	process.env.SUITEMART_POPUP_URL = ensurePage(
+		POPUP_SLUG,
+		'Popup',
+		`<!-- wp:suitemart/popup {"trigger":"delay","delay":1,"label":"Newsletter signup","onceKey":"delayedpopup","closeLabel":"Close the offer"} -->
+<!-- wp:heading --><h2>Join the list</h2><!-- /wp:heading -->
+<!-- wp:paragraph --><p>Ten percent off your first order.</p><!-- /wp:paragraph -->
+<!-- wp:buttons --><div class="wp-block-buttons"><!-- wp:button -->
+<div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="#">Sign up</a></div>
+<!-- /wp:button --></div><!-- /wp:buttons -->
+<!-- /wp:suitemart/popup -->
+
+<!-- wp:suitemart/popup {"trigger":"scroll","threshold":600,"label":"Free delivery","showOnce":false,"overlayClose":false} -->
+<!-- wp:paragraph --><p>Free delivery over fifty pounds.</p><!-- /wp:paragraph -->
+<!-- /wp:suitemart/popup -->`
 	);
 
 	/*

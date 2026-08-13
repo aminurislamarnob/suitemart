@@ -1,0 +1,12 @@
+/*
+ * There is no showModal() in the editor: the block has to be editable in place,
+ * so the dialog is drawn as an ordinary panel in the flow. `open` on a dialog
+ * would make it a non-modal one that the editor's own overlays could sit above,
+ * which is why the editor render uses a plain div instead and this styles that.
+ */
+.editor-styles-wrapper .sm-popup {
+	position: relative;
+	width: min(var(--sm-popup-max-width, 520px), 100%);
+	max-height: none;
+	margin-inline: auto;
+}

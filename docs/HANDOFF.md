@@ -18,17 +18,17 @@ The full plan lives in GitHub issue
 | **P1 — Foundation** | Complete, with one item outstanding (CSS budget, below) |
 | **P2 batch A — content blocks** | All 18 built |
 | **P2 batch B — WooCommerce gaps** | All 15 built; audited and repaired |
-| **P2 batch C — site features** | 3 of 6 built ← **you are here** |
+| **P2 batch C — site features** | 4 of 6 built ← **you are here** |
 | **P3 — Design breadth** | 1 of ~15 style variations, 15 of ~100 patterns |
 | **P4 — Integrations** | Not started (27) |
 | **P5 — Hardening** | Not started |
 
-**Green:** 260 PHPUnit tests passing / 1 skipped (the expected inverse guard),
-124 Playwright tests passing / 1 skipped, phpcs clean, PHPStan level 5 clean,
+**Green:** 272 PHPUnit tests passing / 1 skipped (the expected inverse guard),
+132 Playwright tests passing / 1 skipped, phpcs clean, PHPStan level 5 clean,
 ESLint and Stylelint clean — and CI genuinely runs the commerce suite rather
 than skipping it.
 
-49 blocks exist under `src/`. 18 templates, 6 parts, 26 patterns, 1 style
+50 blocks exist under `src/`. 18 templates, 6 parts, 27 patterns, 1 style
 variation.
 
 ---
@@ -43,9 +43,9 @@ them through are now covered by `tests/phpunit/test-design-tokens.php`,
 traps in `AGENTS.md` §5 are the condensed version — read them before writing
 another block.**
 
-**Batch C, built (3):** back-to-top, cookie-notice, floating-block.
-**Batch C, still to build (3):** popup, portfolio-grid (CSS grid +
-Interactivity filtering, no Isotope), post-carousel.
+**Batch C, built (4):** back-to-top, cookie-notice, floating-block, popup.
+**Batch C, still to build (2):** portfolio-grid (CSS grid + Interactivity
+filtering, no Isotope), post-carousel.
 
 Build one per commit, each with its PHPUnit render test and at least one pattern,
 each verified against the full command list in `AGENTS.md` §6.
@@ -90,7 +90,14 @@ a corner panel's close button and of the cookie bar's Accept. The rules that
 resolve it live in the sheet of the block that yields — `:has()` in
 `src/floating-block/style.scss` and `src/cookie-notice/style.scss` — so they
 cost nothing on pages without those blocks. **Anything else pinned to a screen
-edge has to be checked against them.**
+edge has to be checked against them.** The popup is the exception and needs no
+such rule: `showModal()` paints it in the top layer, above everything.
+
+`suitemart/popup` is a `<dialog>` opened with `showModal()`, and that is the
+whole reason it is short — focus trapping, the inert page behind, Escape, focus
+returning, and being above every z-index on the page all come from the browser.
+Do not replace it with a div and a hand-written focus trap; `tests/e2e/popup.spec.js`
+asserts each of those behaviours precisely so that swap cannot pass quietly.
 
 ### The pattern to copy
 

@@ -1,0 +1,77 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "suitemart/popup",
+	"title": "Popup",
+	"category": "suitemart",
+	"icon": "external",
+	"description": "A modal dialog holding anything you put inside it, opened after a delay, after a scroll, or when the visitor moves to leave.",
+	"keywords": [ "modal", "dialog", "lightbox", "newsletter", "promo" ],
+	"textdomain": "suitemart",
+	"attributes": {
+		"trigger": {
+			"type": "string",
+			"enum": [ "delay", "scroll", "exit" ],
+			"default": "delay"
+		},
+		"delay": {
+			"type": "number",
+			"default": 5
+		},
+		"threshold": {
+			"type": "number",
+			"default": 800
+		},
+		"maxWidth": {
+			"type": "number",
+			"default": 520
+		},
+		"label": {
+			"type": "string",
+			"default": ""
+		},
+		"closeLabel": {
+			"type": "string",
+			"default": ""
+		},
+		"overlayClose": {
+			"type": "boolean",
+			"default": true
+		},
+		"showOnce": {
+			"type": "boolean",
+			"default": true
+		},
+		"onceKey": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"html": false,
+		"interactivity": true,
+		"color": {
+			"text": true,
+			"background": true
+		},
+		"typography": {
+			"fontSize": true
+		},
+		"spacing": {
+			"padding": true,
+			"blockGap": true
+		},
+		"__experimentalBorder": {
+			"color": true,
+			"radius": true,
+			"style": true,
+			"width": true
+		}
+	},
+	"render": "file:./render.php",
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css",
+	"editorStyle": "file:./index.css",
+	"viewScriptModule": "file:./view.js"
+}
