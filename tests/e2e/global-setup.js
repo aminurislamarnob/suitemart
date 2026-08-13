@@ -29,6 +29,7 @@ const LIGHTBOX_SLUG = 'suitemart-lightbox';
 const COOKIE_NOTICE_SLUG = 'suitemart-cookie-notice';
 const FLOATING_SLUG = 'suitemart-floating-block';
 const POPUP_SLUG = 'suitemart-popup';
+const POST_CAROUSEL_SLUG = 'suitemart-post-carousel';
 const FIXTURE = 'tests/e2e/fixtures/blocks-page.html';
 
 // Present on the fixture page and nowhere else, so finding it proves the page
@@ -198,6 +199,14 @@ module.exports = async ( config ) => {
 <!-- wp:suitemart/floating-block {"position":"top-end","dismissible":false} -->
 <!-- wp:paragraph --><p>Always here.</p><!-- /wp:paragraph -->
 <!-- /wp:suitemart/floating-block -->`
+	);
+
+	ensureCarouselPosts();
+
+	process.env.SUITEMART_POST_CAROUSEL_URL = ensurePage(
+		POST_CAROUSEL_SLUG,
+		'Post carousel',
+		'<!-- wp:suitemart/post-carousel {"postsToShow":5,"label":"From the blog","slidesPerViewDesktop":2} /-->'
 	);
 
 	/*
@@ -406,6 +415,54 @@ function ensurePage( slug, title, content ) {
 	const parsed = new URL( wp( [ 'post', 'get', id, '--field=url' ] ) );
 
 	return `${ parsed.pathname }${ parsed.search }`;
+}
+
+/**
+ * Publishes the posts the post carousel is built from, once.
+ *
+ * Named slugs rather than a count, so a second run updates the same five posts
+ * instead of leaving thirty behind and making "how many are in the carousel" an
+ * assertion about how many times the suite has been run.
+ *
+ * @return {number} How many posts exist.
+ */
+function ensureCarouselPosts() {
+	const titles = [
+		'Carousel post one',
+		'Carousel post two',
+		'Carousel post three',
+		'Carousel post four',
+		'Carousel post five',
+	];
+
+	titles.forEach( ( title, index ) => {
+		const slug = `suitemart-carousel-post-${ index + 1 }`;
+		const existing = wp( [
+			'post',
+			'list',
+			'--post_type=post',
+			`--name=${ slug }`,
+			'--field=ID',
+		] );
+
+		if ( /^\d+$/.test( existing ) ) {
+			return;
+		}
+
+		wp( [
+			'post',
+			'create',
+			'--post_type=post',
+			`--post_title=${ title }`,
+			`--post_name=${ slug }`,
+			'--post_status=publish',
+			`--post_content=The body of ${ title }.`,
+			`--post_excerpt=An excerpt for ${ title }.`,
+			'--porcelain',
+		] );
+	} );
+
+	return titles.length;
 }
 
 /**

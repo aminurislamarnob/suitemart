@@ -1,0 +1,13 @@
+/*
+ * Swiper never mounts in the editor — the view module is a front-end script —
+ * so what the canvas shows is the scroll-snap fallback. That is the honest
+ * preview: it is what a visitor sees before the module loads, and what they
+ * keep if it never does. Only the pointer needs correcting, since the cards are
+ * links that must not navigate away from the editor.
+ */
+.editor-styles-wrapper .sm-post-carousel {
+
+	a {
+		pointer-events: none;
+	}
+}

@@ -18,17 +18,17 @@ The full plan lives in GitHub issue
 | **P1 — Foundation** | Complete, with one item outstanding (CSS budget, below) |
 | **P2 batch A — content blocks** | All 18 built |
 | **P2 batch B — WooCommerce gaps** | All 15 built; audited and repaired |
-| **P2 batch C — site features** | 4 of 6 built ← **you are here** |
+| **P2 batch C — site features** | 5 of 6 built ← **you are here** |
 | **P3 — Design breadth** | 1 of ~15 style variations, 15 of ~100 patterns |
 | **P4 — Integrations** | Not started (27) |
 | **P5 — Hardening** | Not started |
 
-**Green:** 272 PHPUnit tests passing / 1 skipped (the expected inverse guard),
-132 Playwright tests passing / 1 skipped, phpcs clean, PHPStan level 5 clean,
+**Green:** 285 PHPUnit tests passing / 1 skipped (the expected inverse guard),
+138 Playwright tests passing / 1 skipped, phpcs clean, PHPStan level 5 clean,
 ESLint and Stylelint clean — and CI genuinely runs the commerce suite rather
 than skipping it.
 
-50 blocks exist under `src/`. 18 templates, 6 parts, 27 patterns, 1 style
+51 blocks exist under `src/`. 18 templates, 6 parts, 28 patterns, 1 style
 variation.
 
 ---
@@ -43,9 +43,10 @@ them through are now covered by `tests/phpunit/test-design-tokens.php`,
 traps in `AGENTS.md` §5 are the condensed version — read them before writing
 another block.**
 
-**Batch C, built (4):** back-to-top, cookie-notice, floating-block, popup.
-**Batch C, still to build (2):** portfolio-grid (CSS grid + Interactivity
-filtering, no Isotope), post-carousel.
+**Batch C, built (5):** back-to-top, cookie-notice, floating-block, popup,
+post-carousel.
+**Batch C, still to build (1):** portfolio-grid (CSS grid + Interactivity
+filtering, no Isotope).
 
 Build one per commit, each with its PHPUnit render test and at least one pattern,
 each verified against the full command list in `AGENTS.md` §6.
@@ -98,6 +99,12 @@ whole reason it is short — focus trapping, the inert page behind, Escape, focu
 returning, and being above every z-index on the page all come from the browser.
 Do not replace it with a div and a hand-written focus trap; `tests/e2e/popup.spec.js`
 asserts each of those behaviours precisely so that swap cannot pass quietly.
+
+`suitemart/post-carousel` and `suitemart/slider` share one Swiper configuration,
+in `src/_shared/carousel.js`. Change it there, not in one of the two view
+modules. Both are built as divs rather than lists on purpose: Swiper's a11y
+module puts `role="group"` on every slide, and a `role="list"` may hold only
+list items — axe calls that combination critical, and it is right.
 
 ### The pattern to copy
 

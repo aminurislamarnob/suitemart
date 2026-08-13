@@ -1,0 +1,124 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "suitemart/post-carousel",
+	"title": "Post Carousel",
+	"category": "suitemart",
+	"icon": "slides",
+	"description": "A carousel of posts, drawn from a query rather than built slide by slide.",
+	"keywords": [ "posts", "blog", "carousel", "slider", "recent" ],
+	"textdomain": "suitemart",
+	"attributes": {
+		"postType": {
+			"type": "string",
+			"default": "post"
+		},
+		"taxonomy": {
+			"type": "string",
+			"default": ""
+		},
+		"terms": {
+			"type": "array",
+			"default": [],
+			"items": {
+				"type": "number"
+			}
+		},
+		"postsToShow": {
+			"type": "number",
+			"default": 9
+		},
+		"orderBy": {
+			"type": "string",
+			"enum": [ "date", "title", "menu_order", "rand" ],
+			"default": "date"
+		},
+		"order": {
+			"type": "string",
+			"enum": [ "asc", "desc" ],
+			"default": "desc"
+		},
+		"headingLevel": {
+			"type": "number",
+			"default": 3
+		},
+		"showImage": {
+			"type": "boolean",
+			"default": true
+		},
+		"showDate": {
+			"type": "boolean",
+			"default": true
+		},
+		"showExcerpt": {
+			"type": "boolean",
+			"default": true
+		},
+		"excerptLength": {
+			"type": "number",
+			"default": 20
+		},
+		"slidesPerView": {
+			"type": "number",
+			"default": 1
+		},
+		"slidesPerViewTablet": {
+			"type": "number",
+			"default": 2
+		},
+		"slidesPerViewDesktop": {
+			"type": "number",
+			"default": 3
+		},
+		"spaceBetween": {
+			"type": "number",
+			"default": 24
+		},
+		"loop": {
+			"type": "boolean",
+			"default": false
+		},
+		"autoplay": {
+			"type": "boolean",
+			"default": false
+		},
+		"autoplayDelay": {
+			"type": "number",
+			"default": 5000
+		},
+		"showArrows": {
+			"type": "boolean",
+			"default": true
+		},
+		"showPagination": {
+			"type": "boolean",
+			"default": true
+		},
+		"label": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"align": [ "wide", "full" ],
+		"html": false,
+		"interactivity": true,
+		"color": {
+			"text": true,
+			"background": true
+		},
+		"typography": {
+			"fontSize": true
+		},
+		"spacing": {
+			"padding": true,
+			"margin": true
+		}
+	},
+	"render": "file:./render.php",
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css",
+	"editorStyle": "file:./index.css",
+	"viewScriptModule": "file:./view.js"
+}

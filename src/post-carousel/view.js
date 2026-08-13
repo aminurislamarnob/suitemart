@@ -1,30 +1,29 @@
 /**
- * Slider interactivity.
+ * Post carousel interactivity.
  *
- * The Swiper configuration itself lives in `src/_shared/carousel.js`, shared
- * with the post carousel so the two cannot drift apart. What is here is the
- * wiring: which elements to hand it, and what the buttons do.
+ * The Swiper configuration lives in `src/_shared/carousel.js`, shared with the
+ * slider. This is the wiring only.
  */
 
 import { store, getContext, getElement } from '@wordpress/interactivity';
 
 import { mountCarousel, carouselFor } from '../_shared/carousel';
 
-const ROOT = '.sm-slider';
+const ROOT = '.sm-post-carousel';
 
 store(
-	'suitemart/slider',
+	'suitemart/post-carousel',
 	{
 		actions: {
 			/**
-			 * Moves to the previous slide.
+			 * Moves back a slide.
 			 */
 			previous() {
 				carouselFor( getElement().ref, ROOT )?.slidePrev();
 			},
 
 			/**
-			 * Moves to the next slide.
+			 * Moves on a slide.
 			 */
 			next() {
 				carouselFor( getElement().ref, ROOT )?.slideNext();
@@ -67,10 +66,12 @@ store(
 
 				return mountCarousel( {
 					root: ref,
-					viewport: ref.querySelector( '.sm-slider__viewport' ),
-					prev: ref.querySelector( '.sm-slider__arrow--prev' ),
-					next: ref.querySelector( '.sm-slider__arrow--next' ),
-					dots: ref.querySelector( '.sm-slider__pagination' ),
+					viewport: ref.querySelector(
+						'.sm-post-carousel__viewport'
+					),
+					prev: ref.querySelector( '.sm-post-carousel__arrow--prev' ),
+					next: ref.querySelector( '.sm-post-carousel__arrow--next' ),
+					dots: ref.querySelector( '.sm-post-carousel__pagination' ),
 					options: getContext().options,
 				} );
 			},
