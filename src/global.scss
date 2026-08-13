@@ -177,3 +177,21 @@ video {
 .woocommerce-notices-wrapper:empty {
 	display: none;
 }
+
+/* -------------------------------------------------------------------------
+   Block styles
+   ---------------------------------------------------------------------- */
+
+/*
+ * `core/list`, "Plain": a column of links is a list semantically and reads as
+ * one to a screen reader, but markers and an indent are wrong for it. Used by
+ * the header and footer parts and by the header and footer patterns.
+ */
+.wp-block-list.is-style-none {
+	padding-inline-start: 0;
+	list-style: none;
+
+	li {
+		margin-block: 0.35rem;
+	}
+}

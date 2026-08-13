@@ -36,28 +36,39 @@ class Test_Design_Tokens extends WP_UnitTestCase {
 
 		$tokens = array();
 
+		/*
+		 * The emitted property is the *kebab-cased* slug, not the slug: core
+		 * splits a digit from the letter after it, so the size declared as
+		 * `3xl` arrives as `--wp--preset--font-size--3-xl`. Spelling it the
+		 * obvious way declares nothing, and did — every h1 and h2 in the theme
+		 * rendered at body size for weeks because `theme.json` asked for
+		 * `--3xl`, and so did the `has-3xl-font-size` class in eleven files.
+		 * Use core's own function so the two can never disagree again.
+		 */
+		$name = static fn ( string $slug ): string => _wp_to_kebab_case( $slug );
+
 		foreach ( $settings['color']['palette']['theme'] ?? array() as $item ) {
-			$tokens[] = '--wp--preset--color--' . $item['slug'];
+			$tokens[] = '--wp--preset--color--' . $name( $item['slug'] );
 		}
 
 		foreach ( $settings['color']['gradients']['theme'] ?? array() as $item ) {
-			$tokens[] = '--wp--preset--gradient--' . $item['slug'];
+			$tokens[] = '--wp--preset--gradient--' . $name( $item['slug'] );
 		}
 
 		foreach ( $settings['typography']['fontSizes']['theme'] ?? array() as $item ) {
-			$tokens[] = '--wp--preset--font-size--' . $item['slug'];
+			$tokens[] = '--wp--preset--font-size--' . $name( $item['slug'] );
 		}
 
 		foreach ( $settings['typography']['fontFamilies']['theme'] ?? array() as $item ) {
-			$tokens[] = '--wp--preset--font-family--' . $item['slug'];
+			$tokens[] = '--wp--preset--font-family--' . $name( $item['slug'] );
 		}
 
 		foreach ( $settings['shadow']['presets']['theme'] ?? array() as $item ) {
-			$tokens[] = '--wp--preset--shadow--' . $item['slug'];
+			$tokens[] = '--wp--preset--shadow--' . $name( $item['slug'] );
 		}
 
 		foreach ( $settings['spacing']['spacingSizes']['theme'] ?? array() as $item ) {
-			$tokens[] = '--wp--preset--spacing--' . $item['slug'];
+			$tokens[] = '--wp--preset--spacing--' . $name( $item['slug'] );
 		}
 
 		// The scale is declared by step count rather than by slug, and core
@@ -179,6 +190,118 @@ class Test_Design_Tokens extends WP_UnitTestCase {
 			array(),
 			$offenders,
 			"A fallback masks a misspelled token and stops style variations restyling the block:\n" . implode( "\n", $offenders )
+		);
+	}
+
+	/**
+	 * The `var()` references in theme.json itself must resolve as well.
+	 *
+	 * Nothing above looks at `theme.json`, and it is written in the same
+	 * property names as the stylesheets are — so it can misspell one in
+	 * exactly the same way, with the same silence. It did: `elements.h1` asked
+	 * for `--wp--preset--font-size--3xl`, which is not a property that exists,
+	 * and every h1 in the theme fell back to the root font size.
+	 */
+	public function test_theme_json_references_only_declared_tokens(): void {
+		$declared = array_flip( $this->declared_tokens() );
+
+		$files = array_merge(
+			array( SUITEMART_DIR . '/theme.json' ),
+			(array) glob( SUITEMART_DIR . '/styles/*.json' )
+		);
+
+		$unknown = array();
+
+		foreach ( $files as $path ) {
+			preg_match_all(
+				'/--wp--(?:preset|custom)--[a-z0-9-]+/',
+				(string) file_get_contents( $path ),
+				$matches
+			);
+
+			foreach ( array_unique( $matches[0] ) as $token ) {
+				if ( isset( $declared[ $token ] ) ) {
+					continue;
+				}
+
+				$unknown[] = sprintf( '%s references %s', basename( $path ), $token );
+			}
+		}
+
+		$this->assertSame(
+			array(),
+			$unknown,
+			"These theme.json files reference custom properties nothing emits:\n" . implode( "\n", $unknown )
+		);
+	}
+
+	/**
+	 * Preset classes written by hand must name a preset that exists.
+	 *
+	 * Patterns, templates and parts are hand-written block markup, so their
+	 * `has-…-font-size` and `has-…-color` classes are typed rather than
+	 * generated — and a class core would never emit styles nothing. This is
+	 * the other half of the `3xl` / `3-xl` bug: eleven files asked for
+	 * `has-3xl-font-size` and got body-sized headings.
+	 */
+	public function test_preset_classes_name_real_presets(): void {
+		$settings = ( new WP_Theme_JSON_Resolver() )::get_theme_data()->get_settings();
+
+		$known = array();
+
+		foreach ( $settings['typography']['fontSizes']['theme'] ?? array() as $item ) {
+			$known[ 'has-' . _wp_to_kebab_case( $item['slug'] ) . '-font-size' ] = true;
+		}
+
+		foreach ( $settings['color']['palette']['theme'] ?? array() as $item ) {
+			$known[ 'has-' . _wp_to_kebab_case( $item['slug'] ) . '-color' ]            = true;
+			$known[ 'has-' . _wp_to_kebab_case( $item['slug'] ) . '-background-color' ] = true;
+			$known[ 'has-' . _wp_to_kebab_case( $item['slug'] ) . '-border-color' ]     = true;
+		}
+
+		$files = array_merge(
+			(array) glob( SUITEMART_DIR . '/patterns/*.php' ),
+			(array) glob( SUITEMART_DIR . '/templates/*.html' ),
+			(array) glob( SUITEMART_DIR . '/parts/*.html' )
+		);
+
+		$unknown = array();
+
+		foreach ( $files as $path ) {
+			preg_match_all(
+				'/has-[a-z0-9-]+-(?:font-size|background-color|color)\b/',
+				(string) file_get_contents( $path ),
+				$matches
+			);
+
+			foreach ( array_unique( $matches[0] ) as $class ) {
+				// Core's own markers, which announce that *some* value is set
+				// rather than naming a preset.
+				$markers = array(
+					'has-text-color',
+					'has-background-color',
+					'has-link-color',
+					'has-icon-color',
+					'has-border-color',
+					'has-custom-font-size',
+				);
+
+				if ( in_array( $class, $markers, true ) ) {
+					continue;
+				}
+
+				if ( isset( $known[ $class ] ) ) {
+					continue;
+				}
+
+				$unknown[] = sprintf( '%s uses %s', basename( $path ), $class );
+			}
+		}
+
+		$this->assertSame(
+			array(),
+			$unknown,
+			"These files use preset classes that match no preset, so they style nothing:\n" . implode( "\n", $unknown )
 		);
 	}
 }

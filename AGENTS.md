@@ -280,6 +280,24 @@ margin on each side. Reset `max-width` and `margin` in the block's own sheet,
 and double the class (`.sm-x.sm-x`) — the layout rule's specificity is a single
 class too, so which stylesheet loads last would otherwise decide it.
 
+**A preset slug is not the property name.** Core kebab-cases a slug before it
+becomes CSS, and that splits a digit from the letter after it: the size declared
+as `2xl` is emitted as `--wp--preset--font-size--2-xl`, and its utility class is
+`has-2-xl-font-size`. Spell it the obvious way and nothing errors — the
+declaration is simply dropped. `theme.json` asked for `--3xl` on `elements.h1`
+and eleven files wrote `has-3xl-font-size`, so **every heading in the theme
+rendered at body size**, on every page, for weeks. Slugs stay as they are;
+references go through core's own `_wp_to_kebab_case()`, which is what
+`tests/phpunit/test-design-tokens.php` now does — and it checks `theme.json` and
+the hand-written classes in `patterns/`, `templates/` and `parts/` as well as
+the stylesheets.
+
+**A block style has to be registered before its class does anything.**
+`is-style-none` was written into the header and footer parts and five patterns
+without a `register_block_style()` call anywhere, so every link list in the mega
+panel and the footer rendered indented and bulleted. Same shape as the trap
+above: an unregistered class is not an error, it is just a class.
+
 **`block.json` will name a stylesheet the build never made.** wp-scripts
 compiles `style.scss` only when something imports it, and the import belongs in
 the block's `index.js`. Miss it and `"style": "file:./style-index.css"` still

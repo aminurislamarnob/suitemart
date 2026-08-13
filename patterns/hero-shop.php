@@ -22,7 +22,7 @@ defined( 'ABSPATH' ) || exit;
 <!-- /wp:paragraph -->
 
 <!-- wp:heading {"textAlign":"center","level":1,"fontSize":"3xl"} -->
-<h1 class="wp-block-heading has-text-align-center has-3xl-font-size"><?php echo esc_html_x( 'Everything your store needs, nothing it does not', 'Pattern headline', 'suitemart' ); ?></h1>
+<h1 class="wp-block-heading has-text-align-center has-3-xl-font-size"><?php echo esc_html_x( 'Everything your store needs, nothing it does not', 'Pattern headline', 'suitemart' ); ?></h1>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"align":"center","textColor":"neutral-600","fontSize":"lg"} -->

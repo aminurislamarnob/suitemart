@@ -79,3 +79,24 @@ function suitemart_template_part_areas( array $areas ): array {
 	return $areas;
 }
 add_filter( 'default_wp_template_part_areas', 'suitemart_template_part_areas' );
+
+/**
+ * Registers the block styles the theme's own markup uses.
+ *
+ * `is-style-none` was written into the header and footer parts and into five
+ * patterns before it existed anywhere, so every link list in the mega panel
+ * and the footer rendered as an indented, bulleted list. A class no one
+ * registers is not an error — it is a class, and it styles nothing.
+ *
+ * @return void
+ */
+function suitemart_register_block_styles(): void {
+	register_block_style(
+		'core/list',
+		array(
+			'name'  => 'none',
+			'label' => __( 'Plain', 'suitemart' ),
+		)
+	);
+}
+add_action( 'init', 'suitemart_register_block_styles' );

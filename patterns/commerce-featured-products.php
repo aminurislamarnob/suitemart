@@ -24,7 +24,7 @@ if ( ! suitemart_has_woocommerce() ) {
 <!-- wp:group {"align":"wide","style":{"spacing":{"padding":{"top":"var:preset|spacing|70","bottom":"var:preset|spacing|70"},"blockGap":"var:preset|spacing|50"}},"layout":{"type":"constrained","wideSize":"1280px"}} -->
 <div class="wp-block-group alignwide" style="padding-top:var(--wp--preset--spacing--70);padding-bottom:var(--wp--preset--spacing--70)"><!-- wp:group {"layout":{"type":"flex","flexWrap":"wrap","justifyContent":"space-between","verticalAlignment":"bottom"}} -->
 <div class="wp-block-group"><!-- wp:heading {"level":2,"fontSize":"2xl"} -->
-<h2 class="wp-block-heading has-2xl-font-size"><?php echo esc_html_x( 'Featured products', 'Pattern heading', 'suitemart' ); ?></h2>
+<h2 class="wp-block-heading has-2-xl-font-size"><?php echo esc_html_x( 'Featured products', 'Pattern heading', 'suitemart' ); ?></h2>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->

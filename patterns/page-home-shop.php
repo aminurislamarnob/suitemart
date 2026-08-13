@@ -25,7 +25,7 @@ defined( 'ABSPATH' ) || exit;
 
 <!-- wp:group {"align":"wide","style":{"spacing":{"padding":{"top":"var:preset|spacing|70","bottom":"var:preset|spacing|70"},"blockGap":"var:preset|spacing|50"}},"layout":{"type":"constrained","wideSize":"1280px"}} -->
 <div class="wp-block-group alignwide" style="padding-top:var(--wp--preset--spacing--70);padding-bottom:var(--wp--preset--spacing--70)"><!-- wp:heading {"textAlign":"center","level":2,"fontSize":"2xl"} -->
-<h2 class="wp-block-heading has-text-align-center has-2xl-font-size"><?php echo esc_html_x( 'Why shop with us', 'Pattern heading', 'suitemart' ); ?></h2>
+<h2 class="wp-block-heading has-text-align-center has-2-xl-font-size"><?php echo esc_html_x( 'Why shop with us', 'Pattern heading', 'suitemart' ); ?></h2>
 <!-- /wp:heading -->
 
 <!-- wp:columns {"style":{"spacing":{"blockGap":{"left":"var:preset|spacing|50"}}}} -->

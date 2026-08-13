@@ -28,6 +28,12 @@
 	aspect-ratio: var(--sm-banner-ratio, 3 / 2);
 }
 
+// Stands in for the photograph until there is one, dark enough that the light
+// text a banner is written with still reads against it.
+.sm-banner--no-media .sm-banner__media {
+	background-color: var(--wp--preset--color--neutral-800);
+}
+
 .sm-banner__image {
 	display: block;
 	width: 100%;

@@ -47,12 +47,23 @@ if ( 1 !== preg_match( '/^\d{1,3}\/\d{1,3}$/', $sm_ratio ) ) {
 	$sm_ratio = '3/2';
 }
 
+/*
+ * Content on a banner is written for a photograph — light text, over a scrim.
+ * Before an image is chosen there is no photograph, and the scrim alone leaves
+ * a pale grey the light text disappears into: a pattern using banner tiles is
+ * unreadable in the inserter and stays unreadable until someone picks a
+ * picture. The placeholder ground below fills that gap and goes away the
+ * moment there is an image to darken instead.
+ */
+$sm_has_media = $sm_media_id > 0 || '' !== $sm_media_url;
+
 $sm_wrapper = get_block_wrapper_attributes(
 	array(
 		'class' => sprintf(
-			'sm-banner sm-banner--%s sm-banner--hover-%s',
+			'sm-banner sm-banner--%s sm-banner--hover-%s%s',
 			$sm_position,
-			$sm_hover
+			$sm_hover,
+			$sm_has_media ? '' : ' sm-banner--no-media'
 		),
 		'style' => sprintf(
 			'--sm-banner-ratio:%s;--sm-banner-overlay:%s;',
