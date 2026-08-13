@@ -1,0 +1,131 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/theme.json",
+	"version": 3,
+	"title": "Torque",
+	"description": "Steel navy and safety orange, uppercase and squared off — for parts and industrial catalogues.",
+	"settings": {
+		"color": {
+			"palette": [
+				{
+					"slug": "base",
+					"color": "#f4f5f7",
+					"name": "Base"
+				},
+				{
+					"slug": "contrast",
+					"color": "#14171c",
+					"name": "Contrast"
+				},
+				{
+					"slug": "primary",
+					"color": "#253a5e",
+					"name": "Primary"
+				},
+				{
+					"slug": "secondary",
+					"color": "#2b3138",
+					"name": "Secondary"
+				},
+				{
+					"slug": "accent",
+					"color": "#a8430a",
+					"name": "Accent"
+				},
+				{
+					"slug": "neutral-100",
+					"color": "#ebecee",
+					"name": "Neutral 100"
+				},
+				{
+					"slug": "neutral-200",
+					"color": "#e0e1e3",
+					"name": "Neutral 200"
+				},
+				{
+					"slug": "neutral-300",
+					"color": "#d0d1d4",
+					"name": "Neutral 300"
+				},
+				{
+					"slug": "neutral-400",
+					"color": "#b1b2b5",
+					"name": "Neutral 400"
+				},
+				{
+					"slug": "neutral-500",
+					"color": "#7d7f83",
+					"name": "Neutral 500"
+				},
+				{
+					"slug": "neutral-600",
+					"color": "#5e6064",
+					"name": "Neutral 600"
+				},
+				{
+					"slug": "neutral-700",
+					"color": "#45484c",
+					"name": "Neutral 700"
+				},
+				{
+					"slug": "neutral-800",
+					"color": "#2d2f34",
+					"name": "Neutral 800"
+				},
+				{
+					"slug": "neutral-900",
+					"color": "#14171c",
+					"name": "Neutral 900"
+				},
+				{
+					"slug": "success",
+					"color": "#15703c",
+					"name": "Success"
+				},
+				{
+					"slug": "warning",
+					"color": "#8a5a12",
+					"name": "Warning"
+				},
+				{
+					"slug": "error",
+					"color": "#b02020",
+					"name": "Error"
+				}
+			]
+		},
+		"custom": {
+			"color": {
+				"scrim": "rgba(20, 23, 28, 0.45)",
+				"overlay": "rgba(20, 23, 28, 0.08)"
+			},
+			"radius": {
+				"sm": "2px",
+				"md": "4px",
+				"lg": "6px",
+				"pill": "999px"
+			}
+		}
+	},
+	"styles": {
+		"typography": {
+			"fontFamily": "var(--wp--preset--font-family--sans)",
+			"lineHeight": "1.6"
+		},
+		"elements": {
+			"heading": {
+				"typography": {
+					"fontFamily": "var(--wp--preset--font-family--sans)",
+					"fontWeight": "800",
+					"letterSpacing": "0.02em",
+					"textTransform": "uppercase"
+				}
+			},
+			"h6": {
+				"typography": {
+					"fontFamily": "var(--wp--preset--font-family--mono)",
+					"letterSpacing": "0.1em"
+				}
+			}
+		}
+	}
+}

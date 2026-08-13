@@ -1,0 +1,129 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/theme.json",
+	"version": 3,
+	"title": "Market",
+	"description": "Grocer green with a tomato accent, friendly corners — for food and everyday goods.",
+	"settings": {
+		"color": {
+			"palette": [
+				{
+					"slug": "base",
+					"color": "#ffffff",
+					"name": "Base"
+				},
+				{
+					"slug": "contrast",
+					"color": "#16211a",
+					"name": "Contrast"
+				},
+				{
+					"slug": "primary",
+					"color": "#1a7a3c",
+					"name": "Primary"
+				},
+				{
+					"slug": "secondary",
+					"color": "#2b3b30",
+					"name": "Secondary"
+				},
+				{
+					"slug": "accent",
+					"color": "#c2410c",
+					"name": "Accent"
+				},
+				{
+					"slug": "neutral-100",
+					"color": "#f6f6f6",
+					"name": "Neutral 100"
+				},
+				{
+					"slug": "neutral-200",
+					"color": "#eaebea",
+					"name": "Neutral 200"
+				},
+				{
+					"slug": "neutral-300",
+					"color": "#dadbda",
+					"name": "Neutral 300"
+				},
+				{
+					"slug": "neutral-400",
+					"color": "#b9bcba",
+					"name": "Neutral 400"
+				},
+				{
+					"slug": "neutral-500",
+					"color": "#848986",
+					"name": "Neutral 500"
+				},
+				{
+					"slug": "neutral-600",
+					"color": "#636a66",
+					"name": "Neutral 600"
+				},
+				{
+					"slug": "neutral-700",
+					"color": "#49524c",
+					"name": "Neutral 700"
+				},
+				{
+					"slug": "neutral-800",
+					"color": "#303933",
+					"name": "Neutral 800"
+				},
+				{
+					"slug": "neutral-900",
+					"color": "#16211a",
+					"name": "Neutral 900"
+				},
+				{
+					"slug": "success",
+					"color": "#1a7a3c",
+					"name": "Success"
+				},
+				{
+					"slug": "warning",
+					"color": "#a35a00",
+					"name": "Warning"
+				},
+				{
+					"slug": "error",
+					"color": "#c02626",
+					"name": "Error"
+				}
+			]
+		},
+		"custom": {
+			"color": {
+				"scrim": "rgba(22, 33, 26, 0.45)",
+				"overlay": "rgba(22, 33, 26, 0.08)"
+			},
+			"radius": {
+				"sm": "8px",
+				"md": "12px",
+				"lg": "20px",
+				"pill": "999px"
+			}
+		}
+	},
+	"styles": {
+		"typography": {
+			"fontFamily": "var(--wp--preset--font-family--sans)",
+			"lineHeight": "1.65"
+		},
+		"elements": {
+			"heading": {
+				"typography": {
+					"fontFamily": "var(--wp--preset--font-family--sans)",
+					"fontWeight": "700",
+					"letterSpacing": "-0.015em"
+				}
+			},
+			"h6": {
+				"typography": {
+					"letterSpacing": "0.06em"
+				}
+			}
+		}
+	}
+}

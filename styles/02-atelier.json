@@ -1,0 +1,129 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/theme.json",
+	"version": 3,
+	"title": "Atelier",
+	"description": "Ink and wine on white, with serif headings and squared corners — for fashion and apparel.",
+	"settings": {
+		"color": {
+			"palette": [
+				{
+					"slug": "base",
+					"color": "#ffffff",
+					"name": "Base"
+				},
+				{
+					"slug": "contrast",
+					"color": "#14110f",
+					"name": "Contrast"
+				},
+				{
+					"slug": "primary",
+					"color": "#8a1c3b",
+					"name": "Primary"
+				},
+				{
+					"slug": "secondary",
+					"color": "#4a3f3a",
+					"name": "Secondary"
+				},
+				{
+					"slug": "accent",
+					"color": "#9a4b34",
+					"name": "Accent"
+				},
+				{
+					"slug": "neutral-100",
+					"color": "#f6f5f5",
+					"name": "Neutral 100"
+				},
+				{
+					"slug": "neutral-200",
+					"color": "#eaeae9",
+					"name": "Neutral 200"
+				},
+				{
+					"slug": "neutral-300",
+					"color": "#d9d9d9",
+					"name": "Neutral 300"
+				},
+				{
+					"slug": "neutral-400",
+					"color": "#b9b8b7",
+					"name": "Neutral 400"
+				},
+				{
+					"slug": "neutral-500",
+					"color": "#828180",
+					"name": "Neutral 500"
+				},
+				{
+					"slug": "neutral-600",
+					"color": "#62605e",
+					"name": "Neutral 600"
+				},
+				{
+					"slug": "neutral-700",
+					"color": "#484544",
+					"name": "Neutral 700"
+				},
+				{
+					"slug": "neutral-800",
+					"color": "#2e2b29",
+					"name": "Neutral 800"
+				},
+				{
+					"slug": "neutral-900",
+					"color": "#14110f",
+					"name": "Neutral 900"
+				},
+				{
+					"slug": "success",
+					"color": "#15703c",
+					"name": "Success"
+				},
+				{
+					"slug": "warning",
+					"color": "#8a5a12",
+					"name": "Warning"
+				},
+				{
+					"slug": "error",
+					"color": "#a81f2b",
+					"name": "Error"
+				}
+			]
+		},
+		"custom": {
+			"color": {
+				"scrim": "rgba(20, 17, 15, 0.45)",
+				"overlay": "rgba(20, 17, 15, 0.08)"
+			},
+			"radius": {
+				"sm": "0",
+				"md": "2px",
+				"lg": "4px",
+				"pill": "999px"
+			}
+		}
+	},
+	"styles": {
+		"typography": {
+			"fontFamily": "var(--wp--preset--font-family--sans)",
+			"lineHeight": "1.7"
+		},
+		"elements": {
+			"heading": {
+				"typography": {
+					"fontFamily": "var(--wp--preset--font-family--serif)",
+					"fontWeight": "400",
+					"letterSpacing": "-0.01em"
+				}
+			},
+			"h6": {
+				"typography": {
+					"letterSpacing": "0.14em"
+				}
+			}
+		}
+	}
+}

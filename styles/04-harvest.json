@@ -1,0 +1,129 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/theme.json",
+	"version": 3,
+	"title": "Harvest",
+	"description": "Field green and olive on a pale ground, with soft corners — for organic and wholefood shops.",
+	"settings": {
+		"color": {
+			"palette": [
+				{
+					"slug": "base",
+					"color": "#fcfdf9",
+					"name": "Base"
+				},
+				{
+					"slug": "contrast",
+					"color": "#16241a",
+					"name": "Contrast"
+				},
+				{
+					"slug": "primary",
+					"color": "#226b46",
+					"name": "Primary"
+				},
+				{
+					"slug": "secondary",
+					"color": "#33523f",
+					"name": "Secondary"
+				},
+				{
+					"slug": "accent",
+					"color": "#6d6a12",
+					"name": "Accent"
+				},
+				{
+					"slug": "neutral-100",
+					"color": "#f3f4f0",
+					"name": "Neutral 100"
+				},
+				{
+					"slug": "neutral-200",
+					"color": "#e7e9e5",
+					"name": "Neutral 200"
+				},
+				{
+					"slug": "neutral-300",
+					"color": "#d7dad5",
+					"name": "Neutral 300"
+				},
+				{
+					"slug": "neutral-400",
+					"color": "#b7bcb6",
+					"name": "Neutral 400"
+				},
+				{
+					"slug": "neutral-500",
+					"color": "#828a83",
+					"name": "Neutral 500"
+				},
+				{
+					"slug": "neutral-600",
+					"color": "#626c64",
+					"name": "Neutral 600"
+				},
+				{
+					"slug": "neutral-700",
+					"color": "#49544b",
+					"name": "Neutral 700"
+				},
+				{
+					"slug": "neutral-800",
+					"color": "#2f3c33",
+					"name": "Neutral 800"
+				},
+				{
+					"slug": "neutral-900",
+					"color": "#16241a",
+					"name": "Neutral 900"
+				},
+				{
+					"slug": "success",
+					"color": "#226b46",
+					"name": "Success"
+				},
+				{
+					"slug": "warning",
+					"color": "#8a5a12",
+					"name": "Warning"
+				},
+				{
+					"slug": "error",
+					"color": "#a83232",
+					"name": "Error"
+				}
+			]
+		},
+		"custom": {
+			"color": {
+				"scrim": "rgba(22, 36, 26, 0.45)",
+				"overlay": "rgba(22, 36, 26, 0.08)"
+			},
+			"radius": {
+				"sm": "10px",
+				"md": "18px",
+				"lg": "28px",
+				"pill": "999px"
+			}
+		}
+	},
+	"styles": {
+		"typography": {
+			"fontFamily": "var(--wp--preset--font-family--sans)",
+			"lineHeight": "1.7"
+		},
+		"elements": {
+			"heading": {
+				"typography": {
+					"fontFamily": "var(--wp--preset--font-family--sans)",
+					"fontWeight": "600",
+					"letterSpacing": "-0.02em"
+				}
+			},
+			"h6": {
+				"typography": {
+					"letterSpacing": "0.08em"
+				}
+			}
+		}
+	}
+}

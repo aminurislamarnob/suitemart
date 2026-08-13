@@ -162,14 +162,16 @@
 	gap: 0.375rem;
 	justify-content: center;
 
-	// Swiper renders these; they only exist once it has mounted.
+	// Swiper renders these; they only exist once it has mounted. A bullet is a
+	// control, not decoration, so it owes 3:1 against the page (WCAG 1.4.11) —
+	// which neutral-400 does not pay and neutral-500 does.
 	.swiper-pagination-bullet {
 		width: 0.5rem;
 		height: 0.5rem;
 		padding: 0;
 		border: 0;
 		border-radius: var(--wp--custom--radius--pill);
-		background-color: var(--wp--preset--color--neutral-400);
+		background-color: var(--wp--preset--color--neutral-500);
 		cursor: pointer;
 	}
 

@@ -280,6 +280,17 @@ margin on each side. Reset `max-width` and `margin` in the block's own sheet,
 and double the class (`.sm-x.sm-x`) — the layout rule's specificity is a single
 class too, so which stylesheet loads last would otherwise decide it.
 
+**`block.json` will name a stylesheet the build never made.** wp-scripts
+compiles `style.scss` only when something imports it, and the import belongs in
+the block's `index.js`. Miss it and `"style": "file:./style-index.css"` still
+registers — against a URL that 404s — so the block renders with user-agent
+styling and nothing warns. Quick view, the product gallery and
+frequently-bought-together shipped that way; on a white page an unstyled
+`<button>` looks near enough to a designed one that it survived review, and it
+only became obvious under a dark style variation. `tests/phpunit/test-block-assets.php`
+now checks both directions: every `file:` reference resolves, and every sheet in
+`src/` is declared.
+
 **Images must be constrained globally.** `src/global.scss` caps `img` at
 `max-width: 100%`. Without it, WooCommerce's full-size gallery image overflowed
 its column, sat invisibly on top of the summary column, and swallowed every

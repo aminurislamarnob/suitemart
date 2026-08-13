@@ -1,0 +1,129 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/theme.json",
+	"version": 3,
+	"title": "Walnut",
+	"description": "Warm timber browns on an off-white ground, generously rounded — for furniture and homeware.",
+	"settings": {
+		"color": {
+			"palette": [
+				{
+					"slug": "base",
+					"color": "#fbf8f4",
+					"name": "Base"
+				},
+				{
+					"slug": "contrast",
+					"color": "#241c14",
+					"name": "Contrast"
+				},
+				{
+					"slug": "primary",
+					"color": "#6b4423",
+					"name": "Primary"
+				},
+				{
+					"slug": "secondary",
+					"color": "#3c2f24",
+					"name": "Secondary"
+				},
+				{
+					"slug": "accent",
+					"color": "#8a5a2b",
+					"name": "Accent"
+				},
+				{
+					"slug": "neutral-100",
+					"color": "#f2efeb",
+					"name": "Neutral 100"
+				},
+				{
+					"slug": "neutral-200",
+					"color": "#e8e4e0",
+					"name": "Neutral 200"
+				},
+				{
+					"slug": "neutral-300",
+					"color": "#d9d5d0",
+					"name": "Neutral 300"
+				},
+				{
+					"slug": "neutral-400",
+					"color": "#bbb6b1",
+					"name": "Neutral 400"
+				},
+				{
+					"slug": "neutral-500",
+					"color": "#89837d",
+					"name": "Neutral 500"
+				},
+				{
+					"slug": "neutral-600",
+					"color": "#6b655e",
+					"name": "Neutral 600"
+				},
+				{
+					"slug": "neutral-700",
+					"color": "#534c45",
+					"name": "Neutral 700"
+				},
+				{
+					"slug": "neutral-800",
+					"color": "#3c342d",
+					"name": "Neutral 800"
+				},
+				{
+					"slug": "neutral-900",
+					"color": "#241c14",
+					"name": "Neutral 900"
+				},
+				{
+					"slug": "success",
+					"color": "#3f6b2f",
+					"name": "Success"
+				},
+				{
+					"slug": "warning",
+					"color": "#8a5a12",
+					"name": "Warning"
+				},
+				{
+					"slug": "error",
+					"color": "#a8342a",
+					"name": "Error"
+				}
+			]
+		},
+		"custom": {
+			"color": {
+				"scrim": "rgba(36, 28, 20, 0.45)",
+				"overlay": "rgba(36, 28, 20, 0.08)"
+			},
+			"radius": {
+				"sm": "6px",
+				"md": "12px",
+				"lg": "24px",
+				"pill": "999px"
+			}
+		}
+	},
+	"styles": {
+		"typography": {
+			"fontFamily": "var(--wp--preset--font-family--sans)",
+			"lineHeight": "1.75"
+		},
+		"elements": {
+			"heading": {
+				"typography": {
+					"fontFamily": "var(--wp--preset--font-family--serif)",
+					"fontWeight": "600",
+					"letterSpacing": "-0.01em"
+				}
+			},
+			"h6": {
+				"typography": {
+					"letterSpacing": "0.08em"
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,129 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/theme.json",
+	"version": 3,
+	"title": "Lumière",
+	"description": "Gold on near-black with serif headings and hard corners — for jewellery and fine goods.",
+	"settings": {
+		"color": {
+			"palette": [
+				{
+					"slug": "base",
+					"color": "#0b0a09",
+					"name": "Base"
+				},
+				{
+					"slug": "contrast",
+					"color": "#f5f0e6",
+					"name": "Contrast"
+				},
+				{
+					"slug": "primary",
+					"color": "#d8b878",
+					"name": "Primary"
+				},
+				{
+					"slug": "secondary",
+					"color": "#cfc4ad",
+					"name": "Secondary"
+				},
+				{
+					"slug": "accent",
+					"color": "#e7d3a1",
+					"name": "Accent"
+				},
+				{
+					"slug": "neutral-100",
+					"color": "#141312",
+					"name": "Neutral 100"
+				},
+				{
+					"slug": "neutral-200",
+					"color": "#201f1d",
+					"name": "Neutral 200"
+				},
+				{
+					"slug": "neutral-300",
+					"color": "#302f2c",
+					"name": "Neutral 300"
+				},
+				{
+					"slug": "neutral-400",
+					"color": "#514f4b",
+					"name": "Neutral 400"
+				},
+				{
+					"slug": "neutral-500",
+					"color": "#87847e",
+					"name": "Neutral 500"
+				},
+				{
+					"slug": "neutral-600",
+					"color": "#a8a49d",
+					"name": "Neutral 600"
+				},
+				{
+					"slug": "neutral-700",
+					"color": "#c2bdb5",
+					"name": "Neutral 700"
+				},
+				{
+					"slug": "neutral-800",
+					"color": "#dbd7ce",
+					"name": "Neutral 800"
+				},
+				{
+					"slug": "neutral-900",
+					"color": "#f5f0e6",
+					"name": "Neutral 900"
+				},
+				{
+					"slug": "success",
+					"color": "#7bc47f",
+					"name": "Success"
+				},
+				{
+					"slug": "warning",
+					"color": "#e0b64a",
+					"name": "Warning"
+				},
+				{
+					"slug": "error",
+					"color": "#e08585",
+					"name": "Error"
+				}
+			]
+		},
+		"custom": {
+			"color": {
+				"scrim": "rgba(6, 5, 5, 0.7)",
+				"overlay": "rgba(245, 240, 230, 0.08)"
+			},
+			"radius": {
+				"sm": "0",
+				"md": "0",
+				"lg": "2px",
+				"pill": "999px"
+			}
+		}
+	},
+	"styles": {
+		"typography": {
+			"fontFamily": "var(--wp--preset--font-family--sans)",
+			"lineHeight": "1.75"
+		},
+		"elements": {
+			"heading": {
+				"typography": {
+					"fontFamily": "var(--wp--preset--font-family--serif)",
+					"fontWeight": "400",
+					"letterSpacing": "0.01em"
+				}
+			},
+			"h6": {
+				"typography": {
+					"letterSpacing": "0.2em"
+				}
+			}
+		}
+	}
+}

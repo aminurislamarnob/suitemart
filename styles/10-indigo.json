@@ -1,0 +1,130 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/theme.json",
+	"version": 3,
+	"title": "Indigo",
+	"description": "Dye-vat blue with ochre on cool grey — for craft, workwear and maker goods.",
+	"settings": {
+		"color": {
+			"palette": [
+				{
+					"slug": "base",
+					"color": "#f7f8fa",
+					"name": "Base"
+				},
+				{
+					"slug": "contrast",
+					"color": "#101827",
+					"name": "Contrast"
+				},
+				{
+					"slug": "primary",
+					"color": "#2a3d8f",
+					"name": "Primary"
+				},
+				{
+					"slug": "secondary",
+					"color": "#1e2a4a",
+					"name": "Secondary"
+				},
+				{
+					"slug": "accent",
+					"color": "#8a5a00",
+					"name": "Accent"
+				},
+				{
+					"slug": "neutral-100",
+					"color": "#eeeff2",
+					"name": "Neutral 100"
+				},
+				{
+					"slug": "neutral-200",
+					"color": "#e2e4e7",
+					"name": "Neutral 200"
+				},
+				{
+					"slug": "neutral-300",
+					"color": "#d2d4d8",
+					"name": "Neutral 300"
+				},
+				{
+					"slug": "neutral-400",
+					"color": "#b2b5bb",
+					"name": "Neutral 400"
+				},
+				{
+					"slug": "neutral-500",
+					"color": "#7d818a",
+					"name": "Neutral 500"
+				},
+				{
+					"slug": "neutral-600",
+					"color": "#5c626d",
+					"name": "Neutral 600"
+				},
+				{
+					"slug": "neutral-700",
+					"color": "#434955",
+					"name": "Neutral 700"
+				},
+				{
+					"slug": "neutral-800",
+					"color": "#29313e",
+					"name": "Neutral 800"
+				},
+				{
+					"slug": "neutral-900",
+					"color": "#101827",
+					"name": "Neutral 900"
+				},
+				{
+					"slug": "success",
+					"color": "#15703c",
+					"name": "Success"
+				},
+				{
+					"slug": "warning",
+					"color": "#8a5a00",
+					"name": "Warning"
+				},
+				{
+					"slug": "error",
+					"color": "#a82626",
+					"name": "Error"
+				}
+			]
+		},
+		"custom": {
+			"color": {
+				"scrim": "rgba(16, 24, 39, 0.45)",
+				"overlay": "rgba(16, 24, 39, 0.08)"
+			},
+			"radius": {
+				"sm": "3px",
+				"md": "6px",
+				"lg": "10px",
+				"pill": "999px"
+			}
+		}
+	},
+	"styles": {
+		"typography": {
+			"fontFamily": "var(--wp--preset--font-family--sans)",
+			"lineHeight": "1.7"
+		},
+		"elements": {
+			"heading": {
+				"typography": {
+					"fontFamily": "var(--wp--preset--font-family--sans)",
+					"fontWeight": "700",
+					"letterSpacing": "-0.015em"
+				}
+			},
+			"h6": {
+				"typography": {
+					"fontFamily": "var(--wp--preset--font-family--mono)",
+					"letterSpacing": "0.1em"
+				}
+			}
+		}
+	}
+}

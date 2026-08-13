@@ -1,0 +1,129 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/theme.json",
+	"version": 3,
+	"title": "Playhouse",
+	"description": "Violet and teal on cream, heavy headings and very round corners — for toys and childrenswear.",
+	"settings": {
+		"color": {
+			"palette": [
+				{
+					"slug": "base",
+					"color": "#fffdf7",
+					"name": "Base"
+				},
+				{
+					"slug": "contrast",
+					"color": "#1f1a2e",
+					"name": "Contrast"
+				},
+				{
+					"slug": "primary",
+					"color": "#6d28d9",
+					"name": "Primary"
+				},
+				{
+					"slug": "secondary",
+					"color": "#0f766e",
+					"name": "Secondary"
+				},
+				{
+					"slug": "accent",
+					"color": "#c2410c",
+					"name": "Accent"
+				},
+				{
+					"slug": "neutral-100",
+					"color": "#f6f4ef",
+					"name": "Neutral 100"
+				},
+				{
+					"slug": "neutral-200",
+					"color": "#ebe9e5",
+					"name": "Neutral 200"
+				},
+				{
+					"slug": "neutral-300",
+					"color": "#dbd9d7",
+					"name": "Neutral 300"
+				},
+				{
+					"slug": "neutral-400",
+					"color": "#bcb9bb",
+					"name": "Neutral 400"
+				},
+				{
+					"slug": "neutral-500",
+					"color": "#88858c",
+					"name": "Neutral 500"
+				},
+				{
+					"slug": "neutral-600",
+					"color": "#696570",
+					"name": "Neutral 600"
+				},
+				{
+					"slug": "neutral-700",
+					"color": "#504c5a",
+					"name": "Neutral 700"
+				},
+				{
+					"slug": "neutral-800",
+					"color": "#383344",
+					"name": "Neutral 800"
+				},
+				{
+					"slug": "neutral-900",
+					"color": "#1f1a2e",
+					"name": "Neutral 900"
+				},
+				{
+					"slug": "success",
+					"color": "#15803d",
+					"name": "Success"
+				},
+				{
+					"slug": "warning",
+					"color": "#a35a00",
+					"name": "Warning"
+				},
+				{
+					"slug": "error",
+					"color": "#c02626",
+					"name": "Error"
+				}
+			]
+		},
+		"custom": {
+			"color": {
+				"scrim": "rgba(31, 26, 46, 0.45)",
+				"overlay": "rgba(31, 26, 46, 0.08)"
+			},
+			"radius": {
+				"sm": "12px",
+				"md": "20px",
+				"lg": "32px",
+				"pill": "999px"
+			}
+		}
+	},
+	"styles": {
+		"typography": {
+			"fontFamily": "var(--wp--preset--font-family--sans)",
+			"lineHeight": "1.7"
+		},
+		"elements": {
+			"heading": {
+				"typography": {
+					"fontFamily": "var(--wp--preset--font-family--sans)",
+					"fontWeight": "800",
+					"letterSpacing": "-0.02em"
+				}
+			},
+			"h6": {
+				"typography": {
+					"letterSpacing": "0.06em"
+				}
+			}
+		}
+	}
+}

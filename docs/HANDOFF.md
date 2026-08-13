@@ -1,6 +1,6 @@
 # Handoff — state of the work
 
-Last updated: 2026-08-13, after finishing P2 batch C.
+Last updated: 2026-08-13, after finishing P3's style variations.
 
 Read `AGENTS.md` first — it holds the standing rules. This file is a snapshot:
 what is built, what is verified, and what to pick up next. **Update it when you
@@ -19,17 +19,17 @@ The full plan lives in GitHub issue
 | **P2 batch A — content blocks** | All 18 built |
 | **P2 batch B — WooCommerce gaps** | All 15 built; audited and repaired |
 | **P2 batch C — site features** | All 6 built |
-| **P3 — Design breadth** | 1 of ~15 style variations, 29 of ~100 patterns ← **you are here** |
+| **P3 — Design breadth** | All 15 style variations built; 29 of ~100 patterns ← **you are here** |
 | **P4 — Integrations** | Not started (27) |
 | **P5 — Hardening** | Not started |
 
-**Green:** 297 PHPUnit tests passing / 1 skipped (the expected inverse guard),
+**Green:** 449 PHPUnit tests passing / 1 skipped (the expected inverse guard),
 144 Playwright tests passing / 1 skipped, phpcs clean, PHPStan level 5 clean,
 ESLint and Stylelint clean — and CI genuinely runs the commerce suite rather
 than skipping it.
 
-52 blocks exist under `src/`. 18 templates, 6 parts, 29 patterns, 1 style
-variation.
+52 blocks exist under `src/`. 18 templates, 6 parts, 29 patterns, 15 style
+variations.
 
 ---
 
@@ -47,12 +47,44 @@ All three P2 batches are done: 18 content blocks, 15 WooCommerce blocks, and
 batch C's six site features — back-to-top, cookie-notice, floating-block, popup,
 post-carousel, portfolio-grid.
 
-**Next is P3**: 15 style variations overriding only palette, typography and
-radius, then the rest of the ~100 patterns. Keep building one thing per commit,
-each with its PHPUnit test and at least one pattern, each verified against the
-full command list in `AGENTS.md` §6 — and each checked in a real browser before
-its Playwright spec is written. Every bug this session that mattered was
-invisible to PHP.
+**Next is the rest of P3**: the ~70 patterns still to write, across
+`suitemart/hero|commerce|content|cta|footer|header`, and the 10 full-page
+starters. Keep building one thing per commit, each with its PHPUnit test and at
+least one pattern, each verified against the full command list in `AGENTS.md`
+§6 — and each checked in a real browser before its Playwright spec is written.
+Every bug this session that mattered was invisible to PHP.
+
+### The style variations
+
+All fifteen are in `styles/`, numbered `01-midnight` through `15-circuit`. Each
+one replaces the palette, the scrim and overlay, the four radii, and the
+typographic voice (body family and leading, heading family, weight, tracking,
+and the h6 label treatment) — and nothing else.
+`tests/phpunit/test-style-variations.php` holds that line: a variation may
+touch `settings.color.palette` and `settings.custom.{color,radius}`, must
+declare all seventeen colour slugs in order, and may invent none. A slug it
+drops is not a fallback — every block names its colours through
+`var( --wp--preset--color--<slug> )`, so the declaration is dropped and that one
+block renders unstyled in that one variation.
+
+**P3's acceptance criterion — every variation passes WCAG AA — is met by that
+test, not by axe.** Axe can only measure whichever variation is active, so
+covering fifteen through the browser means fifteen runs of the whole suite. The
+test instead computes the contrast ratio for each foreground/background pair the
+theme's own stylesheets actually put together, read off `src/**/*.scss`: text at
+4.5:1, and the controls that carry no text — icon-only buttons, carousel
+pagination bullets — at 1.4.11's 3:1. Add a pair to those lists whenever a block
+introduces one; the two defaults that failed the first run (`neutral-500` on a
+card, and bullets drawn in `neutral-400`) were both found this way.
+
+The neutral ramp in every variation is mixed from `base` toward `contrast` at
+fixed proportions, which is what keeps `neutral-600` readable on a card in all
+fifteen. If you hand-write a new variation, run the test before anything else.
+
+Two are dark (`01-midnight`, `05-lumiere`), and they are the ones worth opening
+a browser for: a rule that hardcodes light-on-light survives every light
+variation. Applying one is how the three blocks with unloaded stylesheets were
+found.
 
 ### Notes on blocks already built
 

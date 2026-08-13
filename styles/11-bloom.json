@@ -1,0 +1,129 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/theme.json",
+	"version": 3,
+	"title": "Bloom",
+	"description": "Plum and mauve on a blush ground, softly rounded — for beauty and cosmetics.",
+	"settings": {
+		"color": {
+			"palette": [
+				{
+					"slug": "base",
+					"color": "#fffafc",
+					"name": "Base"
+				},
+				{
+					"slug": "contrast",
+					"color": "#241722",
+					"name": "Contrast"
+				},
+				{
+					"slug": "primary",
+					"color": "#9d2668",
+					"name": "Primary"
+				},
+				{
+					"slug": "secondary",
+					"color": "#5b3a52",
+					"name": "Secondary"
+				},
+				{
+					"slug": "accent",
+					"color": "#7d4f83",
+					"name": "Accent"
+				},
+				{
+					"slug": "neutral-100",
+					"color": "#f6f1f3",
+					"name": "Neutral 100"
+				},
+				{
+					"slug": "neutral-200",
+					"color": "#ebe6e8",
+					"name": "Neutral 200"
+				},
+				{
+					"slug": "neutral-300",
+					"color": "#dcd6d9",
+					"name": "Neutral 300"
+				},
+				{
+					"slug": "neutral-400",
+					"color": "#bdb6bb",
+					"name": "Neutral 400"
+				},
+				{
+					"slug": "neutral-500",
+					"color": "#8b8288",
+					"name": "Neutral 500"
+				},
+				{
+					"slug": "neutral-600",
+					"color": "#6c626a",
+					"name": "Neutral 600"
+				},
+				{
+					"slug": "neutral-700",
+					"color": "#544952",
+					"name": "Neutral 700"
+				},
+				{
+					"slug": "neutral-800",
+					"color": "#3c303a",
+					"name": "Neutral 800"
+				},
+				{
+					"slug": "neutral-900",
+					"color": "#241722",
+					"name": "Neutral 900"
+				},
+				{
+					"slug": "success",
+					"color": "#15703c",
+					"name": "Success"
+				},
+				{
+					"slug": "warning",
+					"color": "#8a5a12",
+					"name": "Warning"
+				},
+				{
+					"slug": "error",
+					"color": "#b02040",
+					"name": "Error"
+				}
+			]
+		},
+		"custom": {
+			"color": {
+				"scrim": "rgba(36, 23, 34, 0.45)",
+				"overlay": "rgba(36, 23, 34, 0.08)"
+			},
+			"radius": {
+				"sm": "14px",
+				"md": "22px",
+				"lg": "34px",
+				"pill": "999px"
+			}
+		}
+	},
+	"styles": {
+		"typography": {
+			"fontFamily": "var(--wp--preset--font-family--sans)",
+			"lineHeight": "1.75"
+		},
+		"elements": {
+			"heading": {
+				"typography": {
+					"fontFamily": "var(--wp--preset--font-family--serif)",
+					"fontWeight": "500",
+					"letterSpacing": "0"
+				}
+			},
+			"h6": {
+				"typography": {
+					"letterSpacing": "0.14em"
+				}
+			}
+		}
+	}
+}
