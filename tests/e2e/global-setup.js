@@ -30,6 +30,7 @@ const COOKIE_NOTICE_SLUG = 'suitemart-cookie-notice';
 const FLOATING_SLUG = 'suitemart-floating-block';
 const POPUP_SLUG = 'suitemart-popup';
 const POST_CAROUSEL_SLUG = 'suitemart-post-carousel';
+const PORTFOLIO_SLUG = 'suitemart-portfolio-grid';
 const FIXTURE = 'tests/e2e/fixtures/blocks-page.html';
 
 // Present on the fixture page and nowhere else, so finding it proves the page
@@ -207,6 +208,14 @@ module.exports = async ( config ) => {
 		POST_CAROUSEL_SLUG,
 		'Post carousel',
 		'<!-- wp:suitemart/post-carousel {"postsToShow":5,"label":"From the blog","slidesPerViewDesktop":2} /-->'
+	);
+
+	ensurePortfolio();
+
+	process.env.SUITEMART_PORTFOLIO_URL = ensurePage(
+		PORTFOLIO_SLUG,
+		'Portfolio grid',
+		'<!-- wp:suitemart/portfolio-grid {"label":"Selected work"} /-->'
 	);
 
 	/*
@@ -463,6 +472,76 @@ function ensureCarouselPosts() {
 	} );
 
 	return titles.length;
+}
+
+/**
+ * Publishes the projects the portfolio grid filters, once.
+ *
+ * Two categories, deliberately: with one, the block renders no filter bar at
+ * all — correctly, since every button would show the same thing — and the spec
+ * would have nothing to press.
+ */
+function ensurePortfolio() {
+	const projects = [
+		[ 'Harbour brand', 'suitemart-project-1', 'branding', 'Branding' ],
+		[ 'Studio site', 'suitemart-project-2', 'branding', 'Branding' ],
+		[ 'Loft interior', 'suitemart-project-3', 'interiors', 'Interiors' ],
+		[ 'Ceramic set', 'suitemart-project-4', 'interiors', 'Interiors' ],
+	];
+
+	projects.forEach( ( [ title, slug, termSlug, termName ] ) => {
+		if (
+			! /^\d+$/.test(
+				wp( [
+					'term',
+					'list',
+					'project-cat',
+					`--slug=${ termSlug }`,
+					'--field=term_id',
+				] )
+			)
+		) {
+			wp( [
+				'term',
+				'create',
+				'project-cat',
+				termName,
+				`--slug=${ termSlug }`,
+				'--porcelain',
+			] );
+		}
+
+		let id = wp( [
+			'post',
+			'list',
+			'--post_type=portfolio',
+			`--name=${ slug }`,
+			'--field=ID',
+		] );
+
+		if ( ! /^\d+$/.test( id ) ) {
+			id = wp( [
+				'post',
+				'create',
+				'--post_type=portfolio',
+				`--post_title=${ title }`,
+				`--post_name=${ slug }`,
+				'--post_status=publish',
+				`--post_content=About ${ title }.`,
+				'--porcelain',
+			] );
+		}
+
+		wp( [
+			'post',
+			'term',
+			'set',
+			id,
+			'project-cat',
+			termSlug,
+			'--by=slug',
+		] );
+	} );
 }
 
 /**

@@ -1,6 +1,6 @@
 # Handoff — state of the work
 
-Last updated: 2026-08-13, three blocks into P2 batch C.
+Last updated: 2026-08-13, after finishing P2 batch C.
 
 Read `AGENTS.md` first — it holds the standing rules. This file is a snapshot:
 what is built, what is verified, and what to pick up next. **Update it when you
@@ -18,22 +18,22 @@ The full plan lives in GitHub issue
 | **P1 — Foundation** | Complete, with one item outstanding (CSS budget, below) |
 | **P2 batch A — content blocks** | All 18 built |
 | **P2 batch B — WooCommerce gaps** | All 15 built; audited and repaired |
-| **P2 batch C — site features** | 5 of 6 built ← **you are here** |
-| **P3 — Design breadth** | 1 of ~15 style variations, 15 of ~100 patterns |
+| **P2 batch C — site features** | All 6 built |
+| **P3 — Design breadth** | 1 of ~15 style variations, 29 of ~100 patterns ← **you are here** |
 | **P4 — Integrations** | Not started (27) |
 | **P5 — Hardening** | Not started |
 
-**Green:** 285 PHPUnit tests passing / 1 skipped (the expected inverse guard),
-138 Playwright tests passing / 1 skipped, phpcs clean, PHPStan level 5 clean,
+**Green:** 297 PHPUnit tests passing / 1 skipped (the expected inverse guard),
+144 Playwright tests passing / 1 skipped, phpcs clean, PHPStan level 5 clean,
 ESLint and Stylelint clean — and CI genuinely runs the commerce suite rather
 than skipping it.
 
-51 blocks exist under `src/`. 18 templates, 6 parts, 28 patterns, 1 style
+52 blocks exist under `src/`. 18 templates, 6 parts, 29 patterns, 1 style
 variation.
 
 ---
 
-## Pick up here: P2 batch C
+## Pick up here: P3, design breadth
 
 Batches A and B are complete. Batch B's twelve outside-written blocks were
 audited and repaired; that audit found twenty defects, six visible to an end
@@ -43,13 +43,16 @@ them through are now covered by `tests/phpunit/test-design-tokens.php`,
 traps in `AGENTS.md` §5 are the condensed version — read them before writing
 another block.**
 
-**Batch C, built (5):** back-to-top, cookie-notice, floating-block, popup,
-post-carousel.
-**Batch C, still to build (1):** portfolio-grid (CSS grid + Interactivity
-filtering, no Isotope).
+All three P2 batches are done: 18 content blocks, 15 WooCommerce blocks, and
+batch C's six site features — back-to-top, cookie-notice, floating-block, popup,
+post-carousel, portfolio-grid.
 
-Build one per commit, each with its PHPUnit render test and at least one pattern,
-each verified against the full command list in `AGENTS.md` §6.
+**Next is P3**: 15 style variations overriding only palette, typography and
+radius, then the rest of the ~100 patterns. Keep building one thing per commit,
+each with its PHPUnit test and at least one pattern, each verified against the
+full command list in `AGENTS.md` §6 — and each checked in a real browser before
+its Playwright spec is written. Every bug this session that mattered was
+invisible to PHP.
 
 ### Notes on blocks already built
 
@@ -105,6 +108,15 @@ in `src/_shared/carousel.js`. Change it there, not in one of the two view
 modules. Both are built as divs rather than lists on purpose: Swiper's a11y
 module puts `role="group"` on every slide, and a `role="list"` may hold only
 list items — axe calls that combination critical, and it is right.
+
+`suitemart/portfolio-grid` filters by hiding projects that are already in the
+page — no Isotope, no second request (decision 8), and the filters simply do
+not appear without JavaScript, leaving the whole grid shown. Its visibility and
+pressed-state bindings are derived from context, so they are declared **twice**:
+PHP closures in `render.php` and getters in `view.js`. Change one and you must
+change the other. The click handler sits on the filter bar rather than on each
+button, because the buttons carry a context of their own and a write from
+inside one would land there instead of on the grid.
 
 ### The pattern to copy
 

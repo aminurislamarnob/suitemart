@@ -1,0 +1,11 @@
+/*
+ * The view module never runs in the editor, so the filters are inert there and
+ * the whole grid is shown — which is exactly what a visitor without JavaScript
+ * sees. Only the links need stopping, so the canvas does not navigate away.
+ */
+.editor-styles-wrapper .sm-portfolio-grid {
+
+	a {
+		pointer-events: none;
+	}
+}
