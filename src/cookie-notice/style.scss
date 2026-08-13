@@ -29,6 +29,18 @@
 	gap: var(--wp--preset--spacing--30);
 }
 
+/*
+ * The full-width variant is a bar across the bottom of the page, and the
+ * back-to-top button is pinned to a bottom corner — on top of the bar's
+ * buttons, where it swallows the click. It goes away while the notice is up,
+ * rather than being nudged by a height nothing can measure in CSS: the notice
+ * is asking for an answer, and scrolling to the top can wait the few seconds
+ * that takes. It returns the moment the notice is dismissed.
+ */
+body:has(.sm-cookie-notice--bottom:not([hidden])) .sm-back-to-top {
+	display: none;
+}
+
 .sm-cookie-notice__message {
 
 	> :first-child {

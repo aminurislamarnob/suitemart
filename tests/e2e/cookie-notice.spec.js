@@ -147,6 +147,31 @@ test.describe( 'Cookie notice', () => {
 		);
 	} );
 
+	test( 'is not covered by the back-to-top button', async ( { page } ) => {
+		/*
+		 * Both are pinned to the bottom of every page, and the button is drawn
+		 * on top of the bar's Accept — where it silently eats the click. The
+		 * button stands down while the notice is up; this scrolls far enough
+		 * for it to have appeared, then presses Accept for real.
+		 */
+		await page.evaluate( () => {
+			const spacer = document.createElement( 'div' );
+
+			spacer.style.height = '3000px';
+			document.body.append( spacer );
+			window.scrollTo( { top: 1500, behavior: 'instant' } );
+		} );
+
+		await expect( page.locator( '.sm-back-to-top' ) ).toBeHidden();
+
+		await page.locator( ACCEPT ).click();
+
+		await expect( page.locator( BLOCK ) ).toBeHidden();
+
+		// And it comes back once the notice has been answered.
+		await expect( page.locator( '.sm-back-to-top' ) ).toBeVisible();
+	} );
+
 	test( 'is reachable and operable from the keyboard', async ( { page } ) => {
 		await page.locator( DECLINE ).focus();
 

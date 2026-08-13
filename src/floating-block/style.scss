@@ -1,0 +1,120 @@
+@use "../_shared/breakpoints" as *;
+
+/*
+ * The constrained layout caps every direct child of the content area at
+ * contentSize and centres it with auto margins, and position: fixed does not
+ * exempt it. Doubled class because that rule carries the same specificity, so
+ * stylesheet order would otherwise decide it.
+ */
+.sm-floating-block.sm-floating-block {
+	max-width: min(var(--sm-floating-max-width, 360px), calc(100vw - var(--wp--preset--spacing--40) * 2));
+	margin: 0;
+}
+
+.sm-floating-block {
+	position: fixed;
+	z-index: var(--wp--custom--z--sticky);
+	display: flex;
+	align-items: flex-start;
+	padding: var(--wp--preset--spacing--40);
+	border-radius: var(--wp--custom--radius--lg);
+	background: var(--wp--preset--color--base);
+	box-shadow: 0 8px 32px var(--wp--custom--color--scrim);
+	color: var(--wp--preset--color--contrast);
+	gap: var(--wp--preset--spacing--20);
+}
+
+.sm-floating-block__content {
+	flex: 1 1 auto;
+	min-width: 0;
+
+	> :first-child {
+		margin-block-start: 0;
+	}
+
+	> :last-child {
+		margin-block-end: 0;
+	}
+}
+
+.sm-floating-block__dismiss {
+	display: flex;
+	flex: 0 0 auto;
+	align-items: center;
+	justify-content: center;
+
+	// Comfortably past the 24px minimum target size, without growing the panel:
+	// the padding above gives it room to sit in.
+	width: 2rem;
+	height: 2rem;
+	padding: 0;
+	border: 0;
+	border-radius: var(--wp--custom--radius--pill);
+	background: transparent;
+	color: inherit;
+	cursor: pointer;
+
+	&:hover {
+		background: var(--wp--preset--color--neutral-100);
+	}
+
+	&:focus-visible {
+		outline: 2px solid var(--wp--preset--color--primary);
+		outline-offset: 2px;
+	}
+}
+
+/*
+ * Corners. Every offset is one spacing step, so two panels pinned to opposite
+ * corners line up with each other and with the back-to-top button.
+ */
+.sm-floating-block--top-start,
+.sm-floating-block--top-end {
+	inset-block-start: var(--wp--preset--spacing--40);
+}
+
+.sm-floating-block--bottom-start,
+.sm-floating-block--bottom-end {
+	inset-block-end: var(--wp--preset--spacing--40);
+}
+
+.sm-floating-block--middle-start,
+.sm-floating-block--middle-end {
+	inset-block-start: 50%;
+	transform: translateY(-50%);
+}
+
+.sm-floating-block--top-start,
+.sm-floating-block--middle-start,
+.sm-floating-block--bottom-start {
+	inset-inline-start: var(--wp--preset--spacing--40);
+}
+
+.sm-floating-block--top-end,
+.sm-floating-block--middle-end,
+.sm-floating-block--bottom-end {
+	inset-inline-end: var(--wp--preset--spacing--40);
+}
+
+/*
+ * The back-to-top button is pinned to a bottom corner of every page by
+ * `parts/footer.html`, and it is drawn on top: a panel in the corner it
+ * occupies had its close button underneath the button, which Playwright found
+ * by refusing to click it for sixty seconds. The panel yields, because the
+ * button's corner is fixed by the template and the panel's is a choice. The
+ * room is reserved whether or not the button is currently showing, so nothing
+ * jumps when it fades in.
+ */
+body:has(.sm-back-to-top--end) .sm-floating-block--bottom-end,
+body:has(.sm-back-to-top--start) .sm-floating-block--bottom-start {
+	inset-block-end: calc(var(--wp--preset--spacing--40) + 3.5rem);
+}
+
+@include bp-below(md) {
+
+	// A panel pinned to the corner of a phone covers a good third of the
+	// screen, so this is offered rather than assumed.
+	.sm-floating-block.is-hidden-on-mobile {
+		display: none;
+	}
+}

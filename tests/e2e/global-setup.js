@@ -27,6 +27,7 @@ const COMPARE_IMAGES_SLUG = 'suitemart-compare-images';
 const VIEW_360_SLUG = 'suitemart-view-360';
 const LIGHTBOX_SLUG = 'suitemart-lightbox';
 const COOKIE_NOTICE_SLUG = 'suitemart-cookie-notice';
+const FLOATING_SLUG = 'suitemart-floating-block';
 const FIXTURE = 'tests/e2e/fixtures/blocks-page.html';
 
 // Present on the fixture page and nowhere else, so finding it proves the page
@@ -174,6 +175,28 @@ module.exports = async ( config ) => {
 <p>We use cookies to run the shop.</p>
 <!-- /wp:paragraph -->
 <!-- /wp:suitemart/cookie-notice -->`
+	);
+
+	/*
+	 * Three panels: one that waits for a scroll and remembers being closed, one
+	 * that waits two seconds, and one that is simply there. Together they cover
+	 * every branch of the trigger, and having them share a page also proves
+	 * three panels in one store do not open each other.
+	 */
+	process.env.SUITEMART_FLOATING_URL = ensurePage(
+		FLOATING_SLUG,
+		'Floating block',
+		`<!-- wp:suitemart/floating-block {"trigger":"scroll","threshold":600,"remember":true,"rememberKey":"scrollpanel"} -->
+<!-- wp:paragraph --><p>Scrolled into view.</p><!-- /wp:paragraph -->
+<!-- /wp:suitemart/floating-block -->
+
+<!-- wp:suitemart/floating-block {"position":"top-start","trigger":"delay","delay":2,"dismissLabel":"Close the notice"} -->
+<!-- wp:paragraph --><p>Delayed panel.</p><!-- /wp:paragraph -->
+<!-- /wp:suitemart/floating-block -->
+
+<!-- wp:suitemart/floating-block {"position":"top-end","dismissible":false} -->
+<!-- wp:paragraph --><p>Always here.</p><!-- /wp:paragraph -->
+<!-- /wp:suitemart/floating-block -->`
 	);
 
 	/*

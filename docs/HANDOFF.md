@@ -1,6 +1,6 @@
 # Handoff — state of the work
 
-Last updated: 2026-08-12, after finishing P2 batch A.
+Last updated: 2026-08-13, three blocks into P2 batch C.
 
 Read `AGENTS.md` first — it holds the standing rules. This file is a snapshot:
 what is built, what is verified, and what to pick up next. **Update it when you
@@ -18,17 +18,17 @@ The full plan lives in GitHub issue
 | **P1 — Foundation** | Complete, with one item outstanding (CSS budget, below) |
 | **P2 batch A — content blocks** | All 18 built |
 | **P2 batch B — WooCommerce gaps** | All 15 built; audited and repaired |
-| **P2 batch C — site features** | 2 of 6 built ← **you are here** |
+| **P2 batch C — site features** | 3 of 6 built ← **you are here** |
 | **P3 — Design breadth** | 1 of ~15 style variations, 15 of ~100 patterns |
 | **P4 — Integrations** | Not started (27) |
 | **P5 — Hardening** | Not started |
 
-**Green:** 247 PHPUnit tests passing / 1 skipped (the expected inverse guard),
-121 Playwright tests passing / 1 skipped, phpcs clean, PHPStan level 5 clean,
+**Green:** 260 PHPUnit tests passing / 1 skipped (the expected inverse guard),
+124 Playwright tests passing / 1 skipped, phpcs clean, PHPStan level 5 clean,
 ESLint and Stylelint clean — and CI genuinely runs the commerce suite rather
 than skipping it.
 
-48 blocks exist under `src/`. 18 templates, 6 parts, 25 patterns, 1 style
+49 blocks exist under `src/`. 18 templates, 6 parts, 26 patterns, 1 style
 variation.
 
 ---
@@ -43,14 +43,14 @@ them through are now covered by `tests/phpunit/test-design-tokens.php`,
 traps in `AGENTS.md` §5 are the condensed version — read them before writing
 another block.**
 
-**Batch C, built (2):** back-to-top, cookie-notice.
-**Batch C, still to build (4):** popup, floating-block, portfolio-grid (CSS grid
-+ Interactivity filtering, no Isotope), post-carousel.
+**Batch C, built (3):** back-to-top, cookie-notice, floating-block.
+**Batch C, still to build (3):** popup, portfolio-grid (CSS grid +
+Interactivity filtering, no Isotope), post-carousel.
 
 Build one per commit, each with its PHPUnit render test and at least one pattern,
 each verified against the full command list in `AGENTS.md` §6.
 
-### Three notes on blocks already built
+### Notes on blocks already built
 
 `suitemart/lightbox` (batch A) is the theme's PhotoSwipe integration, and the
 answer to product-gallery zoom is to reuse its store rather than to write a
@@ -83,6 +83,14 @@ when nothing behind it is wired up is worse than no banner. Accept and Decline
 are drawn identically on purpose, and `tests/e2e/cookie-notice.spec.js` measures
 it rather than trusting the class list. Like the visitor counter, it is in no
 template; `patterns/cta-cookie-notice.php` is its only route in.
+
+`suitemart/floating-block` and the two blocks above all pin themselves to the
+bottom of the viewport, and they collided: the back-to-top button sat on top of
+a corner panel's close button and of the cookie bar's Accept. The rules that
+resolve it live in the sheet of the block that yields — `:has()` in
+`src/floating-block/style.scss` and `src/cookie-notice/style.scss` — so they
+cost nothing on pages without those blocks. **Anything else pinned to a screen
+edge has to be checked against them.**
 
 ### The pattern to copy
 

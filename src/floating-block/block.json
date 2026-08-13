@@ -1,0 +1,89 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "suitemart/floating-block",
+	"title": "Floating Block",
+	"category": "suitemart",
+	"icon": "align-right",
+	"description": "Pins anything you put inside it to a corner of the screen. It can wait for a scroll or a delay before appearing, and can be dismissed.",
+	"keywords": [ "sticky", "floating", "corner", "widget", "promo" ],
+	"textdomain": "suitemart",
+	"attributes": {
+		"position": {
+			"type": "string",
+			"enum": [
+				"top-start",
+				"top-end",
+				"middle-start",
+				"middle-end",
+				"bottom-start",
+				"bottom-end"
+			],
+			"default": "bottom-end"
+		},
+		"trigger": {
+			"type": "string",
+			"enum": [ "immediate", "scroll", "delay" ],
+			"default": "immediate"
+		},
+		"threshold": {
+			"type": "number",
+			"default": 600
+		},
+		"delay": {
+			"type": "number",
+			"default": 5
+		},
+		"maxWidth": {
+			"type": "number",
+			"default": 360
+		},
+		"dismissible": {
+			"type": "boolean",
+			"default": true
+		},
+		"dismissLabel": {
+			"type": "string",
+			"default": ""
+		},
+		"remember": {
+			"type": "boolean",
+			"default": false
+		},
+		"rememberKey": {
+			"type": "string",
+			"default": ""
+		},
+		"hideOnMobile": {
+			"type": "boolean",
+			"default": false
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"html": false,
+		"interactivity": true,
+		"color": {
+			"text": true,
+			"background": true
+		},
+		"typography": {
+			"fontSize": true
+		},
+		"spacing": {
+			"padding": true,
+			"blockGap": true
+		},
+		"__experimentalBorder": {
+			"color": true,
+			"radius": true,
+			"style": true,
+			"width": true
+		}
+	},
+	"render": "file:./render.php",
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css",
+	"editorStyle": "file:./index.css",
+	"viewScriptModule": "file:./view.js"
+}

@@ -1,0 +1,9 @@
+/*
+ * Pinned to the editor's own viewport, the panel would float over the block
+ * list and cover whatever was being edited. In here it sits in the flow, at its
+ * real width, so what is inside it still lays out the way it will on the front.
+ */
+.editor-styles-wrapper .sm-floating-block {
+	position: static;
+	transform: none;
+}
