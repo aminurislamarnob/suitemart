@@ -24,34 +24,31 @@ if ( ! suitemart_has_woocommerce() ) {
 <h2 class="wp-block-heading has-2-xl-font-size"><?php echo esc_html_x( 'The full range', 'Pattern heading', 'suitemart' ); ?></h2>
 <!-- /wp:heading -->
 
-<!-- wp:woocommerce/product-collection {"queryId":31,"query":{"isProductCollectionBlock":true,"perPage":8,"pages":1,"offset":0,"postType":"product","order":"desc","orderBy":"date","inherit":false},"queryContextIncludes":["collection"],"displayLayout":{"type":"flex","columns":4},"queryContextIncludes":["collection"],"collection":"woocommerce/product-collection/product-catalog"} -->
-<div class="wp-block-woocommerce-product-collection"><!-- wp:woocommerce/product-template -->
-<!-- wp:suitemart/product-labels /-->
+<!-- wp:woocommerce/product-collection {"queryId":31,"query":{"isProductCollectionBlock":true,"perPage":8,"pages":1,"offset":0,"postType":"product","order":"desc","orderBy":"date","inherit":false},"queryContextIncludes":["collection"],"className":"sm-product-grid","displayLayout":{"type":"flex","columns":4},"collection":"woocommerce/product-collection/product-catalog"} -->
+<div class="wp-block-woocommerce-product-collection sm-product-grid"><!-- wp:woocommerce/product-template -->
+<!-- wp:group {"className":"sm-product-card__media","layout":{"type":"default"}} -->
+<div class="wp-block-group sm-product-card__media"><!-- wp:suitemart/product-labels /-->
 
-<!-- wp:woocommerce/product-image {"isDescendentOfQueryLoop":true,"imageSizing":"thumbnail","showSaleBadge":false,"style":{"border":{"radius":"8px"}}} /-->
+<!-- wp:woocommerce/product-image {"isDescendentOfQueryLoop":true,"imageSizing":"thumbnail","showSaleBadge":false,"scale":"contain","aspectRatio":"1"} /-->
 
-<!-- wp:post-title {"level":3,"isLink":true,"fontSize":"md","__woocommerceNamespace":"woocommerce/product-collection/product-title"} /-->
+<!-- wp:group {"className":"sm-product-card__actions","style":{"spacing":{"blockGap":"var:preset|spacing|10"}},"layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"center","verticalAlignment":"center"}} -->
+<div class="wp-block-group sm-product-card__actions"><!-- wp:suitemart/add-to-cart-button {"appearance":"icon","iconSize":22} /-->
+
+<!-- wp:suitemart/quick-view-button {"appearance":"icon","iconSize":22} /-->
+
+<!-- wp:suitemart/compare-button {"appearance":"icon","iconSize":22} /-->
+
+<!-- wp:suitemart/wishlist-button {"appearance":"icon","iconSize":22} /--></div>
+<!-- /wp:group --></div>
+<!-- /wp:group -->
+
+<!-- wp:post-title {"level":3,"isLink":true,"fontSize":"md","fontFamily":"serif","__woocommerceNamespace":"woocommerce/product-collection/product-title"} /-->
+
+<!-- wp:post-terms {"term":"product_cat","className":"sm-product-card__terms","fontSize":"sm"} /-->
 
 <!-- wp:woocommerce/product-rating {"isDescendentOfQueryLoop":true,"fontSize":"sm"} /-->
 
 <!-- wp:woocommerce/product-price {"isDescendentOfQueryLoop":true} /-->
-
-<?php
-/*
- * The three card actions sit in one flex row rather than stacking, because a
- * card is narrow and each of them is an icon-sized control. `icon` appearance
- * keeps the accessible name on the button without printing it.
- */
-?>
-<!-- wp:group {"style":{"spacing":{"blockGap":"var:preset|spacing|20","margin":{"top":"var:preset|spacing|20"}}},"layout":{"type":"flex","flexWrap":"wrap","verticalAlignment":"center"}} -->
-<div class="wp-block-group" style="margin-top:var(--wp--preset--spacing--20)"><!-- wp:suitemart/wishlist-button {"appearance":"icon","iconSize":18} /-->
-
-<!-- wp:suitemart/compare-button {"appearance":"icon","iconSize":18} /-->
-
-<!-- wp:suitemart/quick-view-button {"appearance":"icon","iconSize":18} /--></div>
-<!-- /wp:group -->
-
-<!-- wp:woocommerce/product-button {"fontSize":"sm"} /-->
 <!-- /wp:woocommerce/product-template -->
 
 <!-- wp:woocommerce/product-collection-no-results -->

@@ -33,9 +33,37 @@ if ( ! $sm_product instanceof WC_Product ) {
 $sm_labels = array();
 
 if ( $sm_product->is_on_sale() ) {
+	/*
+	 * "-20%" rather than "Sale" wherever the saving can actually be worked out:
+	 * the number is the thing worth reading, and it is the same number the
+	 * shopper would otherwise have to get by comparing two prices.
+	 *
+	 * Both prices are read as floats and the regular one is checked for zero
+	 * before dividing — a variable product's range, a subscription, or a
+	 * product priced by a plugin can all answer with an empty string, and
+	 * `(float) '' ` is a division by zero. Where the sum cannot be trusted the
+	 * label falls back to the word.
+	 */
+	$sm_regular = (float) $sm_product->get_regular_price();
+	$sm_sale    = (float) $sm_product->get_sale_price();
+
+	$sm_sale_text = __( 'Sale', 'suitemart' );
+
+	if ( $sm_regular > 0 && $sm_sale > 0 && $sm_sale < $sm_regular ) {
+		$sm_percentage = (int) round( ( ( $sm_regular - $sm_sale ) / $sm_regular ) * 100 );
+
+		if ( $sm_percentage > 0 ) {
+			$sm_sale_text = sprintf(
+				/* translators: %d: discount as a percentage, without the sign. */
+				__( '-%d%%', 'suitemart' ),
+				$sm_percentage
+			);
+		}
+	}
+
 	$sm_labels[] = sprintf(
 		'<span class="sm-product-labels__label sm-product-labels__label--sale">%s</span>',
-		esc_html__( 'Sale', 'suitemart' )
+		esc_html( $sm_sale_text )
 	);
 }
 

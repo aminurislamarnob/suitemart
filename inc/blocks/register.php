@@ -23,6 +23,7 @@ defined( 'ABSPATH' ) || exit;
  */
 function suitemart_woocommerce_block_slugs(): array {
 	return array(
+		'add-to-cart-button',
 		'product-gallery',
 		'product-labels',
 		'size-guide',

@@ -21,6 +21,7 @@
 // inside it.
 
 @use "breakpoints" as *;
+@use "mixins" as *;
 
 /* -------------------------------------------------------------------------
    Icons
@@ -119,6 +120,191 @@ video {
 
 	li {
 		margin-block: 0.35rem;
+	}
+}
+
+/* -------------------------------------------------------------------------
+   Product card
+   ---------------------------------------------------------------------- */
+
+/*
+ * The card the shop, category, search and related-products grids share.
+ *
+ * It lives here rather than in a block's own stylesheet because no single
+ * block owns it: a card is assembled by `woocommerce/product-template` out of
+ * Woo's blocks and ours, and what makes it a card is the arrangement. Scoped to
+ * `.sm-product-grid` on the collection, so a pattern that wants Woo's default
+ * card simply does not add the class — this is opt-in, not a global reskin.
+ *
+ * It is also why the rules are here and not in `global.scss`: the same
+ * arrangement has to hold in the editor canvas, where the template is authored.
+ */
+
+.sm-product-grid .wc-block-product {
+	display: flex;
+	flex-direction: column;
+	gap: var(--wp--preset--spacing--10);
+	text-align: center;
+}
+
+.sm-product-card__media {
+	position: relative;
+	margin-block-end: var(--wp--preset--spacing--20);
+
+	/*
+	 * Everything in here but the photograph is lifted out of flow, yet core's
+	 * flow layout still hands the element after each one a `* + *` block gap.
+	 * A card carrying a sale label therefore started its tile one gap lower
+	 * than its unlabelled neighbours, so a row of four sat on two shelves.
+	 */
+	> * {
+		margin-block: 0;
+	}
+}
+
+/*
+ * The photograph sits *on* a tile rather than filling one. Woo's block crops to
+ * `cover` by default, which is why the templates ask it for `contain` — the
+ * product then floats on the tile at its own proportions and a row of cards
+ * reads as one shelf however the photographs were shot.
+ *
+ * The corner is square on purpose. Everything else here is a token so the
+ * fifteen style variations still reach it; the flat tile is the card's own
+ * identity, and a radius on it reads as a different design.
+ */
+.sm-product-card__media .wp-block-woocommerce-product-image {
+	display: block;
+	border-radius: 0;
+	background-color: var(--wp--preset--color--neutral-100);
+}
+
+/*
+ * The action bar. Absolutely centred with `inset-inline: 0` plus auto margins
+ * rather than a translate, because a translate has to know which way the
+ * writing direction runs and this does not.
+ */
+.sm-product-card__actions {
+	position: absolute;
+	z-index: 1;
+	inset-inline: 0;
+	inset-block-end: var(--wp--preset--spacing--30);
+	width: max-content;
+	max-width: calc(100% - var(--wp--preset--spacing--40));
+	margin-inline: auto;
+	padding: var(--wp--preset--spacing--10);
+	border-radius: var(--wp--custom--radius--sm);
+	background-color: var(--wp--preset--color--base);
+
+	/*
+	 * Four marks of one size. Each control draws its own ring when it stands
+	 * alone, which is right on a product page and wrong in a row of four — here
+	 * the white bar is the container and the ring would draw a box around every
+	 * icon inside it. The square is set on padding rather than a width so the
+	 * cell still grows with the icon size the block was given.
+	 */
+	.sm-add-to-cart__button,
+	.sm-quick-view-button,
+	.sm-compare-button,
+	.sm-wishlist-button {
+		padding: var(--wp--preset--spacing--20);
+		border: 0;
+		border-radius: 0;
+	}
+}
+
+/*
+ * Revealed on hover — but only where there is a pointer that can hover. On a
+ * touch screen `:hover` either never fires or sticks after a tap, so the bar is
+ * simply always there, which is also the only way those controls are reachable.
+ *
+ * `opacity` rather than `visibility` or `hidden`: the buttons must stay
+ * focusable while the bar is invisible, or the keyboard route into them is the
+ * one thing the hover treatment quietly removes. Focus anywhere in the card
+ * brings it back, so it is visible by the time it has focus.
+ */
+@media (hover: hover) {
+
+	.sm-product-card__actions {
+		opacity: 0;
+		pointer-events: none;
+
+		@include motion-safe {
+			transition: opacity var(--wp--custom--transition--base);
+		}
+	}
+
+	.wc-block-product:hover .sm-product-card__actions,
+	.wc-block-product:focus-within .sm-product-card__actions {
+		opacity: 1;
+		pointer-events: auto;
+	}
+}
+
+/*
+ * The title and the category line are links, and left alone they take the
+ * theme's link treatment — primary, underlined — which in a grid of twelve
+ * cards is a wall of blue. In a card they are the card's own text; the whole
+ * tile is a link anyway, so the underline is what tells you nothing new. The
+ * hover underline keeps the affordance where a pointer can ask for it.
+ */
+.sm-product-grid .wp-block-post-title,
+.sm-product-card__terms {
+
+	a {
+		color: inherit;
+		text-decoration: none;
+	}
+
+	a:hover {
+		text-decoration: underline;
+	}
+}
+
+.sm-product-grid .wp-block-post-title {
+	color: var(--wp--preset--color--contrast);
+}
+
+// The category line under the title: present, and quieter than everything else.
+.sm-product-card__terms {
+	color: var(--wp--preset--color--neutral-600);
+}
+
+/*
+ * Woo draws the stars in the current text colour, which in a card is the same
+ * near-black as the title — so a rated product and an unrated one read alike at
+ * a glance, which is the one thing a rating is for. `accent` is the theme's
+ * warm token, and the only pair here that is not text: it is a rating, so it
+ * carries its value in the number of filled stars as well as in the colour.
+ */
+.sm-product-grid .wc-block-components-product-rating__stars {
+	color: var(--wp--preset--color--accent);
+}
+
+/*
+ * Price in the accent the theme leads with. theme.json sets it on `contrast`
+ * for the product page, where it is a heading in its own right; in a grid it is
+ * the thing the eye is scanning for. The struck-through original stays quiet.
+ *
+ * Both selectors, because `woocommerce/product-price` declares its own element
+ * in `block.json` — so theme.json's colour for the block lands on the inner
+ * `.wc-block-components-product-price`, not on the wrapper the class sits on.
+ * Colouring only the wrapper leaves the number itself exactly as it was, which
+ * looks like the rule not applying at all.
+ */
+.sm-product-grid .wp-block-woocommerce-product-price,
+.sm-product-grid .wc-block-components-product-price {
+	color: var(--wp--preset--color--primary);
+
+	// Woo wraps the sale price in `<ins>` and colours it itself, so the colour
+	// set on the wrapper above reaches everything except the one number the
+	// shopper is actually reading.
+	ins {
+		color: inherit;
+		text-decoration: none;
+	}
+
+	del {
+		color: var(--wp--preset--color--neutral-600);
 	}
 }
 

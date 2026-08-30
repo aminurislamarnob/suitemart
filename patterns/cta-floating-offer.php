@@ -35,7 +35,7 @@ defined( 'ABSPATH' ) || exit;
 
 <!-- wp:buttons -->
 <div class="wp-block-buttons"><!-- wp:button {"fontSize":"sm"} -->
-<div class="wp-block-button has-custom-font-size has-sm-font-size"><a class="wp-block-button__link wp-element-button" href="#"><?php echo esc_html_x( 'Start shopping', 'Pattern text', 'suitemart' ); ?></a></div>
+<div class="wp-block-button"><a class="wp-block-button__link has-sm-font-size has-custom-font-size wp-element-button" href="#"><?php echo esc_html_x( 'Start shopping', 'Pattern text', 'suitemart' ); ?></a></div>
 <!-- /wp:button --></div>
 <!-- /wp:buttons -->
 <!-- /wp:suitemart/floating-block -->

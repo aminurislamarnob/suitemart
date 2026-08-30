@@ -45,7 +45,7 @@ if ( ! suitemart_has_woocommerce() ) {
 <!-- /wp:column -->
 
 <!-- wp:column {"verticalAlignment":"center"} -->
-<div class="wp-block-column is-vertically-aligned-center"><!-- wp:woocommerce/product-collection {"queryId":36,"query":{"isProductCollectionBlock":true,"perPage":1,"pages":1,"offset":0,"postType":"product","order":"desc","orderBy":"date","inherit":false,"woocommerceOnSale":true},"queryContextIncludes":["collection"],"displayLayout":{"type":"flex","columns":1},"queryContextIncludes":["collection"],"collection":"woocommerce/product-collection/on-sale"} -->
+<div class="wp-block-column is-vertically-aligned-center"><!-- wp:woocommerce/product-collection {"queryId":36,"query":{"isProductCollectionBlock":true,"perPage":1,"pages":1,"offset":0,"postType":"product","order":"desc","orderBy":"date","inherit":false,"woocommerceOnSale":true},"queryContextIncludes":["collection"],"displayLayout":{"type":"flex","columns":1},"collection":"woocommerce/product-collection/on-sale"} -->
 <div class="wp-block-woocommerce-product-collection"><!-- wp:woocommerce/product-template -->
 <!-- wp:woocommerce/product-image {"isDescendentOfQueryLoop":true,"imageSizing":"single","style":{"border":{"radius":"8px"}}} /-->
 

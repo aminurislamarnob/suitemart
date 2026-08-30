@@ -132,6 +132,55 @@ panel in a nav rendered open and floating. Panels now open only while selected.
 of this was visible from the front end, and all seven verification commands
 passed throughout.
 
+### The product card
+
+`archive-product`, `taxonomy-product_cat`, `product-search-results` and the
+related-products grid on `single-product` now share one card: a square tile in
+`neutral-100` with the photograph *contained* on it rather than cropped to fill
+it, our `product-labels` badges in the corner, and a white action bar — add to
+cart, quick view, compare, wishlist — that appears over the bottom of the tile
+on hover. Under it, centred: title, category line, rating where there is one,
+price in `primary` with any struck-through original in `neutral-600`.
+
+The arrangement is what makes it a card, and no single block owns an
+arrangement, so the rules are in `_shared/_appearance.scss` scoped to
+`.sm-product-grid` on the collection. **It is opt-in**: a pattern that wants
+Woo's default card simply does not add the class. Three things worth knowing
+before changing it:
+
+- The bar is hidden with `opacity`, not `visibility` or `hidden`, so its
+  buttons stay focusable while it is invisible and `:focus-within` brings it
+  back — the keyboard route is the thing a hover treatment silently removes.
+  The hiding lives inside `@media (hover: hover)`, so on a touch screen the bar
+  is simply always there.
+- The fourth control is **`suitemart/add-to-cart-button`**, block 53, built for
+  this bar because `woocommerce/product-button` is text-only and at the theme's
+  button padding was twice the height of the marks beside it. It writes through
+  the Store API the same way `fbt-products` does — nonce read at interaction
+  time, never rendered into cacheable markup. A product that cannot be added in
+  one request (variable, external, out of stock) renders as a **link** to the
+  product carrying Woo's own wording, because a button that fails on click is
+  worse than a link that says where it goes. Its `notice` lives in context, not
+  in `wp_interactivity_state()`: a shop page carries twelve of them.
+- `woocommerce/product-price` names its own element in `block.json` — see
+  `AGENTS.md` §5. Colouring the wrapper leaves the number untouched.
+- The sale badge reads **-20%** rather than "Sale" wherever the saving can be
+  worked out. Both prices are read as floats and the regular one is checked for
+  zero first: a variable product, a subscription or a plugin-priced product can
+  answer with an empty string, and `(float) ''` is a division by zero. Where the
+  sum cannot be trusted it still says "Sale", which is what a variable product
+  shows on the shop page today.
+
+**Two findings worth picking up, neither introduced here.** `state.notice` is
+set by `compare-button` and `wishlist-button` and rendered by nothing at all, so
+those announcements reach no one — `add-to-cart-button` renders its own status
+region, and the other two should get one. And on a site where a plugin filters
+`woocommerce_is_purchasable` — Dokan does, so a vendor cannot buy their own
+products — every card on the shop page falls back to the link form for that
+visitor. That is correct behaviour and it agrees with Woo's own button, but it
+means **the add-to-cart path cannot be exercised while logged in as the products'
+author**; log out to test it.
+
 A third, and the widest of them, came from the Manage template parts screen:
 `iframe { max-width: 100% }` in the shared appearance sheet reached the admin
 page through `editor.css` and clamped every block preview, so all thirteen parts

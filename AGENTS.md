@@ -377,6 +377,16 @@ and the canvas drew them differently, icons worst of all: `.sm-icon` is what
 turns a Lucide symbol from a filled shape into a stroked one, so without it every
 icon in the editor was a black blob.
 
+**A Woo block can name its own element, so theme.json's styles for it land
+somewhere other than the class on the wrapper.** `woocommerce/product-price`
+declares a selector in its `block.json`, which is why theme.json's colour for
+that block is emitted against `.wc-block-components-product-price` — the inner
+element — while the class you can write in markup sits on
+`.wp-block-woocommerce-product-price` outside it. Colour the wrapper and the
+number itself keeps the colour theme.json gave it, which reads as the rule not
+applying at all rather than as being overridden one level down. Style both, and
+check the *rendered* element rather than the one you addressed.
+
 **`editor.css` is loaded into the admin page, not only into the canvas — so a
 bare element selector in it styles WordPress's own interface.** Every block
 preview in the Site Editor *is* an `<iframe>`, sized to `width: 1200px` so the

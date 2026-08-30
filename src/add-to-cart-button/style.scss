@@ -1,0 +1,65 @@
+@use "../_shared/mixins" as *;
+
+.sm-add-to-cart {
+	display: inline-flex;
+}
+
+.sm-add-to-cart__button {
+	@include tap-target;
+	@include focus-ring;
+
+	display: inline-flex;
+	gap: 0.5em;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid color-mix(in srgb, currentcolor 20%, transparent);
+	background: none;
+	color: inherit;
+	font: inherit;
+	text-decoration: none;
+	cursor: pointer;
+
+	@include motion-safe {
+		transition: color var(--wp--custom--transition--fast);
+	}
+
+	&:hover {
+		color: var(--wp--preset--color--primary);
+	}
+
+	// Disabled only while the request is in flight, so it reads as busy rather
+	// than as unavailable.
+	&[disabled] {
+		cursor: progress;
+	}
+}
+
+.sm-add-to-cart--icon .sm-add-to-cart__button {
+	padding: 0.5em;
+	border-radius: 50%;
+}
+
+.sm-add-to-cart--icon-label .sm-add-to-cart__button {
+	padding-block: 0.6em;
+	padding-inline: 1em;
+	border-radius: var(--wp--custom--radius--pill);
+}
+
+.sm-add-to-cart__icon {
+	display: flex;
+
+	// Both marks are rendered and one is bound `hidden`, so the swap needs no
+	// DOM writing. The browser's own `[hidden]` rule loses to `display: flex`.
+	&[hidden] {
+		display: none;
+	}
+}
+
+.sm-add-to-cart__button.is-added {
+	color: var(--wp--preset--color--success);
+}
+
+// Announcements only — never seen, always read.
+.sm-add-to-cart__status {
+	@include visually-hidden;
+}

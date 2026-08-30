@@ -35,7 +35,7 @@ defined( 'ABSPATH' ) || exit;
 <!-- wp:group {"style":{"spacing":{"margin":{"top":"var:preset|spacing|30"}}},"layout":{"type":"flex","flexWrap":"wrap"}} -->
 <div class="wp-block-group" style="margin-top:var(--wp--preset--spacing--30)"><!-- wp:buttons -->
 <div class="wp-block-buttons"><!-- wp:button {"backgroundColor":"base","textColor":"contrast","fontSize":"sm"} -->
-<div class="wp-block-button has-custom-font-size has-sm-font-size"><a class="wp-block-button__link has-contrast-color has-base-background-color has-text-color has-background wp-element-button" href="#"><?php echo esc_html_x( 'Join the list', 'Pattern button text', 'suitemart' ); ?></a></div>
+<div class="wp-block-button"><a class="wp-block-button__link has-sm-font-size has-custom-font-size has-contrast-color has-base-background-color has-text-color has-background wp-element-button" href="#"><?php echo esc_html_x( 'Join the list', 'Pattern button text', 'suitemart' ); ?></a></div>
 <!-- /wp:button --></div>
 <!-- /wp:buttons --></div>
 <!-- /wp:group --></div>

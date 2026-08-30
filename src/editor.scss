@@ -65,6 +65,15 @@
 		display: block;
 	}
 
+	// Same bargain for the product card's action bar, which the page reveals on
+	// hover: the canvas shows the card at rest, and the bar while it is being
+	// edited. Three classes, so this outranks the `opacity: 0` the shared sheet
+	// sets inside its `hover: hover` query.
+	.wp-block.sm-product-card__actions:is(.is-selected, .has-child-selected) {
+		opacity: 1;
+		pointer-events: auto;
+	}
+
 	.sm-off-canvas,
 	.sm-off-canvas__panel,
 	.sm-popup__dialog {
