@@ -377,6 +377,48 @@ and the canvas drew them differently, icons worst of all: `.sm-icon` is what
 turns a Lucide symbol from a filled shape into a stroked one, so without it every
 icon in the editor was a black blob.
 
+**`editor.css` is loaded into the admin page, not only into the canvas — so a
+bare element selector in it styles WordPress's own interface.** Every block
+preview in the Site Editor *is* an `<iframe>`, sized to `width: 1200px` so the
+part renders at a desktop viewport and is then scaled down to fit its card. The
+shared `iframe { max-width: 100% }` — written for embeds, and right on the front
+end — clamped each preview to its container instead, so it laid out at about
+260px, drew its **mobile** layout, and was scaled again into the corner of the
+card. Every template part in the Manage screen was a tiny sliver, WooCommerce's
+own among them, while the canvas and the front end both looked correct. That is
+the trap in `_shared/_appearance.scss` generally: it is shared *because* both
+documents need it, which is exactly why an unscoped selector in it travels
+further than intended. A rule that belongs to a rendered page and to nothing
+else goes in `global.scss`. `tests/phpunit/test-block-assets.php` now fails the
+build on a bare `iframe`, `body`, `html`, `button`, `input`, `select` or
+`textarea` selector in `build/editor.css`.
+
+**The canvas iframe is not added to the page as an `<iframe>`.** The editor
+mounts it inside a wrapper, so the node the MutationObserver in `src/editor.js`
+sees added is that wrapper. Matching on `node.tagName === 'IFRAME'` therefore
+never fired, the frame was never hooked, and the sprite never reached the
+canvas — every icon in the Site Editor was an empty box, the header's phone,
+mail, search and heart among them. Test the subtree (`node.querySelector`), not
+the node. The same function hooked a frame's `load` only when the frame had no
+body yet: a freshly mounted canvas answers with the empty `about:blank` it
+starts as, so the injection *succeeded*, the real document then loaded from a
+blob URL over the top of it, and nothing put the sprite back. Hook every frame
+once regardless. Both are races — the icons were there on one load of the same
+part and gone on the next — so a screenshot proves nothing; assert
+`getElementById( 'sm-icon-sprite' )` inside the canvas document.
+
+**What positions a mega panel is the wrap, not the panel.** `editor.scss` reset
+`.sm-mega-panel` to `position: static` to make panels editable in the canvas,
+but `.sm-nav-item__panel-wrap` is the element carrying `position: absolute` (and
+`fixed` for a `full` panel). So all of a nav's panels rendered at once *and*
+floated: the storefront header's three landed on top of each other and over the
+contact row, with the full-width one pinned across the canvas. They are now
+closed in the canvas exactly as on the page and open only while being edited —
+`.is-selected` or `.has-child-selected` on the nav item — which is the bargain
+core's Navigation block makes. A drawer is the deliberate exception, because
+`off-canvas` is a top-level block that exists only as an overlay: hidden, it
+would be a block with nowhere to be.
+
 **An icon needs the sprite inlined into whichever document it is in.**
 `<use href="sprite.svg#id">` does not resolve across documents — Chrome and
 Safari do not support an external file reference from `<use>` at all, same origin

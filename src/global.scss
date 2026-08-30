@@ -37,6 +37,24 @@ body {
 	scroll-margin-block-start: 6rem;
 }
 
+/*
+ * An embed never exceeds its container — and this one rule cannot be shared
+ * with the editor, which is why it sits here rather than beside the `img`
+ * constraint in _shared/appearance.
+ *
+ * `editor.css` is loaded into the admin page itself, not only into the canvas,
+ * so a bare `iframe` selector there also matches the editor's own furniture.
+ * Every block preview *is* an iframe: the editor sizes it to `width: 1200px`,
+ * renders the part at that desktop viewport and scales the result down to the
+ * card. `max-width: 100%` clamped it to the card instead, so each preview laid
+ * out at ~260px — a phone — and was then scaled again, which is why every
+ * template part in the Manage screen showed a tiny mobile rendering huddled in
+ * the corner of its card, WooCommerce's own parts included.
+ */
+iframe {
+	max-width: 100%;
+}
+
 // The browser's own `[hidden]` rule is `display: none` at the lowest possible
 // specificity, so any component rule that sets `display` silently beats it and
 // shows an element that is meant to be hidden. Suitemart toggles visibility

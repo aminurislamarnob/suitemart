@@ -81,6 +81,7 @@ class Test_Style_Variations extends WP_UnitTestCase {
 		array( 'warning', 'base' ),
 		array( 'success', 'base' ),
 		array( 'base', 'accent' ),
+		array( 'base', 'primary' ),
 		array( 'base', 'contrast' ),
 		array( 'base', 'secondary' ),
 		array( 'base', 'neutral-800' ),

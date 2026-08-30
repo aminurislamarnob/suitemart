@@ -93,12 +93,54 @@ found.
 
 ### The header, hero and footer patterns
 
-Six of each, named `header-*`, `hero-*`, `footer-*`. The header and footer ones
-carry `Block Types: core/template-part/header|footer`, which is what puts them
-in the list the Site Editor offers when you edit a part; a pattern without it is
-only reachable from the inserter. Four of the eighteen open with a WooCommerce
-guard, because the cart and account blocks are Woo's and a pattern naming an
-unregistered block inserts as an error rather than as a header.
+Seven headers, six heroes, six footers, named `header-*`, `hero-*`, `footer-*`.
+The header and footer ones carry `Block Types: core/template-part/header|footer`,
+which is what puts them in the list the Site Editor offers when you edit a part;
+a pattern without it is only reachable from the inserter. Five of the nineteen
+open with a WooCommerce guard, because the cart and account blocks are Woo's and
+a pattern naming an unregistered block inserts as an error rather than as a
+header.
+
+**The default part, `parts/header.html`, is the storefront header** (2026-08-30),
+and `header-storefront` is its pattern twin: a `base`-on-`primary` utility strip
+(language and region menus, shipping note, social links, help links), then
+phone and email info boxes beside a centred logo with account, search, wishlist
+and cart, then a centred uppercase menu whose Shop panel is `full` width. Search
+and wishlist are icon-only `off-canvas-trigger`s paired by `panelId` with two
+`off-canvas` panels at the end of the part — the wishlist one holds a
+one-column `wishlist-grid`. Building it surfaced four block bugs, all fixed in
+the blocks rather than papered over in the markup: a `full` mega panel opened
+one viewport below the fold (`inset-block-start: 100%` survived into
+`position: fixed`); a `<button>` trigger ignored an uppercase menu (the UA
+sheet's `text-transform: none`, which `font: inherit` does not cover); a nav
+placed on a coloured band vanished on hover (`primary` on `primary`) and its
+mobile drawer painted white text on white — so a nav with `has-text-color`
+now keeps its colour on hover and the drawer paints its own `contrast`. The
+`base`/`primary` pair joined `TEXT_PAIRS` in `test-style-variations.php` and
+passes in all fifteen variations (lowest 5.39:1, `12-market`).
+
+Opening the part in the Site Editor then found two more, both older than this
+header and both about the canvas rather than the page — see the new entries in
+`AGENTS.md` §5. The sprite was reaching the canvas by luck: the observer in
+`src/editor.js` matched only a bare `<iframe>` node and the editor mounts the
+canvas inside a wrapper, and the `load` hook was skipped whenever the injection
+into the frame's initial `about:blank` succeeded. Icons in the editor were
+present on one load and blank on the next. And `editor.scss` reset
+`.sm-mega-panel` while `.sm-nav-item__panel-wrap` is what positions it, so every
+panel in a nav rendered open and floating. Panels now open only while selected.
+**The canvas is worth opening for any part carrying a nav or a drawer** — none
+of this was visible from the front end, and all seven verification commands
+passed throughout.
+
+A third, and the widest of them, came from the Manage template parts screen:
+`iframe { max-width: 100% }` in the shared appearance sheet reached the admin
+page through `editor.css` and clamped every block preview, so all thirteen parts
+rendered their mobile layout at thumbnail scale in the corner of their cards.
+The `iframe` half now lives in `global.scss`, front end only, and
+`test-block-assets.php` fails the build on a bare element selector in
+`build/editor.css`. **Three screens, three different failures, one header** —
+worth remembering that the canvas, the preview grid and the page are three
+documents with three different stylesheets reaching them.
 
 Two things learned writing them, both worth repeating in the rest of P3:
 

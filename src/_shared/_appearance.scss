@@ -20,6 +20,8 @@
 // have, because editing a closed drawer or an inactive tab panel means seeing
 // inside it.
 
+@use "breakpoints" as *;
+
 /* -------------------------------------------------------------------------
    Icons
    ---------------------------------------------------------------------- */
@@ -78,8 +80,7 @@
  */
 img,
 svg,
-video,
-iframe {
+video {
 	max-width: 100%;
 }
 
@@ -118,5 +119,29 @@ video {
 
 	li {
 		margin-block: 0.35rem;
+	}
+}
+
+/* -------------------------------------------------------------------------
+   Header parts
+   ---------------------------------------------------------------------- */
+
+/*
+ * The default header's contact cluster — a phone number and an email address
+ * beside the logo — only earns its place at desktop widths. Block markup has
+ * no way to say "not on a phone", so the class does: below the menu's own
+ * breakpoint the row is logo and actions only, which is what the mobile
+ * header of every storefront looks like. Lives here rather than in global.scss
+ * so the editor's device preview hides it exactly where the front end does.
+ *
+ * The class is doubled because the cluster is a flex group, and core's
+ * `body .is-layout-flex { display: flex }` scores 0,1,1 — a single class
+ * loses and the row stays visible on a phone.
+ */
+.sm-header__contact.sm-header__contact {
+	display: none;
+
+	@include bp(lg) {
+		display: flex;
 	}
 }

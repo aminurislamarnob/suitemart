@@ -129,4 +129,64 @@ class Test_Block_Assets extends WP_UnitTestCase {
 			)
 		);
 	}
+
+	/**
+	 * The editor stylesheet must not style the editor's own furniture.
+	 *
+	 * `add_editor_style()` loads `editor.css` into the admin page as well as
+	 * into the canvas iframe, and it is not scoped on the way in. So a bare
+	 * element selector there does not only reach the content being edited — it
+	 * reaches WordPress's own interface, where the same elements are load-bearing.
+	 *
+	 * `iframe` is the one that bites. Every block preview in the Site Editor is
+	 * an iframe the editor sizes to `width: 1200px`, renders the part inside at
+	 * that desktop viewport, and scales down to fit its card. A shared
+	 * `iframe { max-width: 100% }` — written for embeds, and correct on the
+	 * front end — clamped each one to its container instead, so every preview
+	 * laid out at about 260px, rendered its mobile layout, and was then scaled
+	 * again into the corner of the card. The whole Manage template parts screen
+	 * was unreadable, WooCommerce's own parts included, and nothing in the
+	 * canvas or on the front end looked wrong.
+	 *
+	 * Front-end-only rules of this kind belong in `global.scss`, which is
+	 * enqueued on `wp_enqueue_scripts` and reaches no editor document at all.
+	 */
+	public function test_editor_stylesheet_does_not_target_editor_chrome(): void {
+		$path = get_template_directory() . '/build/editor.css';
+
+		$this->assertFileExists( $path, 'build/editor.css is missing — run `npm run build`.' );
+
+		$css = (string) file_get_contents( $path );
+
+		// Elements the editor builds its own interface out of. A selector that
+		// is nothing but one of these matches that interface.
+		$chrome = array( 'iframe', 'body', 'html', 'button', 'input', 'select', 'textarea' );
+
+		$offenders = array();
+
+		foreach ( explode( '}', $css ) as $rule ) {
+			$position = strpos( $rule, '{' );
+
+			if ( false === $position ) {
+				continue;
+			}
+
+			$selectors = explode( ',', substr( $rule, 0, $position ) );
+
+			foreach ( $selectors as $selector ) {
+				$selector = trim( $selector );
+
+				if ( in_array( $selector, $chrome, true ) ) {
+					$offenders[] = $selector;
+				}
+			}
+		}
+
+		$this->assertSame(
+			array(),
+			array_values( array_unique( $offenders ) ),
+			"build/editor.css styles the editor's own interface through a bare element selector. "
+				. 'Scope it to the content, or move it to src/global.scss if it belongs to a rendered page only.'
+		);
+	}
 }

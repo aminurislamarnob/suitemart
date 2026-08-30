@@ -22,6 +22,10 @@
 	line-height: 1.2;
 	text-align: start;
 	text-decoration: none;
+	// `font: inherit` does not cover this, and the UA stylesheet gives every
+	// <button> `text-transform: none` — so an uppercase menu rendered its
+	// panel triggers in sentence case beside uppercase links.
+	text-transform: inherit;
 	cursor: pointer;
 
 	@include motion-safe {
@@ -46,6 +50,27 @@
 	@extend %sm-nav-item-target;
 
 	justify-content: space-between;
+}
+
+// A navigation given its own text colour has been placed on a ground of the
+// author's choosing — the default header's utility strip is `base` on
+// `primary` — and switching to `primary` on hover there makes the item vanish
+// into its background. So on a coloured nav the item keeps its colour and
+// dims instead; the current page is told apart by weight alone.
+.sm-nav.has-text-color {
+
+	.sm-nav-item__link,
+	.sm-nav-item__trigger {
+
+		&:hover {
+			color: inherit;
+			opacity: 0.7;
+		}
+
+		&[aria-current="page"] {
+			color: inherit;
+		}
+	}
 }
 
 .sm-nav-item__label {

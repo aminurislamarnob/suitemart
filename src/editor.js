@@ -89,6 +89,24 @@ function sync( markup ) {
 	inject( document, markup );
 
 	document.querySelectorAll( 'iframe' ).forEach( ( frame ) => {
+		/*
+		 * Hook every frame once, whether or not the injection below succeeds.
+		 *
+		 * A newly mounted canvas answers `contentDocument` with the empty
+		 * `about:blank` it starts life as, body and all — so the injection
+		 * succeeds, and the real canvas document, which the editor loads into
+		 * the same element from a blob URL, then replaces it and takes the
+		 * sprite with it. Returning early on a successful injection meant that
+		 * frame was never listened to, so nothing put the sprite back.
+		 *
+		 * Whether it broke came down to which won the race: the icons in the
+		 * canvas were there on one load of the header and blank on the next.
+		 */
+		if ( ! hooked.has( frame ) ) {
+			hooked.add( frame );
+			frame.addEventListener( 'load', () => sync( markup ) );
+		}
+
 		let doc = null;
 
 		// A cross-origin frame — an embed preview, say — throws on access.
@@ -100,12 +118,6 @@ function sync( markup ) {
 
 		if ( doc && doc.body ) {
 			inject( doc, markup );
-			return;
-		}
-
-		if ( ! hooked.has( frame ) ) {
-			hooked.add( frame );
-			frame.addEventListener( 'load', () => sync( markup ) );
 		}
 	} );
 }
@@ -127,7 +139,24 @@ loadSprite().then( ( markup ) => {
 	new window.MutationObserver( ( mutations ) => {
 		for ( const mutation of mutations ) {
 			for ( const node of mutation.addedNodes ) {
-				if ( node.nodeType === 1 && 'IFRAME' === node.tagName ) {
+				if ( node.nodeType !== 1 ) {
+					continue;
+				}
+
+				/*
+				 * The canvas does not arrive as a bare `<iframe>`: the editor
+				 * mounts it inside a wrapper, so the node added to the document
+				 * is that wrapper and the iframe is somewhere beneath it.
+				 * Matching only on `tagName` therefore never fired, the frame
+				 * was never hooked, and every icon in the canvas was an empty
+				 * box — `<use>` pointing at a sprite that was not in that
+				 * document. Checking the subtree costs one query per added
+				 * element, behind the debounce below.
+				 */
+				if (
+					'IFRAME' === node.tagName ||
+					node.querySelector?.( 'iframe' )
+				) {
 					rescan();
 					return;
 				}

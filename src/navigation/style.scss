@@ -88,6 +88,12 @@
 	width: min(22rem, 85vw);
 	padding: var(--wp--preset--spacing--60) var(--wp--preset--spacing--40);
 	background-color: var(--wp--preset--color--base);
+	// The drawer paints its own ground, so it has to paint its own foreground
+	// too. A nav dropped onto a coloured band — the utility strip of the
+	// default header sets `base` text on `primary` — would otherwise hand the
+	// drawer white text on its white background. Desktop hands the colour back
+	// (below), because there the drawer is the bar and has no ground of its own.
+	color: var(--wp--preset--color--contrast);
 	box-shadow: var(--wp--preset--shadow--lg);
 	transform: translateX(-100%);
 	visibility: hidden;
@@ -150,6 +156,7 @@
 		width: auto;
 		padding: 0;
 		background: none;
+		color: inherit;
 		box-shadow: none;
 		transform: none;
 		visibility: visible;

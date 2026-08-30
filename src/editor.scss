@@ -38,12 +38,33 @@
 	scroll-margin-block-start: 0;
 }
 
-// Interactivity API directives do nothing in the editor. Anything the front end
-// hides until opened has to stay visible and editable in the canvas, or the
-// block cannot be authored at all.
+// Interactivity API directives do nothing in the editor, so everything the
+// front end keeps closed is served to the canvas wide open. That is not just
+// noise. A mega panel is positioned by `.sm-nav-item__panel-wrap`, not by
+// `.sm-mega-panel` — resetting the panel while the wrap still floats left the
+// storefront header's three panels stacked on top of each other and over the
+// contact row, with the full-width one pinned across the whole canvas.
+//
+// So a panel is closed here exactly as it is on the page, and opens only while
+// it is being edited: the item selected, or holding the selection. Core's
+// Navigation block makes the same bargain, and it keeps both halves — the
+// header looks like the header, and a closed panel is still authorable,
+// because clicking its item (or reaching it in List View) opens it.
+//
+// The drawers below are the deliberate exception, and the reason the two cases
+// differ is what they are anchored to: a panel hangs off a visible trigger, so
+// hiding it costs nothing, while `off-canvas` is a top-level block that exists
+// only as an overlay. Hidden, it would be a block with nowhere to be.
 .editor-styles-wrapper {
 
-	.sm-mega-panel,
+	.wp-block[data-type="suitemart/nav-item"] .sm-nav-item__panel-wrap {
+		display: none;
+	}
+
+	.wp-block[data-type="suitemart/nav-item"]:is(.is-selected, .has-child-selected) .sm-nav-item__panel-wrap {
+		display: block;
+	}
+
 	.sm-off-canvas,
 	.sm-off-canvas__panel,
 	.sm-popup__dialog {
