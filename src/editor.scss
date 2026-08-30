@@ -9,10 +9,28 @@
 @use "_shared/breakpoints" as *;
 @use "_shared/mixins" as *;
 
+// Everything the front end and the canvas have to agree on. It is not a
+// duplicate of a block stylesheet — those already load here — but of nothing at
+// all: these rules live in global.css, which is enqueued for the front end only.
+@use "_shared/appearance";
+
 // Server-rendered blocks show a loading state before their preview arrives;
 // without a minimum height the canvas jumps as each one resolves.
 .wp-block[data-type^="suitemart/"] .components-placeholder {
 	min-height: 8rem;
+}
+
+// Shown by DynamicPreview when a block renders nothing for the product it is
+// on, and only while that block is selected — the front end shows an empty
+// space there, so an unselected block has to as well.
+.sm-editor-note {
+	margin: 0;
+	padding: var(--wp--preset--spacing--20);
+	font-size: var(--wp--preset--font-size--sm);
+	font-style: italic;
+	color: var(--wp--preset--color--neutral-600);
+	border: 1px dashed var(--wp--preset--color--neutral-300);
+	border-radius: var(--wp--custom--radius--md);
 }
 
 // The editor canvas has no sticky header, so anchor offsets are unwanted there.

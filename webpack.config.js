@@ -30,7 +30,9 @@ module.exports = [
 			return {
 				...blockEntries,
 				global: './src/global.scss',
-				editor: './src/editor.scss',
+				// Imports editor.scss, so this one entry still emits
+				// build/editor.css for add_editor_style().
+				editor: './src/editor.js',
 				/*
 				 * PhotoSwipe's stylesheet, emitted beside the lightbox block and
 				 * listed as a second `style` in its block.json, so it loads only

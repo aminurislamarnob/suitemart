@@ -50,11 +50,18 @@
 	}
 }
 
-.wc-block-product:has(> .sm-product-labels) {
+/*
+ * Matched as a descendant rather than a direct child. `.wc-block-product` is
+ * what scopes these rules to a card, and it still does — but in the editor the
+ * server-rendered preview sits one wrapper deeper than the front end's markup,
+ * and a `>` here put the labels back in flow in the canvas only. The block has
+ * no children of its own, so widening the combinator selects nothing new.
+ */
+.wc-block-product:has(.sm-product-labels) {
 	position: relative;
 }
 
-.wc-block-product > .sm-product-labels {
+.wc-block-product .sm-product-labels {
 	position: absolute;
 	z-index: 1;
 	inset-block-start: var(--wp--preset--spacing--20);

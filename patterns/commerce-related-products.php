@@ -32,13 +32,13 @@ if ( ! suitemart_has_woocommerce() ) {
 <h2 class="wp-block-heading has-xl-font-size"><?php echo esc_html_x( 'You may also like', 'Pattern heading', 'suitemart' ); ?></h2>
 <!-- /wp:heading -->
 
-<!-- wp:woocommerce/product-collection {"queryId":38,"query":{"perPage":4,"pages":1,"offset":0,"postType":"product","order":"asc","orderBy":"title","inherit":false,"woocommerceStockStatus":["instock","onbackorder"]},"displayLayout":{"type":"flex","columns":4},"collection":"woocommerce/product-collection/related"} -->
+<!-- wp:woocommerce/product-collection {"queryId":38,"query":{"isProductCollectionBlock":true,"perPage":4,"pages":1,"offset":0,"postType":"product","order":"asc","orderBy":"title","inherit":false,"woocommerceStockStatus":["instock","onbackorder"]},"queryContextIncludes":["collection"],"displayLayout":{"type":"flex","columns":4},"queryContextIncludes":["collection"],"collection":"woocommerce/product-collection/related"} -->
 <div class="wp-block-woocommerce-product-collection"><!-- wp:woocommerce/product-template -->
-<!-- wp:woocommerce/product-image {"imageSizing":"thumbnail","style":{"border":{"radius":"8px"}}} /-->
+<!-- wp:woocommerce/product-image {"isDescendentOfQueryLoop":true,"imageSizing":"thumbnail","style":{"border":{"radius":"8px"}}} /-->
 
 <!-- wp:post-title {"level":3,"isLink":true,"fontSize":"md","__woocommerceNamespace":"woocommerce/product-collection/product-title"} /-->
 
-<!-- wp:woocommerce/product-price /-->
+<!-- wp:woocommerce/product-price {"isDescendentOfQueryLoop":true} /-->
 
 <!-- wp:suitemart/wishlist-button {"appearance":"icon","iconSize":18} /-->
 <!-- /wp:woocommerce/product-template --></div>

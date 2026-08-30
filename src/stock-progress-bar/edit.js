@@ -1,23 +1,22 @@
 import { __ } from '@wordpress/i18n';
 import { useBlockProps } from '@wordpress/block-editor';
+import DynamicPreview from '../_shared/DynamicPreview';
 
-export default function Edit() {
-	const blockProps = useBlockProps( {
-		className: 'sm-stock-progress-bar',
-	} );
+export default function Edit( { attributes, context, isSelected } ) {
+	const blockProps = useBlockProps();
 
 	return (
 		<div { ...blockProps }>
-			<div className="sm-stock-progress-bar__message">
-				{ /* translators: %d: quantity in stock. */ }
-				{ __( 'Only 5 left', 'suitemart' ) }
-			</div>
-			<div className="sm-stock-progress-bar__track">
-				<div
-					className="sm-stock-progress-bar__fill"
-					style={ { width: '25%' } }
-				></div>
-			</div>
+			<DynamicPreview
+				block="suitemart/stock-progress-bar"
+				attributes={ attributes }
+				postId={ context.postId }
+				isSelected={ isSelected }
+				emptyLabel={ __(
+					'This product does not manage stock, so there is no quantity to show a bar for.',
+					'suitemart'
+				) }
+			/>
 		</div>
 	);
 }

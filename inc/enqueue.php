@@ -84,33 +84,45 @@ add_action( 'wp_head', 'suitemart_preload_fonts', 1 );
 function suitemart_enqueue_editor_assets(): void {
 	$editor_css = SUITEMART_DIR . '/build/editor.css';
 
-	if ( ! file_exists( $editor_css ) ) {
+	if ( file_exists( $editor_css ) ) {
+		wp_enqueue_style(
+			'suitemart-editor',
+			SUITEMART_URI . '/build/editor.css',
+			array(),
+			(string) filemtime( $editor_css )
+		);
+	}
+
+	$editor_js = SUITEMART_DIR . '/build/editor.js';
+	$asset     = SUITEMART_DIR . '/build/editor.asset.php';
+
+	if ( ! file_exists( $editor_js ) || ! file_exists( $asset ) ) {
 		return;
 	}
 
-	wp_enqueue_style(
+	$meta = require $asset;
+
+	wp_enqueue_script(
 		'suitemart-editor',
-		SUITEMART_URI . '/build/editor.css',
-		array(),
-		(string) filemtime( $editor_css )
+		SUITEMART_URI . '/build/editor.js',
+		(array) ( $meta['dependencies'] ?? array() ),
+		(string) ( $meta['version'] ?? filemtime( $editor_js ) ),
+		true
+	);
+
+	/*
+	 * The canvas needs the sprite as markup, not as a stylesheet, so it is
+	 * fetched by build/editor.js rather than printed here — see that file for
+	 * why it cannot simply be inlined into the admin page the way the front end
+	 * inlines it into the page it renders.
+	 */
+	wp_add_inline_script(
+		'suitemart-editor',
+		sprintf(
+			'window.suitemartEditor = %s;',
+			wp_json_encode( array( 'spriteUrl' => SUITEMART_URI . '/assets/icons/sprite.svg' ) )
+		),
+		'before'
 	);
 }
 add_action( 'enqueue_block_editor_assets', 'suitemart_enqueue_editor_assets' );
-
-/**
- * Exposes the theme URI to editor scripts.
- *
- * Icon previews in the editor reference the sprite file by URL, because the
- * inlined sprite the front end uses is not present in the editor canvas. Every
- * block's editor script needs the same value, so it is printed once rather than
- * localised per handle.
- *
- * @return void
- */
-function suitemart_print_editor_globals(): void {
-	printf(
-		'<script id="suitemart-editor-globals">window.suitemartThemeUri = %s;</script>',
-		wp_json_encode( SUITEMART_URI )
-	);
-}
-add_action( 'admin_print_scripts', 'suitemart_print_editor_globals' );

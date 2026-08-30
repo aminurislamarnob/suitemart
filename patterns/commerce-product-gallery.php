@@ -27,9 +27,9 @@ if ( ! suitemart_has_woocommerce() ) {
 <!-- wp:column -->
 <div class="wp-block-column"><!-- wp:post-title {"level":1,"fontSize":"2xl"} /-->
 
-<!-- wp:woocommerce/product-price /-->
+<!-- wp:woocommerce/product-price {"isDescendentOfSingleProductTemplate":true} /-->
 
-<!-- wp:woocommerce/product-summary /-->
+<!-- wp:woocommerce/product-summary {"isDescendentOfSingleProductTemplate":true} /-->
 
 <!-- wp:woocommerce/add-to-cart-with-options /--></div>
 <!-- /wp:column --></div>

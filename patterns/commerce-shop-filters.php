@@ -22,7 +22,7 @@ if ( ! suitemart_has_woocommerce() ) {
 <!-- wp:columns {"align":"wide","style":{"spacing":{"blockGap":{"left":"var:preset|spacing|60"},"padding":{"top":"var:preset|spacing|60","bottom":"var:preset|spacing|70"}}}} -->
 <div class="wp-block-columns alignwide" style="padding-top:var(--wp--preset--spacing--60);padding-bottom:var(--wp--preset--spacing--70)"><!-- wp:column {"width":"260px"} -->
 <div class="wp-block-column" style="flex-basis:260px"><!-- wp:woocommerce/product-filters -->
-<div class="wp-block-woocommerce-product-filters">
+<div class="wp-block-woocommerce-product-filters wc-block-product-filters">
 <?php
 /*
  * The active filters and the clear button come first on purpose: a shopper who
@@ -37,30 +37,30 @@ if ( ! suitemart_has_woocommerce() ) {
  * the upstream fix — do not guess at the markup here.
  */
 ?>
-<!-- wp:woocommerce/product-filter-active /-->
+<!-- wp:woocommerce/product-filter-active --><div class="wp-block-woocommerce-product-filter-active"></div><!-- /wp:woocommerce/product-filter-active -->
 
 <!-- wp:woocommerce/product-filter-clear-button /-->
 
 <!-- wp:woocommerce/product-filter-price -->
-<div class="wp-block-woocommerce-product-filter-price"><!-- wp:woocommerce/product-filter-price-slider {"showInputFields":true} /--></div>
+<div class="wp-block-woocommerce-product-filter-price"><!-- wp:woocommerce/product-filter-price-slider {"showInputFields":true} --><div class="wp-block-woocommerce-product-filter-price-slider wc-block-product-filter-price-slider"></div><!-- /wp:woocommerce/product-filter-price-slider --></div>
 <!-- /wp:woocommerce/product-filter-price -->
 
-<!-- wp:woocommerce/product-filter-status {"showCounts":true} /-->
+<!-- wp:woocommerce/product-filter-status {"showCounts":true} --><div class="wp-block-woocommerce-product-filter-status"></div><!-- /wp:woocommerce/product-filter-status -->
 
-<!-- wp:woocommerce/product-filter-rating {"showCounts":true} /--></div>
+<!-- wp:woocommerce/product-filter-rating {"showCounts":true} --><div class="wp-block-woocommerce-product-filter-rating"></div><!-- /wp:woocommerce/product-filter-rating --></div>
 <!-- /wp:woocommerce/product-filters --></div>
 <!-- /wp:column -->
 
 <!-- wp:column -->
-<div class="wp-block-column"><!-- wp:woocommerce/product-collection {"queryId":37,"query":{"perPage":12,"pages":0,"offset":0,"postType":"product","order":"asc","orderBy":"title","inherit":false},"displayLayout":{"type":"flex","columns":3},"queryContextIncludes":["collection"],"collection":"woocommerce/product-collection/product-catalog"} -->
+<div class="wp-block-column"><!-- wp:woocommerce/product-collection {"queryId":37,"query":{"isProductCollectionBlock":true,"perPage":12,"pages":0,"offset":0,"postType":"product","order":"asc","orderBy":"title","inherit":false},"queryContextIncludes":["collection"],"displayLayout":{"type":"flex","columns":3},"queryContextIncludes":["collection"],"collection":"woocommerce/product-collection/product-catalog"} -->
 <div class="wp-block-woocommerce-product-collection"><!-- wp:woocommerce/product-template -->
 <!-- wp:suitemart/product-labels /-->
 
-<!-- wp:woocommerce/product-image {"imageSizing":"thumbnail","showSaleBadge":false,"style":{"border":{"radius":"8px"}}} /-->
+<!-- wp:woocommerce/product-image {"isDescendentOfQueryLoop":true,"imageSizing":"thumbnail","showSaleBadge":false,"style":{"border":{"radius":"8px"}}} /-->
 
 <!-- wp:post-title {"level":3,"isLink":true,"fontSize":"md","__woocommerceNamespace":"woocommerce/product-collection/product-title"} /-->
 
-<!-- wp:woocommerce/product-price /-->
+<!-- wp:woocommerce/product-price {"isDescendentOfQueryLoop":true} /-->
 
 <!-- wp:woocommerce/product-button {"fontSize":"sm"} /-->
 <!-- /wp:woocommerce/product-template -->

@@ -331,6 +331,69 @@ in the yielding block's own sheet and costs nothing elsewhere.
 once per corner. Four patterns shipped like that. Set `"showSaleBadge":false` on
 the image wherever our labels are present.
 
+**Four Woo product blocks only save nothing once you tell them where they are.**
+`woocommerce/product-image`, `-price`, `-rating` and `-summary` save a
+`<div class="is-loading">` placeholder by default, and hand-written markup that
+closes them with `/-->` therefore carries no inner HTML for the editor to match
+against. Every commerce pattern shipped that way, so the whole grid opened as
+"Block contains unexpected or invalid content" with an Attempt recovery button.
+Pass `"isDescendentOfQueryLoop":true` inside a `product-template` and
+`"isDescendentOfSingleProductTemplate":true` on the single product template, as
+Woo's own patterns do: with the flag the save output is empty and the
+self-closing form validates.
+
+**The other Woo blocks save a wrapper you have to write out in full.** The
+`product-filter-*` blocks and the two add-to-cart selectors save their element
+unconditionally, so they cannot be self-closing at all;
+`add-to-cart-with-options` saves *nothing*, so it must not have a wrapper div;
+`product-meta` saves a bare div with no inline style; `product-filters` saves
+both `wp-block-woocommerce-product-filters` and `wc-block-product-filters`.
+There is no guessing at any of this — open a page in the editor and read
+`wp.blocks.getSaveContent( wp.blocks.getBlockType( name ), attrs )` in the
+console, or parse the pattern with `wp.blocks.parse()` and check `isValid` on
+every block. `getSaveContent` alone is not the whole answer, because a block
+with a registered deprecation can accept older markup that its current `save`
+would reject — `woocommerce/product-details` does.
+
+**A hand-written Product Collection query does nothing until it says
+`isProductCollectionBlock`.** Woo gates its entire front-end query builder on
+`$context['query']['isProductCollectionBlock']`, and nothing merges Woo's
+client-side `DEFAULT_QUERY` into serialized markup — insert the block in the
+editor and you get the flag, write the same block into a pattern and you do not.
+Without it every filter in the query is dropped in silence and WP_Query answers
+with the newest products: "Featured products" listed four products that were not
+featured, "Best sellers" four that had never sold, and on-sale, top-rated and the
+stock-status filters were all inert. All fourteen collections in the theme
+shipped that way. It survived review because *the editor was right* — its preview
+passes the flag on its own REST request — so the canvas showed the correct
+products and only the live page was wrong.
+
+**The editor canvas is a different document, and the theme's global stylesheet
+never reaches it.** `global.css` is enqueued on `wp_enqueue_scripts`; the canvas
+gets theme.json, each block's own `style` sheet, and `editor.css`. Anything
+cross-cutting therefore has to be in `_shared/_appearance.scss`, which both
+entries forward — that file exists because the rules in it were front-end only
+and the canvas drew them differently, icons worst of all: `.sm-icon` is what
+turns a Lucide symbol from a filled shape into a stroked one, so without it every
+icon in the editor was a black blob.
+
+**An icon needs the sprite inlined into whichever document it is in.**
+`<use href="sprite.svg#id">` does not resolve across documents — Chrome and
+Safari do not support an external file reference from `<use>` at all, same origin
+or not. The front end inlines the sprite (`suitemart_print_icon_sprite()`);
+`build/editor.js` does the same for each canvas iframe, and re-does it when the
+device preview remounts one. Both routes an icon arrives by — `_shared/Icon` and
+the markup a server-rendered block returns — depend on that.
+
+**A preview that invents its data will be wrong, and nobody will notice.** Six
+blocks read the product being rendered and previewed a hand-written stand-in
+instead: all three badges on every card, "Only 5 left", "124 units sold", a
+delivery date in October. Render through `_shared/DynamicPreview` — the block
+renderer endpoint with `post_id` — so the canvas shows the same render.php output
+the page will, per product, and there is no second implementation to drift. The
+one thing it costs is a REST request per instance, which is why it is for blocks
+whose output genuinely cannot be known on the client, not for a button.
+
 **The pattern list is cached, so a new pattern file does not exist yet.**
 `WP_Theme::get_block_patterns()` caches the header scan, and it survives
 `wp cache flush` and `wp transient delete --all`. A newly written pattern is

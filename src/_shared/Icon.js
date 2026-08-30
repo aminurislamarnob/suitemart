@@ -1,10 +1,14 @@
 /**
  * Editor-side icon preview.
  *
- * The front end renders icons from the inlined sprite, but the sprite is not
- * present in the editor canvas, so `<use href="#id">` would resolve to nothing.
- * This references the sprite file directly instead — acceptable in the editor,
- * where the asset is same-origin.
+ * Emits exactly what `suitemart_get_icon()` emits, down to the internal `<use>`
+ * reference, so an icon looks the same however it reached the canvas — from a
+ * React edit component or out of a server-rendered block.
+ *
+ * That reference resolves because build/editor.js inlines the sprite into the
+ * canvas document. This used to point `<use>` at the sprite *file* instead,
+ * which no icon ever rendered from: Chrome and Safari do not support external
+ * file references from `<use>` at all.
  */
 
 /**
@@ -21,10 +25,6 @@ export default function Icon( { name, size = 24, className = '' } ) {
 		return null;
 	}
 
-	const spriteUrl = `${
-		window.suitemartThemeUri || ''
-	}/assets/icons/sprite.svg`;
-
 	// Share marks are solid shapes while the Lucide set is stroked, and the
 	// base class sets `fill: none`. Without this they preview as blank squares.
 	// Mirrors the same branch in suitemart_get_icon().
@@ -38,7 +38,7 @@ export default function Icon( { name, size = 24, className = '' } ) {
 			aria-hidden="true"
 			focusable="false"
 		>
-			<use href={ `${ spriteUrl }#sm-icon-${ name }` } />
+			<use href={ `#sm-icon-${ name }` } />
 		</svg>
 	);
 }

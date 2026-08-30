@@ -24,9 +24,9 @@ if ( ! suitemart_has_woocommerce() ) {
 
 <!-- wp:post-title {"level":1,"fontSize":"2xl","__woocommerceNamespace":"woocommerce/product-query/product-title"} /-->
 
-<!-- wp:woocommerce/product-rating /-->
+<!-- wp:woocommerce/product-rating {"isDescendentOfSingleProductTemplate":true} /-->
 
-<!-- wp:woocommerce/product-price {"fontSize":"xl"} /-->
+<!-- wp:woocommerce/product-price {"isDescendentOfSingleProductTemplate":true,"fontSize":"xl"} /-->
 
 <!-- wp:post-excerpt {"__woocommerceNamespace":"woocommerce/product-query/product-summary"} /-->
 
@@ -39,19 +39,19 @@ if ( ! suitemart_has_woocommerce() ) {
  */
 ?>
 <!-- wp:woocommerce/add-to-cart-with-options {"style":{"spacing":{"margin":{"top":"var:preset|spacing|40"}}}} -->
-<div class="wp-block-woocommerce-add-to-cart-with-options" style="margin-top:var(--wp--preset--spacing--40)"><!-- wp:woocommerce/add-to-cart-with-options-variation-selector /-->
+<!-- wp:woocommerce/add-to-cart-with-options-variation-selector --><div class="wp-block-woocommerce-add-to-cart-with-options-variation-selector" role="list"></div><!-- /wp:woocommerce/add-to-cart-with-options-variation-selector -->
 
-<!-- wp:woocommerce/add-to-cart-with-options-grouped-product-selector /-->
+<!-- wp:woocommerce/add-to-cart-with-options-grouped-product-selector --><div class="wp-block-woocommerce-add-to-cart-with-options-grouped-product-selector" role="list"></div><!-- /wp:woocommerce/add-to-cart-with-options-grouped-product-selector -->
 
 <!-- wp:woocommerce/add-to-cart-with-options-quantity-selector /-->
 
-<!-- wp:woocommerce/product-button /--></div>
+<!-- wp:woocommerce/product-button /-->
 <!-- /wp:woocommerce/add-to-cart-with-options -->
 
 <!-- wp:woocommerce/product-stock-indicator {"fontSize":"sm"} /-->
 
 <!-- wp:woocommerce/product-meta {"style":{"spacing":{"margin":{"top":"var:preset|spacing|40"}}}} -->
-<div class="wp-block-woocommerce-product-meta" style="margin-top:var(--wp--preset--spacing--40)"><!-- wp:woocommerce/product-sku /-->
+<div class="wp-block-woocommerce-product-meta"><!-- wp:woocommerce/product-sku /-->
 
 <!-- wp:post-terms {"term":"product_cat","prefix":"<?php echo esc_attr_x( 'Category: ', 'Pattern term prefix', 'suitemart' ); ?>"} /-->
 

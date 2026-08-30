@@ -4,9 +4,15 @@
 // resets theme.json cannot express, styles for core blocks that need logical
 // properties, and the icon primitive. Everything else lives in a block's own
 // stylesheet and loads only when that block is on the page.
+//
+// The last two of those now live in _shared/appearance, because the editor
+// canvas needs them too and never receives this file — see that file for what
+// the canvas was drawing differently. What is left here is what belongs to a
+// rendered page and to nothing else.
 
 @use "_shared/breakpoints" as *;
 @use "_shared/mixins" as *;
+@use "_shared/appearance";
 
 /* -------------------------------------------------------------------------
    Document
@@ -40,6 +46,11 @@ body {
 //
 // The `!important` is the point rather than an escape hatch: nothing should be
 // able to override "this element is not here".
+//
+// It is also why this rule is front-end only. The canvas has to show what the
+// front end hides — a closed drawer, an inactive tab panel — or those blocks
+// cannot be authored at all, and `!important` here would outrank the rules in
+// editor.scss that reveal them.
 [hidden] {
 	display: none !important;
 }
@@ -92,106 +103,5 @@ body {
 		animation-duration: 0.01ms !important;
 		animation-iteration-count: 1 !important;
 		scroll-behavior: auto !important;
-	}
-}
-
-/* -------------------------------------------------------------------------
-   Icons
-   ---------------------------------------------------------------------- */
-
-.sm-icon-sprite {
-	display: none;
-}
-
-.sm-icon {
-	display: inline-block;
-	flex: none;
-	width: 1em;
-	height: 1em;
-	vertical-align: middle;
-	fill: none;
-	stroke: currentcolor;
-	stroke-width: 1.75;
-	stroke-linecap: round;
-	stroke-linejoin: round;
-}
-
-// The share marks in assets/icons/social.svg are solid shapes rather than
-// strokes — a recognisable service mark has to be filled — so they need the
-// opposite treatment to the Lucide set they share a sprite with.
-.sm-icon--social {
-	fill: currentcolor;
-	stroke: none;
-}
-
-/* -------------------------------------------------------------------------
-   Core block corrections
-   ---------------------------------------------------------------------- */
-
-// theme.json cannot express logical properties, so asymmetric core-block styles
-// live here instead — otherwise they would sit on the wrong side in RTL.
-.wp-block-quote {
-	// Reset core's physical border before applying a logical one, so the accent
-	// bar follows the writing direction instead of always sitting on the left.
-	border: 0;
-	border-inline-start: 3px solid var(--wp--preset--color--primary);
-	padding-inline-start: var(--wp--preset--spacing--40);
-}
-
-/*
- * An image never exceeds its container.
- *
- * This is not cosmetic. WooCommerce's product gallery renders the full-size
- * file with width and height attributes, so a 1200px image in a 512px column
- * kept its intrinsic width, spilled across the page, and sat on top of the
- * summary column — where it swallowed every click meant for add-to-cart or the
- * wishlist button. The overlap was invisible: the image is mostly white space,
- * so the page looked correct and simply did not respond.
- *
- * `height: auto` has to come with it, or constraining the width against the
- * HTML height attribute distorts the image.
- */
-img,
-svg,
-video,
-iframe {
-	max-width: 100%;
-}
-
-img,
-video {
-	height: auto;
-}
-
-// Core renders an empty <figcaption> wrapper even with no caption.
-.wp-block-image figcaption:empty {
-	display: none;
-}
-
-/* -------------------------------------------------------------------------
-   WooCommerce corrections
-   ---------------------------------------------------------------------- */
-
-// Woo's block templates assume a container; ours is supplied by the template's
-// group blocks, so reset Woo's own width constraint.
-.woocommerce-notices-wrapper:empty {
-	display: none;
-}
-
-/* -------------------------------------------------------------------------
-   Block styles
-   ---------------------------------------------------------------------- */
-
-/*
- * `core/list`, "Plain": a column of links is a list semantically and reads as
- * one to a screen reader, but markers and an indent are wrong for it. Used by
- * the header and footer parts and by the header and footer patterns.
- */
-.wp-block-list.is-style-none {
-	padding-inline-start: 0;
-	list-style: none;
-
-	li {
-		margin-block: 0.35rem;
 	}
 }

@@ -41,19 +41,19 @@ defined( 'ABSPATH' ) || exit;
 ?>
 <!-- wp:suitemart/marquee {"align":"full","speed":40,"pauseOnHover":true,"ariaLabel":"<?php echo esc_attr_x( 'What we promise', 'Pattern label', 'suitemart' ); ?>","backgroundColor":"contrast","textColor":"base","style":{"spacing":{"padding":{"top":"var:preset|spacing|30","bottom":"var:preset|spacing|30"}}},"fontSize":"lg"} -->
 <!-- wp:suitemart/marquee-item -->
-<p><?php echo esc_html_x( 'Free delivery over £50', 'Pattern marquee item', 'suitemart' ); ?></p>
+<!-- wp:paragraph --><p><?php echo esc_html_x( 'Free delivery over £50', 'Pattern marquee item', 'suitemart' ); ?></p><!-- /wp:paragraph -->
 <!-- /wp:suitemart/marquee-item -->
 
 <!-- wp:suitemart/marquee-item -->
-<p><?php echo esc_html_x( 'Thirty days to change your mind', 'Pattern marquee item', 'suitemart' ); ?></p>
+<!-- wp:paragraph --><p><?php echo esc_html_x( 'Thirty days to change your mind', 'Pattern marquee item', 'suitemart' ); ?></p><!-- /wp:paragraph -->
 <!-- /wp:suitemart/marquee-item -->
 
 <!-- wp:suitemart/marquee-item -->
-<p><?php echo esc_html_x( 'Repairs for as long as you own it', 'Pattern marquee item', 'suitemart' ); ?></p>
+<!-- wp:paragraph --><p><?php echo esc_html_x( 'Repairs for as long as you own it', 'Pattern marquee item', 'suitemart' ); ?></p><!-- /wp:paragraph -->
 <!-- /wp:suitemart/marquee-item -->
 
 <!-- wp:suitemart/marquee-item -->
-<p><?php echo esc_html_x( 'Every maker named', 'Pattern marquee item', 'suitemart' ); ?></p>
+<!-- wp:paragraph --><p><?php echo esc_html_x( 'Every maker named', 'Pattern marquee item', 'suitemart' ); ?></p><!-- /wp:paragraph -->
 <!-- /wp:suitemart/marquee-item -->
 <!-- /wp:suitemart/marquee --></div>
 <!-- /wp:group -->

@@ -32,7 +32,7 @@ $sm_members = array(
 <!-- wp:column -->
 <div class="wp-block-column"><!-- wp:suitemart/team-member {"name":"<?php echo esc_attr_x( 'Full name', 'Pattern name', 'suitemart' ); ?>","role":"<?php echo esc_attr( $sm_member[0] ); ?>","bio":"<?php echo esc_attr_x( 'One or two lines on what they do and why it matters to a customer.', 'Pattern text', 'suitemart' ); ?>"} -->
 <!-- wp:social-links {"size":"has-small-icon-size"} -->
-<ul class="wp-block-social-links"></ul>
+<ul class="wp-block-social-links has-small-icon-size"></ul>
 <!-- /wp:social-links -->
 <!-- /wp:suitemart/team-member --></div>
 <!-- /wp:column -->

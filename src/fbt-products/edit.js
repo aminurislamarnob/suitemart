@@ -1,22 +1,22 @@
 import { __ } from '@wordpress/i18n';
 import { useBlockProps } from '@wordpress/block-editor';
+import DynamicPreview from '../_shared/DynamicPreview';
 
-export default function Edit() {
-	const blockProps = useBlockProps( {
-		className: 'sm-fbt-products',
-	} );
+export default function Edit( { attributes, context, isSelected } ) {
+	const blockProps = useBlockProps();
 
 	return (
 		<div { ...blockProps }>
-			<div className="sm-fbt-products__placeholder">
-				<span className="sm-fbt-products__placeholder-icon">📦</span>
-				<span className="sm-fbt-products__placeholder-text">
-					{ __(
-						'Frequently bought together products will render here.',
-						'suitemart'
-					) }
-				</span>
-			</div>
+			<DynamicPreview
+				block="suitemart/fbt-products"
+				attributes={ attributes }
+				postId={ context.postId }
+				isSelected={ isSelected }
+				emptyLabel={ __(
+					'This bundle needs at least two purchasable products: set cross-sells on this product to fill it.',
+					'suitemart'
+				) }
+			/>
 		</div>
 	);
 }
